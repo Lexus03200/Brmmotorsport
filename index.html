@@ -598,6 +598,52 @@
           </div>
         );
 
+        // Composant pour la page de politique de confidentialité
+        const PrivacyPolicyPage = () => (
+          <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
+            <div className="container mx-auto px-6 max-w-4xl">
+              <h1 className="text-5xl font-extrabold text-center mb-12 text-purple-400 animate-fade-in-down">
+                Politique de Confidentialité
+              </h1>
+              <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-6">
+                <h2 className="text-3xl font-bold mb-4 text-white">Introduction</h2>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  Bienvenue sur le site de BRMOTORSPORT. Nous nous engageons à protéger vos données personnelles. Cette politique de confidentialité vous informe sur la manière dont nous collectons, utilisons et protégeons vos informations.
+                </p>
+
+                <h2 className="text-3xl font-bold mb-4 text-white">Collecte des Informations</h2>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  Nous collectons des informations lorsque vous utilisez notre formulaire de contact, notamment votre nom, adresse e-mail et numéro de téléphone. Nous pouvons également collecter des données techniques telles que votre adresse IP et le type de navigateur.
+                </p>
+
+                <h2 className="text-3xl font-bold mb-4 text-white">Utilisation des Informations</h2>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  Les informations que nous collectons sont utilisées pour :
+                </p>
+                <ul className="list-disc list-inside text-lg text-gray-300 pl-4 space-y-2">
+                  <li>Traiter vos demandes de contact et de devis.</li>
+                  <li>Améliorer l'expérience utilisateur de notre site.</li>
+                  <li>Répondre à vos questions et vous fournir un support client.</li>
+                </ul>
+
+                <h2 className="text-3xl font-bold mb-4 text-white">Protection des Données</h2>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Vos données sont stockées sur des serveurs sécurisés et accessibles uniquement par un personnel autorisé.
+                </p>
+
+                <h2 className="text-3xl font-bold mb-4 text-white">Vos Droits</h2>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  Conformément à la réglementation sur la protection des données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression, de limitation et d'opposition concernant vos données personnelles. Pour exercer ces droits, veuillez nous contacter à <a href="mailto:brmotosport003@gmail.com" className="text-blue-400 hover:underline">brmotosport003@gmail.com</a>.
+                </p>
+
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  **Ce texte est un exemple. Veuillez le remplacer par votre propre politique de confidentialité, complète et conforme à la législation en vigueur.**
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+
 
         // Nouveau composant pour le contrôle de la musique
         const MusicControl = () => {
@@ -670,6 +716,8 @@
                   return <ContactPage />;
                 case 'mentions-legales': // Nouveau cas pour les mentions légales
                   return <LegalMentionsPage />;
+                case 'confidentialite': // Nouveau cas pour la politique de confidentialité
+                  return <PrivacyPolicyPage />;
                 default:
                   return <HomePage />;
               }
