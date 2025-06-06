@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRMOTORSPORT - Performance Automobile</title>
+    <!-- Intégration de Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Intégration de React et ReactDOM CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Empêche le défilement horizontal */
+        }
+        /* Keyframes pour les animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes bounceIn {
+            0%, 20%, 40%, 60%, 80%, 100% {
+                transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+            }
+            0% { opacity: 0; transform: scale3d(.3, .3, .3); }
+            20% { transform: scale3d(1.1, 1.1, 1.1); }
+            40% { transform: scale3d(.9, .9, .9); }
+            60% { opacity: 1; transform: scale3d(1.03, 1.03, 1.03); }
+            80% { transform: scale3d(.97, .97, .97); }
+            100% { opacity: 1; transform: scale3d(1, 1, 1); }
+        }
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-fade-in-down { animation: fadeInDown 0.8s ease-out forwards; }
+        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        .animate-bounce-in { animation: bounceIn 1s; }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+    </style>
+</head>
+<body class="min-h-screen bg-black font-inter">
+    <div id="root"></div>
+
+    <!-- Le type du script a été changé en "text/babel" pour que Babel puisse le transpiler -->
+    <script type="text/babel">
+        // Récupère les hooks React depuis l'objet global React
+        const { useState, useEffect } = React;
+
+        // Composant Icône (simplifié)
+        const CarIcon = () => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-car">
+            <path d="M19 17H5c-1.1 0-2 .9-2 2v2h18v-2c0-1.1-.9-2-2-2Z"/><path d="M7 17V5h12v12"/><path d="M18 10h-8"/><path d="M10 10v7"/>
+          </svg>
+        );
+
+        const HandshakeIcon = () => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-handshake">
+            <path d="M12.23 20.73a4.7 4.7 0 0 0 6.64-6.64L12.23 7.07l-2.06 2.06"/><path d="M16 16l-3.23 3.23a4.7 4.7 0 0 1-6.64-6.64L9.07 7.07l2.06 2.06"/><path d="M14 10l-2.06 2.06"/><path d="m10 14 2.06-2.06"/>
+          </svg>
+        );
+
+        const WrenchIcon = () => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wrench">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1 7.94-7.94l-3.77-3.77z"/>
+            <path d="M5.5 12.5l-3-3L12.5 2.5l3 3z"/>
+          </svg>
+        );
+
+        const CalendarIcon = () => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-calendar-days">
+            <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>
+          </svg>
+        );
+
+        const UsersIcon = () => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-users">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87L16 16"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        );
+
+        const RssIcon = () => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rss">
+            <path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>
+          </svg>
+        );
+
+        // Nouvelle icône pour le contact (par exemple, un téléphone ou une enveloppe)
+        const PhoneIcon = () => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-phone">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2H7c.43 0 .79.27.94.66.14.39.07.82-.2 1.1L5.05 6.05c-.35.35-.5.85-.34 1.34A19.79 19.79 0 0 0 16.92 19c.49.16.99.01 1.34-.34l2.29-2.29c.28-.27.71-.34 1.1-.2.39.14.66.5.66.94Z"/>
+          </svg>
+        );
+
+        const MailIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mail">
+              <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+        );
+
+        const InstagramIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram">
+              <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.5" y1="6.5" y2="6.5"/>
+            </svg>
+        );
+
+
+        // Composant de la barre de navigation
+        const Navbar = ({ setCurrentPage }) => (
+          <nav className="bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg">
+            <div className="container mx-auto flex justify-between items-center px-4">
+              <div className="text-xl font-extrabold text-white tracking-wider animate-pulse">BRMOTORSPORT</div>
+              <div className="flex space-x-6 md:space-x-8">
+                <NavItem icon={<CarIcon />} text="Accueil" page="accueil" setCurrentPage={setCurrentPage} />
+                <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} />
+                <NavItem icon={<CalendarIcon />} text="Rendez-vous" page="rendez-vous" setCurrentPage={setCurrentPage} />
+                <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} />
+                <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} /> {/* Nouveau menu contact */}
+              </div>
+            </div>
+          </nav>
+        );
+
+        // Composant d'élément de navigation
+        const NavItem = ({ icon, text, page, setCurrentPage }) => (
+          <button
+            onClick={() => setCurrentPage(page)}
+            className="flex items-center text-gray-300 hover:text-red-500 transition duration-300 ease-in-out transform hover:scale-105
+                       px-3 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+          >
+            <span className="mr-2 text-xl">{icon}</span>
+            {text}
+          </button>
+        );
+
+        // Composant Page d'Accueil
+        const HomePage = () => (
+          <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter relative overflow-hidden">
+            {/* Effet de fond avec des formes abstraites pour un look dynamique */}
+            <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+              <div className="absolute w-64 h-64 bg-red-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob top-10 left-1/4"></div>
+              <div className="absolute w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 top-1/2 right-1/4"></div>
+              <div className="absolute w-80 h-80 bg-green-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 bottom-10 left-1/2"></div>
+            </div>
+
+            <div className="container mx-auto px-6 relative z-10">
+              {/* Section Hero */}
+              <section className="text-center mb-20">
+                <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down">
+                  Libérez la <span className="text-red-500">Puissance</span>. Redéfinissez la <span className="text-blue-500">Performance</span>.
+                </h1>
+                <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
+                  Chez BRMOTORSPORT, nous transformons votre passion pour l'automobile en une expérience de conduite inégalée.
+                </p>
+                <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in">
+                  Découvrez nos Services
+                </button>
+              </section>
+
+              {/* Section "Ce que je vous propose" */}
+              <section className="mb-20">
+                <h2 className="text-5xl font-bold text-center mb-12 text-red-400 animate-fade-in">
+                  Ce que je vous propose
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  <ServiceCard
+                    icon={<CarIcon />}
+                    title="Diagnostic et entretien mécanique complet"
+                    description="Précision et fiabilité pour la longévité de votre véhicule."
+                  />
+                  <ServiceCard
+                    icon={<span className="text-3xl">🚀</span>} // Utilisation d'un emoji pour variété
+                    title="Reprogrammation moteur (Stage 1, 2, 3, etc.)"
+                    description="Libérez le plein potentiel de votre moteur en toute sécurité."
+                  />
+                  <ServiceCard
+                    icon={<span className="text-3xl">📈</span>} // Utilisation d'un emoji pour variété
+                    title="Optimisation des performances moteur"
+                    description="Une puissance sur mesure, adaptée à vos exigences et votre style."
+                  />
+                  <ServiceCard
+                    icon={<span className="text-3xl">💡</span>} // Utilisation d'un emoji pour variété
+                    title="Solutions personnalisées"
+                    description="Chaque voiture est unique, chaque solution l'est aussi. Sur mesure pour vous."
+                  />
+                </div>
+              </section>
+
+              {/* Section "Pourquoi me faire confiance ?" */}
+              <section className="mb-20">
+                <h2 className="text-5xl font-bold text-center mb-12 text-blue-400 animate-fade-in">
+                  Pourquoi me faire confiance ?
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <TrustCard
+                    icon={<span className="text-3xl">⏱️</span>}
+                    title="Plus de 10 ans d’expérience terrain"
+                    description="Un savoir-faire éprouvé, bâti sur des années de pratique et de passion."
+                  />
+                  <TrustCard
+                    icon={<HandshakeIcon />}
+                    title="Une approche personnalisée et professionnelle"
+                    description="Votre satisfaction est notre priorité, avec un service à votre écoute."
+                  />
+                  <TrustCard
+                    icon={<span className="text-3xl">🏆</span>}
+                    title="Une expertise reconnue en performance moteur"
+                    description="Le moteur n'a plus de secret pour nous. Maîtrise et innovation au service de votre véhicule."
+                  />
+                  <TrustCard
+                    icon={<span className="text-3xl">⭐</span>}
+                    title="Un service de proximité, fiable et à l’écoute"
+                    description="Votre partenaire automobile de confiance, toujours disponible pour vos besoins."
+                  />
+                </div>
+              </section>
+
+              {/* Section "Faites confiance à un passionné" */}
+              <section className="text-center mb-20 bg-gray-800 p-12 rounded-2xl shadow-xl transform transition duration-500 hover:scale-[1.02] hover:shadow-2xl">
+                <h2 className="text-4xl font-bold mb-6 text-orange-400 animate-fade-in">
+                  Faites confiance à un passionné qui maîtrise son art
+                </h2>
+                <p className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
+                  <span className="font-semibold text-white">Rémy Bryant</span>, votre expert automobile dédié à la performance et à la qualité.
+                  Chez BRMOTORSPORT, la passion du moteur est notre moteur, assurant des résultats qui dépassent vos attentes.
+                </p>
+                <div className="mt-8">
+                   {/* Vous pouvez ajouter une image de Rémy ici si disponible */}
+                   <img
+                      src="https://placehold.co/150x150/000/FFF?text=Remy" // Placeholder pour l'image de Rémy Bryant
+                      alt="Portrait de Rémy Bryant"
+                      className="mx-auto rounded-full border-4 border-red-500 shadow-lg w-32 h-32 object-cover"
+                      onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/150x150/000/FFF?text=Remy+Bryant"; }}
+                   />
+                </div>
+              </section>
+            </div>
+          </div>
+        );
+
+        // Composant Carte de Service
+        const ServiceCard = ({ icon, title, description }) => (
+          <div className="bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700">
+            <div className="text-red-500 mb-4 text-5xl">{icon}</div>
+            <h3 className="text-2xl font-semibold mb-3 text-white">{title}</h3>
+            <p className="text-gray-300">{description}</p>
+          </div>
+        );
+
+        // Composant Carte de Confiance
+        const TrustCard = ({ icon, title, description }) => (
+          <div className="bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700">
+            <div className="text-blue-500 mb-4 text-5xl">{icon}</div>
+            <h3 className="text-2xl font-semibold mb-3 text-white">{title}</h3>
+            <p className="text-gray-300">{description}</p>
+          </div>
+        );
+
+
+        // Composant Page Blog
+        const BlogPage = () => {
+          const blogPosts = [
+            {
+              id: 1,
+              image: "IMG_9611.jpg", // Utilisation directe du nom du fichier
+              title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur",
+              description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime.",
+              originalImage: "IMG_9611.jpg"
+            },
+            {
+              id: 2,
+              image: "IMG_9609.jpg", // Utilisation directe du nom du fichier
+              title: "BMW Série 2 : Reprogrammation et FAP OFF",
+              description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité.",
+              originalImage: "IMG_9609.jpg"
+            },
+            {
+              id: 3,
+              image: "IMG_9607.jpg", // Utilisation directe du nom du fichier
+              title: "VW Golf GTI : Boost de Performance Ultime",
+              description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !",
+              originalImage: "IMG_9607.jpg"
+            },
+            {
+              id: 4,
+              image: "IMG_9608.jpg", // Utilisation directe du nom du fichier
+              title: "Seat Ibiza : Amélioration de la Réactivité Moteur",
+              description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et une conduite plus dynamique. Un plaisir garanti.",
+              originalImage: "IMG_9608.jpg"
+            },
+            {
+              id: 5,
+              image: "IMG_9610.jpg", // Utilisation directe du nom du fichier
+              title: "VW Golf 5 GTI : Mise à Jour Cartographie",
+              description: "Une mise à jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !",
+              originalImage: "IMG_9610.jpg"
+            }
+          ];
+
+          return (
+            <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
+              <div className="container mx-auto px-6">
+                <h1 className="text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down">
+                  Nos Réalisations et Actus
+                </h1>
+                <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
+                  Découvrez nos dernières interventions, projets d'optimisation et les coulisses de BRMOTORSPORT.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                  {blogPosts.map(post => (
+                    <BlogPostCard key={post.id} post={post} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        // Composant Carte de Blog
+        const BlogPostCard = ({ post }) => (
+          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl border border-gray-700">
+            <img
+              src={post.image}
+              alt={post.title}
+              className="w-full h-64 object-cover object-center transform transition duration-500 hover:scale-110"
+              onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée:+${post.originalImage}`; }} // Fallback image with specific error message
+            />
+            <div className="p-6">
+              <h3 className="text-2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
+              <p className="text-gray-300 mb-4">{post.description}</p>
+              <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold py-2 px-6 rounded-full hover:from-green-600 hover:to-teal-600 transition duration-300 ease-in-out shadow-md">
+                Lire la suite
+              </button>
+              <p className="text-xs text-gray-500 mt-2">Nom du fichier original : {post.originalImage}</p>
+            </div>
+          </div>
+        );
+
+        // Composant Page Rendez-vous / Devis
+        const AppointmentPage = () => {
+          const [formType, setFormType] = useState('appointment'); // 'appointment' ou 'quote'
+          const [isSubmitted, setIsSubmitted] = useState(false);
+
+          const handleSubmit = (e) => {
+            e.preventDefault();
+            // Ici, vous intégreriez la logique pour envoyer les données à un backend
+            // Pour cet exemple, nous simulons juste une soumission réussie.
+            console.log('Formulaire soumis !');
+            setIsSubmitted(true);
+            // Réinitialiser après un court délai
+            setTimeout(() => setIsSubmitted(false), 3000);
+          };
+
+          return (
+            <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
+              <div className="container mx-auto px-6 max-w-3xl">
+                <h1 className="text-5xl font-extrabold text-center mb-12 text-purple-400 animate-fade-in-down">
+                  Prenez Rendez-vous ou Demandez un Devis
+                </h1>
+                <p className="text-xl text-center text-gray-300 max-w-2xl mx-auto mb-10 animate-fade-in-up">
+                  Choisissez l'option qui correspond le mieux à vos besoins et nous vous recontacterons rapidement.
+                </p>
+
+                <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up">
+                  <div className="flex justify-center mb-8 gap-4">
+                    <button
+                      className={`py-3 px-6 rounded-full font-semibold transition duration-300 ease-in-out ${
+                        formType === 'appointment'
+                          ? 'bg-purple-600 text-white shadow-lg'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      }`}
+                      onClick={() => setFormType('appointment')}
+                    >
+                      Prendre Rendez-vous
+                    </button>
+                    <button
+                      className={`py-3 px-6 rounded-full font-semibold transition duration-300 ease-in-out ${
+                        formType === 'quote'
+                          ? 'bg-purple-600 text-white shadow-lg'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      }`}
+                      onClick={() => setFormType('quote')}
+                    >
+                      Demander un Devis
+                    </button>
+                  </div>
+
+                  {isSubmitted && (
+                    <div className="bg-green-500 text-white p-4 rounded-lg mb-6 text-center shadow-md animate-fade-in-down">
+                      Votre demande a été envoyée avec succès ! Nous vous recontacterons bientôt.
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <InputField label="Nom Complet" type="text" placeholder="Votre nom et prénom" required />
+                    <InputField label="Email" type="email" placeholder="votre.email@exemple.com" required />
+                    <InputField label="Téléphone" type="tel" placeholder="06 12 34 56 78" required />
+
+                    {formType === 'appointment' && (
+                      <>
+                        <InputField label="Date Préférée" type="date" required />
+                        <InputField label="Heure Préférée" type="time" required />
+                        <TextAreaField label="Motif du Rendez-vous" placeholder="Décrivez brièvement votre besoin..." />
+                      </>
+                    )}
+
+                    {formType === 'quote' && (
+                      <>
+                        <InputField label="Marque du Véhicule" type="text" placeholder="Ex: BMW, VW, Porsche" required />
+                        <InputField label="Modèle du Véhicule" type="text" placeholder="Ex: Série 2, Golf GTI, Cayenne" required />
+                        <InputField label="Année du Véhicule" type="number" placeholder="Ex: 2018" />
+                        <InputField label="Motorisation" type="text" placeholder="Ex: 2.0 TDI, V8 Bi-Turbo" />
+                        <TextAreaField label="Description du besoin de devis" placeholder="Décrivez en détail la prestation souhaitée..." required />
+                      </>
+                    )}
+
+                    <button
+                      type="submit"
+                      className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                    >
+                      {formType === 'appointment' ? 'Confirmer le Rendez-vous' : 'Envoyer la Demande de Devis'}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        // Composant Input Field (réutilisable)
+        const InputField = ({ label, type, placeholder, required = false }) => (
+          <div>
+            <label htmlFor={label} className="block text-gray-300 text-sm font-bold mb-2">
+              {label} {required && <span className="text-red-500">*</span>}
+            </label>
+            <input
+              id={label}
+              type={type}
+              placeholder={placeholder}
+              required={required}
+              className="shadow appearance-none border border-gray-700 rounded-lg w-full py-3 px-4 bg-gray-700 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+            />
+          </div>
+        );
+
+        // Composant TextArea Field (réutilisable)
+        const TextAreaField = ({ label, placeholder, required = false }) => (
+          <div>
+            <label htmlFor={label} className="block text-gray-300 text-sm font-bold mb-2">
+              {label} {required && <span className="text-red-500">*</span>}
+            </label>
+            <textarea
+              id={label}
+              placeholder={placeholder}
+              required={required}
+              rows="5"
+              className="shadow appearance-none border border-gray-700 rounded-lg w-full py-3 px-4 bg-gray-700 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200 resize-y"
+            ></textarea>
+          </div>
+        );
+
+
+        // Composant Page Qui Sommes-nous
+        const AboutUsPage = () => (
+          <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
+            <div className="container mx-auto px-6 max-w-4xl">
+              <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down">
+                Qui Sommes-nous
+              </h1>
+              <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
+                Découvrez la passion, l'histoire et les valeurs qui animent BRMOTORSPORT.
+              </p>
+
+              <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-12 animate-fade-in-up">
+                <h2 className="text-4xl font-bold mb-6 text-yellow-300 text-center">Notre Histoire</h2>
+                <p className="text-lg text-gray-300 leading-relaxed mb-6">
+                  BRMOTORSPORT est né de la passion inébranlable de Rémy Bryant pour l'automobile et la performance. Fort de plus de 10 ans d'expérience sur le terrain, Rémy a concrétisé son rêve en créant un atelier dédié à l'optimisation des véhicules et à l'excellence mécanique. Ce qui a commencé comme une fascination pour les moteurs et leur potentiel est devenu une entreprise florissante, réputée pour son expertise et son approche personnalisée.
+                </p>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  Notre parcours est jalonné de défis relevés et de succès partagés avec nos clients, qui nous font confiance pour libérer la pleine puissance de leur véhicule, qu'il s'agisse d'une voiture de sport, d'un utilitaire ou d'un véhicule de tous les jours. Chaque projet est traité avec le même engagement : la qualité, la fiabilité et la performance.
+                </p>
+              </section>
+
+              <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up">
+                <h2 className="text-4xl font-bold mb-6 text-yellow-300 text-center">Nos Valeurs</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <ValueCard
+                    title="Expertise"
+                    description="Une connaissance approfondie et constamment mise à jour des technologies automobiles."
+                    icon={<WrenchIcon />}
+                  />
+                  <ValueCard
+                    title="Qualité"
+                    description="Nous utilisons uniquement des outils et des méthodes de pointe pour des résultats durables."
+                    icon={<span className="text-3xl">✨</span>}
+                  />
+                  <ValueCard
+                    title="Transparence"
+                    description="Une communication claire et honnête à chaque étape de nos interventions."
+                    icon={<span className="text-3xl">✅</span>}
+                  />
+                  <ValueCard
+                    title="Passion"
+                    description="Notre amour de l'automobile est le moteur de notre engagement et de notre précision."
+                    icon={<span className="text-3xl">❤️</span>}
+                  />
+                </div>
+              </section>
+            </div>
+          </div>
+        );
+
+        // Composant Carte de Valeur
+        const ValueCard = ({ icon, title, description }) => (
+          <div className="bg-gray-700 p-6 rounded-lg shadow-md flex items-start space-x-4 transition duration-300 ease-in-out transform hover:scale-105 border border-gray-600">
+            <div className="text-yellow-400 text-4xl flex-shrink-0">{icon}</div>
+            <div>
+              <h3 className="text-2xl font-semibold mb-2 text-white">{title}</h3>
+              <p className="text-gray-300">{description}</p>
+            </div>
+          </div>
+        );
+
+        // Nouveau Composant Page Contact
+        const ContactPage = () => (
+            <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
+                <div className="container mx-auto px-6 max-w-2xl">
+                    <h1 className="text-5xl font-extrabold text-center mb-12 text-pink-400 animate-fade-in-down">
+                        Contactez-nous
+                    </h1>
+                    <p className="text-xl text-center text-gray-300 max-w-xl mx-auto mb-10 animate-fade-in-up">
+                        N'hésitez pas à nous contacter pour toute question, demande de devis ou prise de rendez-vous.
+                    </p>
+
+                    <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
+                        <div className="flex flex-col items-center text-center">
+                            <MailIcon className="text-pink-500 w-12 h-12 mb-4" />
+                            <h3 className="text-2xl font-semibold mb-2 text-white">Adresse E-mail</h3>
+                            <a href="mailto:brmotosport003@gmail.com" className="text-blue-400 hover:underline text-lg transition duration-300">
+                                brmotosport003@gmail.com
+                            </a>
+                        </div>
+
+                        <div className="flex flex-col items-center text-center">
+                            <PhoneIcon className="text-pink-500 w-12 h-12 mb-4" />
+                            <h3 className="text-2xl font-semibold mb-2 text-white">Numéro de Téléphone</h3>
+                            <a href="tel:+33668278801" className="text-blue-400 hover:underline text-lg transition duration-300">
+                                06.68.27.88.01
+                            </a>
+                        </div>
+
+                        <div className="flex flex-col items-center text-center">
+                            <InstagramIcon className="text-pink-500 w-12 h-12 mb-4" />
+                            <h3 className="text-2xl font-semibold mb-2 text-white">Suivez-nous sur Instagram</h3>
+                            <a href="https://www.instagram.com/brmotorsport003?igsh=bnB0ZmdjMzF1dnd3" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline text-lg transition duration-300">
+                                @brmotorsport003
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+
+        // Composant principal de l'application
+        const App = () => {
+            const [currentPage, setCurrentPage] = useState('accueil');
+
+            // Fonction de rendu du contenu de la page en fonction de l'état
+            // Déplacée à l'intérieur du composant App
+            const renderPage = () => {
+              switch (currentPage) {
+                case 'accueil':
+                  return <HomePage />;
+                case 'blog':
+                  return <BlogPage />;
+                case 'rendez-vous':
+                  return <AppointmentPage />;
+                case 'qui-sommes-nous':
+                  return <AboutUsPage />;
+                case 'contact': // Nouveau cas pour la page Contact
+                  return <ContactPage />;
+                default:
+                  return <HomePage />;
+              }
+            };
+
+            return (
+                <div className="min-h-screen bg-black font-inter">
+                    <Navbar setCurrentPage={setCurrentPage} />
+                    <main className="flex-grow">
+                        {renderPage()}
+                    </main>
+                    <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
+                        <div className="container mx-auto px-4">
+                            <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
+                            <div className="flex justify-center space-x-4 mt-3">
+                                <a href="#" className="hover:text-red-500 transition duration-300">Confidentialité</a>
+                                <span className="text-gray-600">|</span>
+                                <a href="#" className="hover:text-red-500 transition duration-300">Mentions Légales</a>
+                            </div>
+                            <p className="text-sm mt-2">Réalisé avec passion par Rémy Bryant</p>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
+        const container = document.getElementById('root');
+        // Utilisation directe de ReactDOM.createRoot pour React 18
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />); {/* Utilisez JSX ici pour le rendu initial */}
+    </script>
+</body>
+</html>
