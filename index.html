@@ -12,6 +12,50 @@
     <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+    <!-- Intégration de Firebase CDN -->
+    <script type="module">
+      // Importez les modules Firebase nécessaires
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+      import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+      import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+      // Variables globales pour Firebase (fournies par l'environnement Canvas)
+      const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+      const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+      const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+      // Initialisation de Firebase et Firestore
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+
+      // Assurez-vous que ces variables sont accessibles globalement si nécessaire
+      // ou passées via des props React. Pour la démo, on les attache à window.
+      window.firebaseApp = app;
+      window.firebaseDb = db;
+      window.firebaseAuth = auth;
+      window.firebaseAppId = appId;
+      window.firebaseInitialAuthToken = initialAuthToken;
+
+      // Gère l'état d'authentification
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          // Si l'utilisateur n'est pas connecté, essayez de vous connecter anonymement
+          try {
+            if (window.firebaseInitialAuthToken) {
+                await signInWithCustomToken(auth, window.firebaseInitialAuthToken);
+            } else {
+                await signInAnonymously(auth);
+            }
+          } catch (error) {
+            console.error("Erreur lors de la connexion anonyme ou avec jeton :", error);
+          }
+        }
+        // Cet événement sera géré par le composant React via useEffect
+        // en lisant window.firebaseAuth.currentUser
+      });
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
         body {
@@ -458,7 +502,7 @@
         };
 
         // Composant Input Field (réutilisable)
-        const InputField = ({ label, type, placeholder, required = false }) => (
+        const InputField = ({ label, type, placeholder, required = false, value, onChange }) => (
           <div>
             <label htmlFor={label} className="block text-gray-300 text-sm font-bold mb-2">
               {label} {required && <span className="text-red-500">*</span>}
@@ -468,13 +512,15 @@
               type={type}
               placeholder={placeholder}
               required={required}
+              value={value}
+              onChange={onChange}
               className="shadow appearance-none border border-gray-700 rounded-lg w-full py-3 px-4 bg-gray-700 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
             />
           </div>
         );
 
         // Composant TextArea Field (réutilisable)
-        const TextAreaField = ({ label, placeholder, required = false }) => (
+        const TextAreaField = ({ label, placeholder, required = false, value, onChange }) => (
           <div>
             <label htmlFor={label} className="block text-gray-300 text-sm font-bold mb-2">
               {label} {required && <span className="text-red-500">*</span>}
@@ -484,6 +530,8 @@
               placeholder={placeholder}
               required={required}
               rows="5"
+              value={value}
+              onChange={onChange}
               className="shadow appearance-none border border-gray-700 rounded-lg w-full py-3 px-4 bg-gray-700 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200 resize-y"
             ></textarea>
           </div>
@@ -592,48 +640,110 @@
         );
 
         // Nouveau Composant Page Avis
-        const ReviewsPage = () => {
-          // Utilisation de useState pour stocker les avis. Initialisation avec des avis d'exemple.
-          const [reviews, setReviews] = useState([
-            {
-              id: 1,
-              name: "Client satisfait",
-              comment: "Excellent travail sur ma Golf GTI ! La puissance est incroyable et le service impeccable. Rémy est un vrai pro !",
-              photo: "https://placehold.co/100x100/A00/FFF?text=Client+1"
-            },
-            {
-              id: 2,
-              name: "Passionné Auto",
-              comment: "Réprogrammation moteur de ma BMW Série 2 parfaite. La voiture est beaucoup plus réactive. Je recommande fortement BRMOTORSPORT.",
-              photo: "https://placehold.co/100x100/0A0/FFF?text=Client+2"
-            }
-          ]);
+        const ReviewsPage = ({ db, auth, userId, isAuthReady }) => {
+          const [reviews, setReviews] = useState([]);
           const [newReviewName, setNewReviewName] = useState('');
           const [newReviewComment, setNewReviewComment] = useState('');
-          const [newReviewPhotoUrl, setNewReviewPhotoUrl] = useState('');
-          const [isSubmitted, setIsSubmitted] = useState(false);
+          const [message, setMessage] = useState(null); // Pour les messages de confirmation/erreur
+          const [loading, setLoading] = useState(true);
+          const [currentUserUid, setCurrentUserUid] = useState(null);
 
-          const handleAddReview = (e) => {
+          // Effet pour écouter les changements d'authentification et charger les avis
+          useEffect(() => {
+            if (!isAuthReady || !db || !auth) {
+                // Attendre que Firebase soit complètement initialisé
+                console.log("Firebase not ready yet, waiting for auth state change.");
+                return;
+            }
+
+            const unsubscribeAuth = auth.onAuthStateChanged(user => {
+                if (user) {
+                    setCurrentUserUid(user.uid);
+                    console.log("User authenticated:", user.uid);
+
+                    // Import dynamique de firestore pour l'utiliser dans onAuthStateChanged
+                    import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js").then((module) => {
+                        const { collection, onSnapshot, query } = module;
+                        const reviewsCollectionRef = collection(db, `artifacts/${window.firebaseAppId}/public/data/reviews`);
+                        const q = query(reviewsCollectionRef);
+
+                        // Écoute des mises à jour en temps réel
+                        const unsubscribeReviews = onSnapshot(q, (snapshot) => {
+                            const fetchedReviews = snapshot.docs.map(doc => ({
+                                id: doc.id,
+                                ...doc.data()
+                            }));
+                            // Tri en mémoire par timestamp (si disponible)
+                            fetchedReviews.sort((a, b) => (b.timestamp?.toDate() || 0) - (a.timestamp?.toDate() || 0));
+                            setReviews(fetchedReviews);
+                            setLoading(false);
+                        }, (error) => {
+                            console.error("Erreur lors de la récupération des avis :", error);
+                            setMessage({ type: 'error', text: 'Erreur lors du chargement des avis.' });
+                            setLoading(false);
+                        });
+
+                        // Nettoyage de l'écouteur lors du démontage du composant
+                        return () => {
+                            unsubscribeReviews();
+                        };
+                    });
+
+                    // Nettoyage de l'écouteur d'authentification
+                    return () => {
+                        unsubscribeAuth();
+                    };
+                } else {
+                    setCurrentUserUid(null);
+                    setLoading(false);
+                    console.log("No user authenticated, reviews will not be loaded.");
+                }
+            });
+
+            return () => unsubscribeAuth();
+          }, [db, auth, isAuthReady]); // Dépendances pour re-déclencher l'effet si db ou auth changent
+
+
+          const handleAddReview = async (e) => {
             e.preventDefault();
+            if (!currentUserUid) {
+                setMessage({ type: 'error', text: 'Veuillez patienter, la connexion au système d\'avis est en cours...' });
+                return;
+            }
             if (newReviewName.trim() === '' || newReviewComment.trim() === '') {
-              alert('Veuillez remplir votre nom et votre commentaire.'); // Utilisation d'alert à des fins de démonstration rapide, normalement remplacé par une modale
+              setMessage({ type: 'error', text: 'Veuillez remplir votre nom et votre commentaire.' });
               return;
             }
 
-            const newReview = {
-              id: reviews.length + 1,
-              name: newReviewName,
-              comment: newReviewComment,
-              photo: newReviewPhotoUrl || "https://placehold.co/100x100/888/FFF?text=Anonyme" // Photo par défaut si aucune URL n'est fournie
-            };
+            try {
+              // Import dynamique des modules Firestore pour l'appel addDoc et serverTimestamp
+              const { collection, addDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+              const reviewsCollectionRef = collection(db, `artifacts/${window.firebaseAppId}/public/data/reviews`);
+              await addDoc(reviewsCollectionRef, {
+                name: newReviewName,
+                comment: newReviewComment,
+                userId: currentUserUid,
+                timestamp: serverTimestamp(), // Timestamp de Firestore
+              });
 
-            setReviews([...reviews, newReview]);
-            setNewReviewName('');
-            setNewReviewComment('');
-            setNewReviewPhotoUrl('');
-            setIsSubmitted(true);
-            setTimeout(() => setIsSubmitted(false), 3000); // Masque le message de confirmation après 3 secondes
+              setNewReviewName('');
+              setNewReviewComment('');
+              setMessage({ type: 'success', text: 'Votre avis a été soumis avec succès !' });
+            } catch (error) {
+              console.error("Erreur lors de l'ajout de l'avis :", error);
+              setMessage({ type: 'error', text: 'Erreur lors de la soumission de votre avis.' });
+            } finally {
+              setTimeout(() => setMessage(null), 3000); // Masque le message après 3 secondes
+            }
           };
+
+          if (loading) {
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter flex justify-center items-center">
+                    <p className="text-xl">Chargement des avis...</p>
+                </div>
+            );
+          }
 
           return (
             <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
@@ -645,12 +755,19 @@
                   Partagez votre expérience avec BRMOTORSPORT et aidez-nous à améliorer nos services !
                 </p>
 
+                {currentUserUid && (
+                  <p className="text-sm text-gray-500 text-center mb-4">
+                    Votre ID d'utilisateur pour les avis (public) : <span className="font-mono text-gray-400">{currentUserUid}</span>
+                  </p>
+                )}
+
+
                 {/* Section pour ajouter un nouvel avis */}
                 <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-12 animate-fade-in-up">
                   <h2 className="text-3xl font-bold mb-6 text-teal-300 text-center">Laisser un avis</h2>
-                  {isSubmitted && (
-                    <div className="bg-green-500 text-white p-4 rounded-lg mb-6 text-center shadow-md animate-fade-in-down">
-                      Votre avis a été soumis avec succès !
+                  {message && (
+                    <div className={`p-4 rounded-lg mb-6 text-center shadow-md animate-fade-in-down ${message.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                      {message.text}
                     </div>
                   )}
                   <form onSubmit={handleAddReview} className="space-y-6">
@@ -669,13 +786,6 @@
                       onChange={(e) => setNewReviewComment(e.target.value)}
                       required
                     />
-                    <InputField
-                      label="Lien photo (URL facultative)"
-                      type="text"
-                      placeholder="Collez l'URL d'une photo de votre véhicule"
-                      value={newReviewPhotoUrl}
-                      onChange={(e) => setNewReviewPhotoUrl(e.target.value)}
-                    />
                     <button
                       type="submit"
                       className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
@@ -683,7 +793,7 @@
                       Envoyer votre avis
                     </button>
                     <p className="text-sm text-gray-400 text-center mt-4">
-                      *Note : Pour un stockage permanent des avis et un téléchargement réel de photos, un système de base de données (backend) serait nécessaire. Les avis sont actuellement conservés tant que vous restez sur la page.
+                      *Note : Les avis sont stockés de manière permanente.
                     </p>
                   </form>
                 </section>
@@ -709,15 +819,16 @@
         // Composant Carte d'Avis
         const ReviewCard = ({ review }) => (
           <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex items-start space-x-4 border border-gray-700">
-            <img
-              src={review.photo}
-              alt={`Photo de ${review.name}`}
-              className="w-16 h-16 rounded-full object-cover flex-shrink-0 border-2 border-teal-500"
-              onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/64x64/888/FFF?text=Avatar"; }}
-            />
+            {/* Icône par défaut au lieu de la photo */}
+            <div className="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0 border-2 border-teal-500 text-teal-400 text-3xl">
+              <MessageSquareTextIcon />
+            </div>
             <div>
               <h3 className="text-xl font-semibold text-white mb-2">{review.name}</h3>
               <p className="text-gray-300 italic">"{review.comment}"</p>
+              {review.userId && (
+                <p className="text-xs text-gray-500 mt-2">ID utilisateur: {review.userId}</p>
+              )}
             </div>
           </div>
         );
@@ -726,9 +837,48 @@
         // Composant principal de l'application
         const App = () => {
             const [currentPage, setCurrentPage] = useState('accueil');
+            const [db, setDb] = useState(null);
+            const [auth, setAuth] = useState(null);
+            const [userId, setUserId] = useState(null);
+            const [isAuthReady, setIsAuthReady] = useState(false);
+
+            // Importation dynamique des modules Firebase (pour s'assurer qu'ils sont disponibles globalement avant d'être utilisés par React)
+            const [firebaseFirestore, setFirebaseFirestore] = useState(null);
+            const [firebaseAuth, setFirebaseAuth] = useState(null);
+
+            useEffect(() => {
+                // Attendez que les variables globales de Firebase soient disponibles
+                if (window.firebaseDb && window.firebaseAuth && window.firebaseAppId) {
+                    setDb(window.firebaseDb);
+                    setAuth(window.firebaseAuth);
+
+                    // Vérifiez l'état d'authentification une fois que Firebase est prêt
+                    const unsubscribe = window.firebaseAuth.onAuthStateChanged(user => {
+                        if (user) {
+                            setUserId(user.uid);
+                            console.log("Firebase user ID:", user.uid);
+                        } else {
+                            setUserId(null);
+                            console.log("No Firebase user found. Attempting anonymous sign-in...");
+                        }
+                        setIsAuthReady(true); // Marquez l'authentification comme prête
+                    });
+
+                    // Importez les modules Firebase nécessaires pour le reste de l'application
+                    import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js").then((module) => {
+                        setFirebaseFirestore(module);
+                    });
+                    import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js").then((module) => {
+                        setFirebaseAuth(module);
+                    });
+
+
+                    return () => unsubscribe(); // Nettoyage de l'écouteur d'authentification
+                }
+            }, []); // S'exécute une seule fois au montage
+
 
             // Fonction de rendu du contenu de la page en fonction de l'état
-            // Déplacée à l'intérieur du composant App
             const renderPage = () => {
               switch (currentPage) {
                 case 'accueil':
@@ -739,10 +889,20 @@
                   return <AppointmentPage />;
                 case 'qui-sommes-nous':
                   return <AboutUsPage />;
-                case 'contact': // Nouveau cas pour la page Contact
+                case 'contact':
                   return <ContactPage />;
-                case 'avis': // Nouveau cas pour la page Avis
-                  return <ReviewsPage />;
+                case 'avis':
+                  // Passez les instances de db, auth, userId et isAuthReady à ReviewsPage
+                  // Ajoutez les modules Firestore et Auth importés dynamiquement pour qu'ils soient disponibles
+                  if (db && auth && firebaseFirestore && firebaseAuth) {
+                      return <ReviewsPage db={db} auth={auth} userId={userId} isAuthReady={isAuthReady} />;
+                  } else {
+                      return (
+                          <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter flex justify-center items-center">
+                              <p className="text-xl">Initialisation des services d'avis...</p>
+                          </div>
+                      );
+                  }
                 default:
                   return <HomePage />;
               }
@@ -771,9 +931,8 @@
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
         const container = document.getElementById('root');
-        // Utilisation directe de ReactDOM.createRoot pour React 18
         const root = ReactDOM.createRoot(container);
-        root.render(<App />); {/* Utilisez JSX ici pour le rendu initial */}
+        root.render(<App />);
     </script>
 </body>
 </html>
