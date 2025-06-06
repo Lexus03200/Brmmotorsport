@@ -12,12 +12,12 @@
     <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Intégration de Firebase CDN -->
+    <!-- Intégration de Firebase CDN (les modules pour Firestore ne sont plus nécessaires globalement) -->
     <script type="module">
-      // Importez les modules Firebase nécessaires
+      // Importez les modules Firebase nécessaires pour l'authentification si elle est toujours souhaitée (sinon, cette section peut être simplifiée)
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
       import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-      import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+      // getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp sont supprimés car plus utilisés pour les avis
 
       // Variables globales pour Firebase (fournies par l'environnement Canvas)
       const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -26,18 +26,18 @@
 
       // Initialisation de Firebase et Firestore
       const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
+      // db n'est plus nécessaire si Firestore n'est pas utilisé
       const auth = getAuth(app);
 
       // Assurez-vous que ces variables sont accessibles globalement si nécessaire
       // ou passées via des props React. Pour la démo, on les attache à window.
       window.firebaseApp = app;
-      window.firebaseDb = db;
+      // window.firebaseDb = db; // Plus nécessaire
       window.firebaseAuth = auth;
       window.firebaseAppId = appId;
       window.firebaseInitialAuthToken = initialAuthToken;
 
-      // Gère l'état d'authentification
+      // Gère l'état d'authentification (peut être conservé pour d'autres usages futurs si besoin)
       onAuthStateChanged(auth, async (user) => {
         if (!user) {
           // Si l'utilisateur n'est pas connecté, essayez de vous connecter anonymement
@@ -167,15 +167,7 @@
             </svg>
         );
 
-        // Nouvelle icône pour la page Avis (Message Square avec texte)
-        const MessageSquareTextIcon = () => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-square-text">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              <line x1="9" x2="15" y1="10" y2="10"/>
-              <line x1="9" x2="13" y1="14" y2="14"/>
-            </svg>
-        );
-
+        // MessageSquareTextIcon est supprimée car plus utilisée pour la page Avis
 
         // Composant de la barre de navigation
         const Navbar = ({ setCurrentPage }) => (
@@ -188,7 +180,7 @@
                 <NavItem icon={<CalendarIcon />} text="Rendez-vous" page="rendez-vous" setCurrentPage={setCurrentPage} />
                 <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} />
                 <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} />
-                <NavItem icon={<MessageSquareTextIcon />} text="Avis" page="avis" setCurrentPage={setCurrentPage} /> {/* Nouveau menu Avis */}
+                {/* Le menu Avis est retiré d'ici */}
               </div>
             </div>
           </nav>
@@ -639,244 +631,29 @@
             </div>
         );
 
-        // Nouveau Composant Page Avis
-        const ReviewsPage = ({ db, auth, userId, isAuthReady }) => {
-          const [reviews, setReviews] = useState([]);
-          const [newReviewName, setNewReviewName] = useState('');
-          const [newReviewComment, setNewReviewComment] = useState('');
-          const [message, setMessage] = useState(null); // Pour les messages de confirmation/erreur
-          const [loading, setLoading] = useState(true);
-          const [currentUserUid, setCurrentUserUid] = useState(null);
-
-          // Effet pour écouter les changements d'authentification et charger les avis
-          useEffect(() => {
-            if (!isAuthReady || !db || !auth) {
-                // Attendre que Firebase soit complètement initialisé
-                console.log("Firebase not ready yet, waiting for auth state change.");
-                return;
-            }
-
-            const unsubscribeAuth = auth.onAuthStateChanged(user => {
-                if (user) {
-                    setCurrentUserUid(user.uid);
-                    console.log("User authenticated:", user.uid);
-
-                    // Import dynamique de firestore pour l'utiliser dans onAuthStateChanged
-                    import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js").then((module) => {
-                        const { collection, onSnapshot, query } = module;
-                        const reviewsCollectionRef = collection(db, `artifacts/${window.firebaseAppId}/public/data/reviews`);
-                        const q = query(reviewsCollectionRef);
-
-                        // Écoute des mises à jour en temps réel
-                        const unsubscribeReviews = onSnapshot(q, (snapshot) => {
-                            const fetchedReviews = snapshot.docs.map(doc => ({
-                                id: doc.id,
-                                ...doc.data()
-                            }));
-                            // Tri en mémoire par timestamp (si disponible)
-                            fetchedReviews.sort((a, b) => (b.timestamp?.toDate() || 0) - (a.timestamp?.toDate() || 0));
-                            setReviews(fetchedReviews);
-                            setLoading(false);
-                        }, (error) => {
-                            console.error("Erreur lors de la récupération des avis :", error);
-                            setMessage({ type: 'error', text: 'Erreur lors du chargement des avis.' });
-                            setLoading(false);
-                        });
-
-                        // Nettoyage de l'écouteur lors du démontage du composant
-                        return () => {
-                            unsubscribeReviews();
-                        };
-                    });
-
-                    // Nettoyage de l'écouteur d'authentification
-                    return () => {
-                        unsubscribeAuth();
-                    };
-                } else {
-                    setCurrentUserUid(null);
-                    setLoading(false);
-                    console.log("No user authenticated, reviews will not be loaded.");
-                }
-            });
-
-            return () => unsubscribeAuth();
-          }, [db, auth, isAuthReady]); // Dépendances pour re-déclencher l'effet si db ou auth changent
-
-
-          const handleAddReview = async (e) => {
-            e.preventDefault();
-            if (!currentUserUid) {
-                setMessage({ type: 'error', text: 'Veuillez patienter, la connexion au système d\'avis est en cours...' });
-                return;
-            }
-            if (newReviewName.trim() === '' || newReviewComment.trim() === '') {
-              setMessage({ type: 'error', text: 'Veuillez remplir votre nom et votre commentaire.' });
-              return;
-            }
-
-            try {
-              // Import dynamique des modules Firestore pour l'appel addDoc et serverTimestamp
-              const { collection, addDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-              const reviewsCollectionRef = collection(db, `artifacts/${window.firebaseAppId}/public/data/reviews`);
-              await addDoc(reviewsCollectionRef, {
-                name: newReviewName,
-                comment: newReviewComment,
-                userId: currentUserUid,
-                timestamp: serverTimestamp(), // Timestamp de Firestore
-              });
-
-              setNewReviewName('');
-              setNewReviewComment('');
-              setMessage({ type: 'success', text: 'Votre avis a été soumis avec succès !' });
-            } catch (error) {
-              console.error("Erreur lors de l'ajout de l'avis :", error);
-              setMessage({ type: 'error', text: 'Erreur lors de la soumission de votre avis.' });
-            } finally {
-              setTimeout(() => setMessage(null), 3000); // Masque le message après 3 secondes
-            }
-          };
-
-          if (loading) {
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter flex justify-center items-center">
-                    <p className="text-xl">Chargement des avis...</p>
-                </div>
-            );
-          }
-
-          return (
-            <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
-              <div className="container mx-auto px-6 max-w-4xl">
-                <h1 className="text-5xl font-extrabold text-center mb-12 text-teal-400 animate-fade-in-down">
-                  Vos Avis et Témoignages
-                </h1>
-                <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
-                  Partagez votre expérience avec BRMOTORSPORT et aidez-nous à améliorer nos services !
-                </p>
-
-                {currentUserUid && (
-                  <p className="text-sm text-gray-500 text-center mb-4">
-                    Votre ID d'utilisateur pour les avis (public) : <span className="font-mono text-gray-400">{currentUserUid}</span>
-                  </p>
-                )}
-
-
-                {/* Section pour ajouter un nouvel avis */}
-                <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-12 animate-fade-in-up">
-                  <h2 className="text-3xl font-bold mb-6 text-teal-300 text-center">Laisser un avis</h2>
-                  {message && (
-                    <div className={`p-4 rounded-lg mb-6 text-center shadow-md animate-fade-in-down ${message.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
-                      {message.text}
-                    </div>
-                  )}
-                  <form onSubmit={handleAddReview} className="space-y-6">
-                    <InputField
-                      label="Votre Nom"
-                      type="text"
-                      placeholder="Votre nom ou pseudonyme"
-                      value={newReviewName}
-                      onChange={(e) => setNewReviewName(e.target.value)}
-                      required
-                    />
-                    <TextAreaField
-                      label="Votre Commentaire"
-                      placeholder="Partagez votre expérience..."
-                      value={newReviewComment}
-                      onChange={(e) => setNewReviewComment(e.target.value)}
-                      required
-                    />
-                    <button
-                      type="submit"
-                      className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-                    >
-                      Envoyer votre avis
-                    </button>
-                    <p className="text-sm text-gray-400 text-center mt-4">
-                      *Note : Les avis sont stockés de manière permanente.
-                    </p>
-                  </form>
-                </section>
-
-                {/* Section des avis existants */}
-                <section>
-                  <h2 className="text-3xl font-bold text-center mb-8 text-teal-300 animate-fade-in">Avis de nos clients</h2>
-                  {reviews.length === 0 ? (
-                    <p className="text-center text-gray-400 text-lg">Aucun avis pour le moment. Soyez le premier !</p>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {reviews.map((review) => (
-                        <ReviewCard key={review.id} review={review} />
-                      ))}
-                    </div>
-                  )}
-                </section>
-              </div>
-            </div>
-          );
-        };
-
-        // Composant Carte d'Avis
-        const ReviewCard = ({ review }) => (
-          <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex items-start space-x-4 border border-gray-700">
-            {/* Icône par défaut au lieu de la photo */}
-            <div className="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0 border-2 border-teal-500 text-teal-400 text-3xl">
-              <MessageSquareTextIcon />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-white mb-2">{review.name}</h3>
-              <p className="text-gray-300 italic">"{review.comment}"</p>
-              {review.userId && (
-                <p className="text-xs text-gray-500 mt-2">ID utilisateur: {review.userId}</p>
-              )}
-            </div>
-          </div>
-        );
-
+        // ReviewsPage et ReviewCard sont supprimés car la fonctionnalité Avis est retirée
 
         // Composant principal de l'application
         const App = () => {
             const [currentPage, setCurrentPage] = useState('accueil');
-            const [db, setDb] = useState(null);
-            const [auth, setAuth] = useState(null);
-            const [userId, setUserId] = useState(null);
-            const [isAuthReady, setIsAuthReady] = useState(false);
-
-            // Importation dynamique des modules Firebase (pour s'assurer qu'ils sont disponibles globalement avant d'être utilisés par React)
-            const [firebaseFirestore, setFirebaseFirestore] = useState(null);
-            const [firebaseAuth, setFirebaseAuth] = useState(null);
+            // db, auth, userId, isAuthReady, firebaseFirestore, firebaseAuth ne sont plus nécessaires
+            // si Firebase n'est utilisé que pour la page d'avis. Si vous prévoyez d'utiliser
+            // Firebase pour d'autres fonctionnalités, vous pouvez conserver ces états et le useEffect.
 
             useEffect(() => {
-                // Attendez que les variables globales de Firebase soient disponibles
-                if (window.firebaseDb && window.firebaseAuth && window.firebaseAppId) {
-                    setDb(window.firebaseDb);
-                    setAuth(window.firebaseAuth);
-
-                    // Vérifiez l'état d'authentification une fois que Firebase est prêt
+                // Si Firebase n'est plus utilisé du tout, cette section peut être supprimée.
+                // Si l'authentification anonyme est souhaitée pour d'autres raisons, conservez-la.
+                if (window.firebaseAuth) {
                     const unsubscribe = window.firebaseAuth.onAuthStateChanged(user => {
                         if (user) {
-                            setUserId(user.uid);
                             console.log("Firebase user ID:", user.uid);
                         } else {
-                            setUserId(null);
-                            console.log("No Firebase user found. Attempting anonymous sign-in...");
+                            console.log("No Firebase user found.");
                         }
-                        setIsAuthReady(true); // Marquez l'authentification comme prête
                     });
-
-                    // Importez les modules Firebase nécessaires pour le reste de l'application
-                    import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js").then((module) => {
-                        setFirebaseFirestore(module);
-                    });
-                    import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js").then((module) => {
-                        setFirebaseAuth(module);
-                    });
-
-
-                    return () => unsubscribe(); // Nettoyage de l'écouteur d'authentification
+                    return () => unsubscribe();
                 }
-            }, []); // S'exécute une seule fois au montage
-
+            }, []);
 
             // Fonction de rendu du contenu de la page en fonction de l'état
             const renderPage = () => {
@@ -891,18 +668,7 @@
                   return <AboutUsPage />;
                 case 'contact':
                   return <ContactPage />;
-                case 'avis':
-                  // Passez les instances de db, auth, userId et isAuthReady à ReviewsPage
-                  // Ajoutez les modules Firestore et Auth importés dynamiquement pour qu'ils soient disponibles
-                  if (db && auth && firebaseFirestore && firebaseAuth) {
-                      return <ReviewsPage db={db} auth={auth} userId={userId} isAuthReady={isAuthReady} />;
-                  } else {
-                      return (
-                          <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter flex justify-center items-center">
-                              <p className="text-xl">Initialisation des services d'avis...</p>
-                          </div>
-                      );
-                  }
+                // Le cas 'avis' est supprimé
                 default:
                   return <HomePage />;
               }
@@ -922,7 +688,7 @@
                                 <span className="text-gray-600">|</span>
                                 <a href="#" className="hover:text-red-500 transition duration-300">Mentions Légales</a>
                             </div>
-                            <p className="text-sm mt-2">Réalisé avec passion par Rémy Bruyant</p>
+                            <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
                         </div>
                     </footer>
                 </div>
