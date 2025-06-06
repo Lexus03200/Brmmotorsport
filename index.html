@@ -12,50 +12,6 @@
     <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Intégration de Firebase CDN (les modules pour Firestore ne sont plus nécessaires globalement) -->
-    <script type="module">
-      // Importez les modules Firebase nécessaires pour l'authentification si elle est toujours souhaitée (sinon, cette section peut être simplifiée)
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-      import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-      // getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp sont supprimés car plus utilisés pour les avis
-
-      // Variables globales pour Firebase (fournies par l'environnement Canvas)
-      const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-      const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-      const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-      // Initialisation de Firebase et Firestore
-      const app = initializeApp(firebaseConfig);
-      // db n'est plus nécessaire si Firestore n'est pas utilisé
-      const auth = getAuth(app);
-
-      // Assurez-vous que ces variables sont accessibles globalement si nécessaire
-      // ou passées via des props React. Pour la démo, on les attache à window.
-      window.firebaseApp = app;
-      // window.firebaseDb = db; // Plus nécessaire
-      window.firebaseAuth = auth;
-      window.firebaseAppId = appId;
-      window.firebaseInitialAuthToken = initialAuthToken;
-
-      // Gère l'état d'authentification (peut être conservé pour d'autres usages futurs si besoin)
-      onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-          // Si l'utilisateur n'est pas connecté, essayez de vous connecter anonymement
-          try {
-            if (window.firebaseInitialAuthToken) {
-                await signInWithCustomToken(auth, window.firebaseInitialAuthToken);
-            } else {
-                await signInAnonymously(auth);
-            }
-          } catch (error) {
-            console.error("Erreur lors de la connexion anonyme ou avec jeton :", error);
-          }
-        }
-        // Cet événement sera géré par le composant React via useEffect
-        // en lisant window.firebaseAuth.currentUser
-      });
-    </script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
         body {
@@ -177,10 +133,9 @@
               <div className="flex space-x-6 md:space-x-8">
                 <NavItem icon={<CarIcon />} text="Accueil" page="accueil" setCurrentPage={setCurrentPage} />
                 <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} />
-                <NavItem icon={<CalendarIcon />} text="Rendez-vous" page="rendez-vous" setCurrentPage={setCurrentPage} />
+                {/* Le menu Rendez-vous est retiré d'ici */}
                 <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} />
                 <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} />
-                {/* Le menu Avis est retiré d'ici */}
               </div>
             </div>
           </nav>
@@ -220,6 +175,13 @@
                 <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in">
                   Découvrez nos Services
                 </button>
+              </section>
+
+              {/* Message pour la prise de rendez-vous */}
+              <section className="text-center bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-20 animate-fade-in-up">
+                <p className="text-xl text-gray-200 leading-relaxed max-w-3xl mx-auto">
+                  Pour toute prise de rendez-vous ou demande de devis, nous vous invitons à nous contacter directement via les informations disponibles dans la <span className="font-semibold text-red-400">section 'Contact'</span>.
+                </p>
               </section>
 
               {/* Section "Ce que je vous propose" */}
@@ -382,126 +344,18 @@
           );
         };
 
-        // Composant Carte de Blog
-        const BlogPostCard = ({ post }) => (
-          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl border border-gray-700">
-            <img
-              src={post.image}
-              alt={post.title}
-              className="w-full h-64 object-cover object-center transform transition duration-500 hover:scale-110"
-              onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée:+${post.originalImage}`; }} // Fallback image with specific error message
-            />
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
-              <p className="text-gray-300 mb-4">{post.description}</p>
-              <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold py-2 px-6 rounded-full hover:from-green-600 hover:to-teal-600 transition duration-300 ease-in-out shadow-md">
-                Lire la suite
-              </button>
-              <p className="text-xs text-gray-500 mt-2">Nom du fichier original : {post.originalImage}</p>
-            </div>
-          </div>
-        );
-
-        // Composant Page Rendez-vous / Devis
-        const AppointmentPage = () => {
-          const [formType, setFormType] = useState('appointment'); // 'appointment' ou 'quote'
-          const [isSubmitted, setIsSubmitted] = useState(false);
-
-          const handleSubmit = (e) => {
-            e.preventDefault();
-            // Ici, vous intégreriez la logique pour envoyer les données à un backend
-            // Pour cet exemple, nous simulons juste une soumission réussie.
-            console.log('Formulaire soumis !');
-            setIsSubmitted(true);
-            // Réinitialiser après un court délai
-            setTimeout(() => setIsSubmitted(false), 3000);
-          };
-
-          return (
-            <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
-              <div className="container mx-auto px-6 max-w-3xl">
-                <h1 className="text-5xl font-extrabold text-center mb-12 text-purple-400 animate-fade-in-down">
-                  Prenez Rendez-vous ou Demandez un Devis
-                </h1>
-                <p className="text-xl text-center text-gray-300 max-w-2xl mx-auto mb-10 animate-fade-in-up">
-                  Choisissez l'option qui correspond le mieux à vos besoins et nous vous recontacterons rapidement.
-                </p>
-
-                <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up">
-                  <div className="flex justify-center mb-8 gap-4">
-                    <button
-                      className={`py-3 px-6 rounded-full font-semibold transition duration-300 ease-in-out ${
-                        formType === 'appointment'
-                          ? 'bg-purple-600 text-white shadow-lg'
-                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                      }`}
-                      onClick={() => setFormType('appointment')}
-                    >
-                      Prendre Rendez-vous
-                    </button>
-                    <button
-                      className={`py-3 px-6 rounded-full font-semibold transition duration-300 ease-in-out ${
-                        formType === 'quote'
-                          ? 'bg-purple-600 text-white shadow-lg'
-                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                      }`}
-                      onClick={() => setFormType('quote')}
-                    >
-                      Demander un Devis
-                    </button>
-                  </div>
-
-                  {isSubmitted && (
-                    <div className="bg-green-500 text-white p-4 rounded-lg mb-6 text-center shadow-md animate-fade-in-down">
-                      Votre demande a été envoyée avec succès ! Nous vous recontacterons bientôt.
-                    </div>
-                  )}
-
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <InputField label="Nom Complet" type="text" placeholder="Votre nom et prénom" required />
-                    <InputField label="Email" type="email" placeholder="votre.email@exemple.com" required />
-                    <InputField label="Téléphone" type="tel" placeholder="06 12 34 56 78" required />
-
-                    {formType === 'appointment' && (
-                      <>
-                        <InputField label="Date Préférée" type="date" required />
-                        <InputField label="Heure Préférée" type="time" required />
-                        <TextAreaField label="Motif du Rendez-vous" placeholder="Décrivez brièvement votre besoin..." />
-                      </>
-                    )}
-
-                    {formType === 'quote' && (
-                      <>
-                        <InputField label="Marque du Véhicule" type="text" placeholder="Ex: BMW, VW, Porsche" required />
-                        <InputField label="Modèle du Véhicule" type="text" placeholder="Ex: Série 2, Golf GTI, Cayenne" required />
-                        <InputField label="Année du Véhicule" type="number" placeholder="Ex: 2018" />
-                        <InputField label="Motorisation" type="text" placeholder="Ex: 2.0 TDI, V8 Bi-Turbo" />
-                        <TextAreaField label="Description du besoin de devis" placeholder="Décrivez en détail la prestation souhaitée..." required />
-                      </>
-                    )}
-
-                    <button
-                      type="submit"
-                      className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-                    >
-                      {formType === 'appointment' ? 'Confirmer le Rendez-vous' : 'Envoyer la Demande de Devis'}
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          );
-        };
+        // Le composant AppointmentPage a été supprimé
 
         // Composant Input Field (réutilisable)
-        const InputField = ({ label, type, placeholder, required = false, value, onChange }) => (
+        const InputField = ({ label, type, placeholder, required = false, value, onChange, name }) => (
           <div>
-            <label htmlFor={label} className="block text-gray-300 text-sm font-bold mb-2">
+            <label htmlFor={name || label} className="block text-gray-300 text-sm font-bold mb-2"> {/* Utilise name comme id si fourni */}
               {label} {required && <span className="text-red-500">*</span>}
             </label>
             <input
-              id={label}
+              id={name || label} // Utilise name comme id si fourni
               type={type}
+              name={name} // Ajout de l'attribut name
               placeholder={placeholder}
               required={required}
               value={value}
@@ -512,13 +366,14 @@
         );
 
         // Composant TextArea Field (réutilisable)
-        const TextAreaField = ({ label, placeholder, required = false, value, onChange }) => (
+        const TextAreaField = ({ label, placeholder, required = false, value, onChange, name }) => (
           <div>
-            <label htmlFor={label} className="block text-gray-300 text-sm font-bold mb-2">
+            <label htmlFor={name || label} className="block text-gray-300 text-sm font-bold mb-2"> {/* Utilise name comme id si fourni */}
               {label} {required && <span className="text-red-500">*</span>}
             </label>
             <textarea
-              id={label}
+              id={name || label} // Utilise name comme id si fourni
+              name={name} // Ajout de l'attribut name
               placeholder={placeholder}
               required={required}
               rows="5"
@@ -636,24 +491,7 @@
         // Composant principal de l'application
         const App = () => {
             const [currentPage, setCurrentPage] = useState('accueil');
-            // db, auth, userId, isAuthReady, firebaseFirestore, firebaseAuth ne sont plus nécessaires
-            // si Firebase n'est utilisé que pour la page d'avis. Si vous prévoyez d'utiliser
-            // Firebase pour d'autres fonctionnalités, vous pouvez conserver ces états et le useEffect.
-
-            useEffect(() => {
-                // Si Firebase n'est plus utilisé du tout, cette section peut être supprimée.
-                // Si l'authentification anonyme est souhaitée pour d'autres raisons, conservez-la.
-                if (window.firebaseAuth) {
-                    const unsubscribe = window.firebaseAuth.onAuthStateChanged(user => {
-                        if (user) {
-                            console.log("Firebase user ID:", user.uid);
-                        } else {
-                            console.log("No Firebase user found.");
-                        }
-                    });
-                    return () => unsubscribe();
-                }
-            }, []);
+            // Les états et effets liés à Firebase ont été supprimés car Firebase n'est plus utilisé.
 
             // Fonction de rendu du contenu de la page en fonction de l'état
             const renderPage = () => {
@@ -662,13 +500,11 @@
                   return <HomePage />;
                 case 'blog':
                   return <BlogPage />;
-                case 'rendez-vous':
-                  return <AppointmentPage />;
+                // Le cas 'rendez-vous' est supprimé
                 case 'qui-sommes-nous':
                   return <AboutUsPage />;
                 case 'contact':
                   return <ContactPage />;
-                // Le cas 'avis' est supprimé
                 default:
                   return <HomePage />;
               }
@@ -688,7 +524,7 @@
                                 <span className="text-gray-600">|</span>
                                 <a href="#" className="hover:text-red-500 transition duration-300">Mentions Légales</a>
                             </div>
-                            <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
+                            <p className="text-sm mt-2">Réalisé avec passion par Rémy Bruyant</p>
                         </div>
                     </footer>
                 </div>
