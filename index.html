@@ -64,7 +64,7 @@
     <!-- 'autoplay' tente de lancer la lecture automatique, mais peut être bloqué par les navigateurs mobiles. -->
     <!-- 'loop' assure que la musique se répète. -->
     <!-- 'style="display:none;"' masque les contrôles de lecture par défaut. -->
-    <audio autoplay loop style="display:none;">
+    <audio id="background-music" autoplay loop style="display:none;">
         <!-- L'URL est construite en utilisant votre domaine GitHub Pages et le nom de votre fichier MP3. -->
         <source src="https://lexus03200.github.io/Brmmotorsport/musique.mp3" type="audio/mpeg">
         Votre navigateur ne supporte pas l'élément audio.
@@ -75,9 +75,9 @@
     <!-- Le type du script a été changé en "text/babel" pour que Babel puisse le transpiler -->
     <script type="text/babel">
         // Récupère les hooks React depuis l'objet global React
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
-        // Composant Icône (simplifié)
+        // --- Icônes Lucide React ---
         const CarIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-car">
             <path d="M19 17H5c-1.1 0-2 .9-2 2v2h18v-2c0-1.1-.9-2-2-2Z"/><path d="M7 17V5h12v12"/><path d="M18 10h-8"/><path d="M10 10v7"/>
@@ -130,6 +130,20 @@
         const InstagramIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram">
               <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.5" y1="6.5" y2="6.5"/>
+            </svg>
+        );
+
+        // Nouvelle icône Play
+        const PlayIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+        );
+
+        // Nouvelle icône Pause
+        const PauseIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pause">
+                <rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>
             </svg>
         );
 
@@ -547,6 +561,59 @@
 
         // ReviewsPage et ReviewCard sont supprimés car la fonctionnalité Avis est retirée
 
+        // Nouveau composant pour le contrôle de la musique
+        const MusicControl = () => {
+            const audioRef = useRef(null);
+            const [isPlaying, setIsPlaying] = useState(false);
+
+            useEffect(() => {
+                // Tente de jouer la musique au chargement
+                // Cette action peut être bloquée par les navigateurs
+                const audio = document.getElementById('background-music');
+                if (audio) {
+                    audioRef.current = audio;
+                    // Vérifie si la musique est déjà en lecture (peut arriver après une navigation sur le site)
+                    setIsPlaying(!audio.paused);
+
+                    // Tente de lancer la lecture si ce n'est pas déjà le cas
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            // La lecture automatique a fonctionné
+                            setIsPlaying(true);
+                        }).catch(error => {
+                            // La lecture automatique a échoué (souvent à cause des politiques des navigateurs)
+                            console.log("La lecture automatique de la musique a été bloquée. L'utilisateur peut la démarrer manuellement.");
+                            setIsPlaying(false);
+                        });
+                    }
+                }
+            }, []); // S'exécute une seule fois au montage du composant
+
+            const togglePlayPause = () => {
+                const audio = audioRef.current;
+                if (audio) {
+                    if (isPlaying) {
+                        audio.pause();
+                    } else {
+                        audio.play();
+                    }
+                    setIsPlaying(!isPlaying);
+                }
+            };
+
+            return (
+                <button
+                    onClick={togglePlayPause}
+                    className="fixed bottom-8 right-8 bg-red-600 hover:bg-red-700 text-white p-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-110 active:scale-90 z-50 flex items-center justify-center w-14 h-14"
+                    aria-label={isPlaying ? "Mettre la musique en pause" : "Jouer la musique"}
+                >
+                    {isPlaying ? <PauseIcon /> : <PlayIcon />}
+                </button>
+            );
+        };
+
+
         // Composant principal de l'application
         const App = () => {
             const [currentPage, setCurrentPage] = useState('accueil');
@@ -575,6 +642,7 @@
                     <main className="flex-grow">
                         {renderPage()}
                     </main>
+                    <MusicControl /> {/* Ajout du contrôle de musique */}
                     <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
                         <div className="container mx-auto px-4">
                             <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
