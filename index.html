@@ -61,9 +61,12 @@
 </head>
 <body class="min-h-screen bg-black font-inter">
     <!-- Section Audio de fond -->
-    <audio controls autoplay loop style="display:none;">
-ID3
-        <source src="https://www.soundhelix.com/examples/audio/soundhelix-song-1.mp3" type="audio/mpeg">
+    <!-- 'autoplay' tente de lancer la lecture automatique, mais peut être bloqué par les navigateurs mobiles. -->
+    <!-- 'loop' assure que la musique se répète. -->
+    <!-- 'style="display:none;"' masque les contrôles de lecture par défaut. -->
+    <audio autoplay loop style="display:none;">
+        <!-- L'URL est construite en utilisant votre domaine GitHub Pages et le nom de votre fichier MP3. -->
+        <source src="https://lexus03200.github.io/Brmmotorsport/musique.mp3" type="audio/mpeg">
         Votre navigateur ne supporte pas l'élément audio.
     </audio>
 
@@ -82,7 +85,7 @@ ID3
         );
 
         const HandshakeIcon = () => (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-handshake">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucude-handshake">
             <path d="M12.23 20.73a4.7 4.7 0 0 0 6.64-6.64L12.23 7.07l-2.06 2.06"/><path d="M16 16l-3.23 3.23a4.7 4.7 0 0 1-6.64-6.64L9.07 7.07l2.06 2.06"/><path d="M14 10l-2.06 2.06"/><path d="m10 14 2.06-2.06"/>
           </svg>
         );
