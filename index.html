@@ -420,35 +420,35 @@
           const blogPosts = [
             {
               id: 1,
-              image: "IMG_9611.png", // Chemin relatif - Assurez-vous que l'image est à la racine de votre dépôt ou ajustez le chemin.
+              image: "https://lexus03200.github.io/Brmotorsport/IMG_9611.png",
               title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur",
               description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime.",
               originalImage: "IMG_9611.png"
             },
             {
               id: 2,
-              image: "IMG_9609.png", // Chemin relatif
+              image: "https://lexus03200.github.io/Brmotorsport/IMG_9609.png",
               title: "BMW Série 2 : Reprogrammation et FAP OFF",
               description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité.",
               originalImage: "IMG_9609.png"
             },
             {
               id: 3,
-              image: "IMG_9607.png", // Chemin relatif
+              image: "https://lexus03200.github.io/Brmotorsport/IMG_9607.png",
               title: "VW Golf GTI : Boost de Performance Ultime",
               description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !",
               originalImage: "IMG_9607.png"
             },
             {
               id: 4,
-              image: "IMG_9608.png", // Chemin relatif
+              image: "https://lexus03200.github.io/Brmotorsport/IMG_9608.png",
               title: "Seat Ibiza : Amélioration de la Réactivité Moteur",
               description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et une conduite plus dynamique. Un plaisir garanti.",
               originalImage: "IMG_9608.png"
             },
             {
               id: 5,
-              image: "IMG_9610.png", // Chemin relatif
+              image: "https://lexus03200.github.io/Brmotorsport/IMG_9610.png",
               title: "VW Golf 5 GTI : Mise à Jour Cartographie",
               description: "Une mise à jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !",
               originalImage: "IMG_9610.png"
@@ -709,18 +709,22 @@
             const GITHUB_PAGES_BASE_URL = "https://lexus03200.github.io/Brmotorsport/";
 
             // Liste des images pour la galerie, AVEC DES CHEMINS ABSOLUS pour une meilleure fiabilité.
-            // Assurez-vous que ces fichiers (photo1.png, photo2.png, etc.) sont bien à la racine de votre dépôt GitHub.
+            // CAUSES FRÉQUENTES DE PROBLÈMES DE CHARGEMENT D'IMAGES SUR GITHUB PAGES :
+            // 1. ERREURS DE FRAPPE : Vérifiez que les noms de fichiers dans la liste `images` correspondent EXACTEMENT aux noms de fichiers sur votre dépôt GitHub (sensible à la casse !). Par exemple, `photo1.png` n'est pas la même chose que `Photo1.PNG`.
+            // 2. EMPLACEMENT INCORRECT : Assurez-vous que les fichiers images (photo1.png, photo2.png, etc.) sont bien à la racine de votre dépôt GitHub. Si elles sont dans un sous-dossier (ex: `/assets/images/`), la `GITHUB_PAGES_BASE_URL` ou les chemins dans le tableau `images` doivent être ajustés en conséquence.
+            // 3. PROBLÈME DE CACHE : Après chaque modification sur GitHub, videz toujours le cache de votre navigateur (Ctrl+F5 ou Cmd+Shift+R) et/ou ouvrez le site en navigation privée.
+            // 4. MAUVAIS LIEN BASE : Vérifiez que la `GITHUB_PAGES_BASE_URL` ci-dessus correspond bien à l'URL réelle de votre site GitHub Pages.
             const images = [
-                `${GITHUB_PAGES_BASE_URL}photo1.png`,
-                `${GITHUB_PAGES_BASE_URL}photo2.png`,
-                `${GITHUB_PAGES_BASE_URL}photo3.png`,
-                `${GITHUB_PAGES_BASE_URL}photo4.png`,
-                `${GITHUB_PAGES_BASE_URL}photo5.png`,
-                `${GITHUB_PAGES_BASE_URL}photo6.png`,
-                `${GITHUB_PAGES_BASE_URL}photo7.png`,
-                `${GITHUB_PAGES_BASE_URL}photo8.png`,
-                `${GITHUB_PAGES_BASE_URL}photo9.png`,
-                `${GITHUB_PAGES_BASE_URL}photo10.png`
+                `${GITHUB_PAGES_BASE_URL}photo1.jpeg`, // Mise à jour pour utiliser .jpeg
+                `${GITHUB_PAGES_BASE_URL}photo2.jpeg`,
+                `${GITHUB_PAGES_BASE_URL}photo3.jpeg`,
+                `${GITHUB_PAGES_BASE_URL}photo4.jpeg`,
+                `${GITHUB_PAGES_BASE_URL}photo5.jpeg`,
+                `${GITHUB_PAGES_BASE_URL}photo6.jpeg`,
+                `${GITHUB_PAGES_BASE_URL}photo7.jpeg`,
+                `${GITHUB_PAGES_BASE_URL}photo8.jpg`, // Mise à jour pour utiliser .jpg
+                `${GITHUB_PAGES_BASE_URL}photo9.jpeg`,
+                `${GITHUB_PAGES_BASE_URL}unnamed%20(1).jpg` // Mise à jour pour utiliser .jpg et gérer l'espace dans le nom
             ];
 
             const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -767,9 +771,10 @@
                                     alt={`Volkswagen Scirocco R préparée - Image ${currentImageIndex + 1}`}
                                     className="carousel-image rounded-lg shadow-md"
                                     onError={(e) => {
-                                        console.error(`Erreur de chargement d'image : ${images[currentImageIndex]}. Veuillez vérifier le nom du fichier et l'extension sur GitHub.`, e);
-                                        e.target.onerror = null;
-                                        e.target.src="https://placehold.co/800x450/FF0000/FFFFFF?text=Image+introuvable"; // Larger placeholder for carousel
+                                        // Affiche l'URL exacte qui a échoué dans la console du navigateur
+                                        console.error(`Échec du chargement de l'image. Vérifiez l'URL et la casse du nom de fichier sur GitHub: ${e.target.src}`, e);
+                                        e.target.onerror = null; // Empêche une boucle infinie d'erreurs
+                                        e.target.src="https://placehold.co/800x450/FF0000/FFFFFF?text=Erreur+chargement+image"; // Image de remplacement
                                     }}
                                 />
                                 {/* Display current image path for debugging */}
@@ -780,14 +785,14 @@
                                 <button
                                     onClick={goToPrevious}
                                     className="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-900 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 transform scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 focus:outline-none"
-                                    aria-label="Previous image"
+                                    aria-label="Image précédente"
                                 >
                                     <ArrowLeftIcon />
                                 </button>
                                 <button
                                     onClick={goToNext}
                                     className="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-900 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 transform scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 focus:outline-none"
-                                    aria-label="Next image"
+                                    aria-label="Image suivante"
                                 >
                                     <ArrowRightIcon />
                                 </button>
@@ -798,7 +803,7 @@
                                             key={index}
                                             onClick={() => setCurrentImageIndex(index)}
                                             className={`w-3 h-3 rounded-full ${index === currentImageIndex ? 'bg-red-500' : 'bg-gray-400'} hover:bg-red-400 transition-colors duration-200 focus:outline-none`}
-                                            aria-label={`Go to image ${index + 1}`}
+                                            aria-label={`Aller à l'image ${index + 1}`}
                                         ></button>
                                     ))}
                                 </div>
