@@ -379,25 +379,25 @@
 
         // Composant Carte de Service
         const ServiceCard = ({ icon, title, description }) => (
-          <div className="bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700">
-            <div className="text-red-500 mb-4 text-5xl">{icon}</div>
-            <h3 className="text-2xl font-semibold mb-3 text-white">{title}</h3>
+          <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-red-500">
+            <div className="text-red-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-red-400">{icon}</div>
+            <h3 className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-red-200">{title}</h3>
             <p className="text-gray-300">{description}</p>
           </div>
         );
 
         // Composant Carte de Confiance
         const TrustCard = ({ icon, title, description }) => (
-          <div className="bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700">
-            <div className="text-blue-500 mb-4 text-5xl">{icon}</div>
-            <h3 className="text-2xl font-semibold mb-3 text-white">{title}</h3>
+          <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-blue-500">
+            <div className="text-blue-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-blue-400">{icon}</div>
+            <h3 className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-blue-200">{title}</h3>
             <p className="text-gray-300">{description}</p>
           </div>
         );
 
         // Composant Carte de Blog - DÉPLACÉ AVANT BlogPage
         const BlogPostCard = ({ post }) => (
-          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl border border-gray-700">
+          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400">
             <img
               src={post.image}
               alt={post.title}
@@ -568,10 +568,10 @@
 
         // Composant Carte de Valeur
         const ValueCard = ({ icon, title, description }) => (
-          <div className="bg-gray-700 p-6 rounded-lg shadow-md flex items-start space-x-4 transition duration-300 ease-in-out transform hover:scale-105 border border-gray-600">
-            <div className="text-yellow-400 text-4xl flex-shrink-0">{icon}</div>
+          <div className="group bg-gray-700 p-6 rounded-lg shadow-md flex items-start space-x-4 transition duration-300 ease-in-out transform hover:scale-105 border border-gray-600 hover:border-yellow-400">
+            <div className="text-yellow-400 mb-4 text-4xl transition-colors duration-300 group-hover:text-yellow-300">{icon}</div>
             <div>
-              <h3 className="text-2xl font-semibold mb-2 text-white">{title}</h3>
+              <h3 className="text-2xl font-semibold mb-2 text-white transition-colors duration-300 group-hover:text-yellow-100">{title}</h3>
               <p className="text-gray-300">{description}</p>
             </div>
           </div>
