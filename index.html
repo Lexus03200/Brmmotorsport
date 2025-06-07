@@ -258,7 +258,7 @@
         );
 
         // Composant Page d'Accueil
-        const HomePage = () => (
+        const HomePage = ({ setCurrentPage }) => ( // Ajout de setCurrentPage comme prop ici
           <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter relative overflow-hidden">
             {/* Effet de fond avec des formes abstraites pour un look dynamique */}
             <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
@@ -880,7 +880,7 @@
             const renderPage = () => {
               switch (currentPage) {
                 case 'accueil':
-                  return <HomePage />;
+                  return <HomePage setCurrentPage={setCurrentPage} />; // Passer setCurrentPage à HomePage
                 case 'blog':
                   return <BlogPage />;
                 case 'qui-sommes-nous':
@@ -894,7 +894,7 @@
                 case 'voiture-vitrine': // Réactivation du cas pour la voiture vitrine
                   return <ShowcaseCarPage />;
                 default:
-                  return <HomePage />;
+                  return <HomePage setCurrentPage={setCurrentPage} />; // Passer setCurrentPage à HomePage par défaut
               }
             };
 
