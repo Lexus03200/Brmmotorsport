@@ -58,32 +58,70 @@
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
 
-        /* Styles spécifiques au carrousel pour éviter le CLS */
-        .carousel-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* Ratio 16:9 pour les images, ajuste si vos images ont un autre ratio */
-            height: 0;
-            overflow: hidden;
-            border-radius: 0.75rem; /* rounded-xl */
-        }
-
-        .carousel-image {
-            position: absolute;
+        /* Styles spécifiques pour la Lightbox (modale) */
+        .lightbox-overlay {
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 0.5s ease-in-out;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            animation: fadeIn 0.3s ease-out forwards;
         }
 
-        .carousel-image.active {
-            opacity: 1;
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .carousel-image:not(.active) {
-            opacity: 0;
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 0.75rem;
+        }
+
+        .lightbox-button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 9999px; /* fully rounded */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease-in-out;
+            cursor: pointer;
+            position: absolute;
+            z-index: 101;
+        }
+
+        .lightbox-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .lightbox-close-button {
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .lightbox-prev-button {
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .lightbox-next-button {
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
         }
     </style>
 </head>
@@ -190,6 +228,12 @@
         const ArrowRightIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right">
                 <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+            </svg>
+        );
+
+        const XIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x">
+                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
             </svg>
         );
 
@@ -705,50 +749,44 @@
         // Composant pour la page Voiture Vitrine
         const ShowcaseCarPage = () => {
             // Base URL de votre dépôt GitHub Pages. À ajuster si votre dépôt change.
-            // Utilisez cette URL pour des chemins absolus vers vos assets.
             const GITHUB_PAGES_BASE_URL = "https://lexus03200.github.io/Brmotorsport/";
 
             // Liste des images pour la galerie.
-            // LES CHEMINS SONT MIS À JOUR POUR CORRESPONDRE AUX FICHIERS .png QUE VOUS AVEZ FOURNIS
-            // DANS LE DERNIER SCREENSHOT, y compris 'Photo1.png' avec un 'P' majuscule.
+            // Mise à jour pour correspondre aux noms et extensions .png que vous avez fournis.
             const images = [
-                `${GITHUB_PAGES_BASE_URL}Photo1.png`, // Mis à jour pour Photo1.png (P majuscule)
+                `${GITHUB_PAGES_BASE_URL}Photo1.png`,
                 `${GITHUB_PAGES_BASE_URL}photo2.png`,
                 `${GITHUB_PAGES_BASE_URL}photo3.png`,
                 `${GITHUB_PAGES_BASE_URL}photo4.png`,
                 `${GITHUB_PAGES_BASE_URL}photo5.png`,
                 `${GITHUB_PAGES_BASE_URL}photo6.png`,
                 `${GITHUB_PAGES_BASE_URL}photo7.png`,
-                `${GITHUB_PAGES_BASE_URL}photo8.png`, // Confirmé en .png
+                `${GITHUB_PAGES_BASE_URL}photo8.png`,
                 `${GITHUB_PAGES_BASE_URL}photo9.png`,
                 `${GITHUB_PAGES_BASE_URL}photo10.png`
             ];
 
-            const [currentImageIndex, setCurrentImageIndex] = useState(0);
+            const [selectedImageIndex, setSelectedImageIndex] = useState(null); // Index de l'image sélectionnée pour la modale
+
+            const openLightbox = (index) => {
+                setSelectedImageIndex(index);
+            };
+
+            const closeLightbox = () => {
+                setSelectedImageIndex(null);
+            };
 
             const goToPrevious = () => {
-                setCurrentImageIndex((prevIndex) =>
+                setSelectedImageIndex((prevIndex) =>
                     prevIndex === 0 ? images.length - 1 : prevIndex - 1
                 );
             };
 
             const goToNext = () => {
-                setCurrentImageIndex((prevIndex) =>
+                setSelectedImageIndex((prevIndex) =>
                     prevIndex === images.length - 1 ? 0 : prevIndex + 1
                 );
             };
-
-            // Auto-slide effect
-            useEffect(() => {
-                const interval = setInterval(() => {
-                    setCurrentImageIndex((prevIndex) =>
-                        prevIndex === images.length - 1 ? 0 : prevIndex + 1
-                    );
-                }, 4000); // Change image every 4 seconds
-
-                return () => clearInterval(interval); // Cleanup on component unmount
-            }, [images.length]); // Re-run if images array length changes
-
 
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter">
@@ -757,61 +795,71 @@
                             Notre Voiture Vitrine : Le Projet Scirocco R
                         </h1>
                         <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
-                            Découvrez en détail la préparation ultime de notre Volkswagen Scirocco R, un chef-d'œuvre de performance et d'ingénierie.
+                            Découvrez en détail la préparation ultime de notre Volkswagen Scirocco R, un chef-d'œuvre de performance et d'ingénierie. Cliquez sur les images pour les voir en grand !
                         </p>
 
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                            {/* Carousel Container */}
-                            <div className="relative carousel-container group">
-                                <img
-                                    src={images[currentImageIndex]}
-                                    alt={`Volkswagen Scirocco R préparée - Image ${currentImageIndex + 1}`}
-                                    className="carousel-image rounded-lg shadow-md"
-                                    onError={(e) => {
-                                        // Affiche l'URL exacte qui a échoué et un message explicite dans la console du navigateur
-                                        console.error(
-                                            `ERREUR DE CHARGEMENT D'IMAGE dans le carrousel:
-                                            Vérifiez l'URL exacte affichée ci-dessous dans votre navigateur.
-                                            Vérifiez la CASSE (majuscules/minuscules) et l'EXTENSION (ex: .jpeg vs .png)
-                                            du nom de fichier sur votre dépôt GitHub.
-                                            URL échouée: ${e.target.src}`,
-                                            e
-                                        );
-                                        e.target.onerror = null; // Empêche une boucle infinie d'erreurs
-                                        e.target.src="https://placehold.co/800x450/FF0000/FFFFFF?text=Erreur+chargement+image"; // Image de remplacement
-                                    }}
-                                />
-                                {/* Display current image path for debugging */}
-                                <p className="text-sm text-gray-500 text-center mt-2">
-                                    Chemin de l'image actuelle : {images[currentImageIndex]}
-                                </p>
-                                {/* Navigation buttons */}
-                                <button
-                                    onClick={goToPrevious}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-900 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 transform scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 focus:outline-none"
-                                    aria-label="Image précédente"
-                                >
-                                    <ArrowLeftIcon />
-                                </button>
-                                <button
-                                    onClick={goToNext}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-900 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 transform scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 focus:outline-none"
-                                    aria-label="Image suivante"
-                                >
-                                    <ArrowRightIcon />
-                                </button>
-                                {/* Indicators (dots) */}
-                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    {images.map((_, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => setCurrentImageIndex(index)}
-                                            className={`w-3 h-3 rounded-full ${index === currentImageIndex ? 'bg-red-500' : 'bg-gray-400'} hover:bg-red-400 transition-colors duration-200 focus:outline-none`}
-                                            aria-label={`Aller à l'image ${index + 1}`}
-                                        ></button>
-                                    ))}
-                                </div>
+                            {/* Grille des images */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                {images.map((imageSrc, index) => (
+                                    <div
+                                        key={index}
+                                        className="relative w-full h-48 rounded-lg overflow-hidden cursor-pointer group transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl"
+                                        onClick={() => openLightbox(index)}
+                                    >
+                                        <img
+                                            src={imageSrc}
+                                            alt={`Volkswagen Scirocco R - Image ${index + 1}`}
+                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                            onError={(e) => {
+                                                console.error(
+                                                    `ERREUR DE CHARGEMENT D'IMAGE dans la galerie:
+                                                    Vérifiez l'URL exacte affichée ci-dessous dans votre navigateur.
+                                                    Vérifiez la CASSE (majuscules/minuscules) et l'EXTENSION du nom de fichier sur votre dépôt GitHub.
+                                                    URL échouée: ${e.target.src}`,
+                                                    e
+                                                );
+                                                e.target.onerror = null;
+                                                e.target.src="https://placehold.co/400x300/FF0000/FFFFFF?text=Erreur+chargement+image";
+                                            }}
+                                        />
+                                        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <span className="text-white text-lg font-semibold">Voir en grand</span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
+
+                            {/* Modale Lightbox */}
+                            {selectedImageIndex !== null && (
+                                <div className="lightbox-overlay" onClick={closeLightbox}>
+                                    <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+                                        <img
+                                            src={images[selectedImageIndex]}
+                                            alt={`Volkswagen Scirocco R - Grande image ${selectedImageIndex + 1}`}
+                                            className="lightbox-image"
+                                            onError={(e) => {
+                                                console.error(
+                                                    `ERREUR DE CHARGEMENT D'IMAGE dans la modale:
+                                                    URL échouée: ${e.target.src}`,
+                                                    e
+                                                );
+                                                e.target.onerror = null;
+                                                e.target.src="https://placehold.co/800x600/FF0000/FFFFFF?text=Erreur+chargement+image";
+                                            }}
+                                        />
+                                        <button onClick={closeLightbox} className="lightbox-button lightbox-close-button" aria-label="Fermer">
+                                            <XIcon />
+                                        </button>
+                                        <button onClick={goToPrevious} className="lightbox-button lightbox-prev-button" aria-label="Image précédente">
+                                            <ArrowLeftIcon />
+                                        </button>
+                                        <button onClick={goToNext} className="lightbox-button lightbox-next-button" aria-label="Image suivante">
+                                            <ArrowRightIcon />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
 
                             <h2 className="text-3xl font-bold mb-4 text-white">Préparation Moteur et Optimisations</h2>
                             <p className="text-lg text-gray-300 leading-relaxed">
