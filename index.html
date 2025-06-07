@@ -156,7 +156,7 @@
         );
 
         const InstagramIcon = () => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram">
               <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.5" y1="6.5" y2="6.5"/>
             </svg>
         );
@@ -697,17 +697,18 @@
         // Composant pour la page de la voiture vitrine
         const ShowcaseCarPage = () => {
             // Liste des images pour le carrousel, avec des chemins absolus pour GitHub Pages.
-            // Les extensions ont été vérifiées et correspondent aux fichiers téléchargés.
+            // ** IMPORTANT : Une fois vos nouvelles images renommées et uploadées sur GitHub,
+            // REMPLACEZ le placeholder ci-dessous par les URLs complètes de VOS images. **
             const images = [
-                "https://lexus03200.github.io/Brmotorsport/FA9BD388-7ABF-4FAE-813B-F9748FA7025C.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/C02F5E47-F3D9-4B2E-844B-5DB9F36BCFE2.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/299A8513-7A30-4959-8939-9DC90C108120.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/2FEAEEDD-8CBD-4B37-B959-6CE7E5A7E5B0.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/03AAF089-76F9-4183-9F7E-3D0DA0214DD2.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/9387E5BB-54F7-4C00-8021-8DD6B8388253.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/8226BEEB-BC69-4792-AD40-9771D0F7AAB1.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/F8B8AAF1-7917-4201-A1B7-1D5E0C566BE4.jpg", // Celui-ci est bien un .jpg
-                "https://lexus03200.github.io/Brmotorsport/25815A1A-2A6E-4DF4-A7B3-21DFEDBE97E0.jpeg"
+                "https://lexus03200.github.io/Brmotorsport/photo9.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/photo1.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/photo2.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/photo3.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/photo4.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/photo5.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/photo6.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/photo7.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/photo8.jpg" // Celui-ci est bien un .jpg
             ];
             const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
