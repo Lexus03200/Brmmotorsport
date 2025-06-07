@@ -993,6 +993,12 @@
             const [currentPage, setCurrentPage] = useState('accueil');
             // Les états et effets liés à Firebase ont été supprimés car Firebase n'est plus utilisé.
 
+            // Ajout d'un effet pour faire défiler la page vers le haut à chaque changement de page
+            useEffect(() => {
+                window.scrollTo(0, 0); // Fait défiler la fenêtre à la position 0, 0 (en haut à gauche)
+            }, [currentPage]); // Se déclenche à chaque fois que `currentPage` change
+
+
             // Fonction de rendu du contenu de la page en fonction de l'état
             const renderPage = () => {
               switch (currentPage) {
