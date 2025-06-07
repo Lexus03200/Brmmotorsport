@@ -704,23 +704,23 @@
 
         // Composant pour la page Voiture Vitrine
         const ShowcaseCarPage = () => {
-            // Liste des images pour la galerie, avec des chemins relatifs à la racine de votre dépôt GitHub Pages.
-            // CAUSES COURANTES DE PROBLÈMES DE CHARGEMENT D'IMAGES :
-            // 1. Erreurs de frappe dans le nom du fichier ou l'extension (ex: 'photo1.PNG' au lieu de 'photo1.png')
-            // 2. Sensibilité à la casse (Linux/serveurs web comme GitHub Pages sont sensibles à la casse)
-            // 3. Le fichier image n'est pas dans le répertoire spécifié (ici, on s'attend à ce qu'ils soient à la racine du dépôt).
-            // 4. Problème de cache du navigateur (vider le cache est crucial après chaque modification sur GitHub).
+            // Base URL de votre dépôt GitHub Pages. À ajuster si votre dépôt change.
+            // Utilisez cette URL pour des chemins absolus vers vos assets.
+            const GITHUB_PAGES_BASE_URL = "https://lexus03200.github.io/Brmotorsport/";
+
+            // Liste des images pour la galerie, AVEC DES CHEMINS ABSOLUS pour une meilleure fiabilité.
+            // Assurez-vous que ces fichiers (photo1.png, photo2.png, etc.) sont bien à la racine de votre dépôt GitHub.
             const images = [
-                "./photo1.png",
-                "./photo2.png",
-                "./photo3.png",
-                "./photo4.png",
-                "./photo5.png",
-                "./photo6.png",
-                "./photo7.png",
-                "./photo8.png",
-                "./photo9.png",
-                "./photo10.png"
+                `${GITHUB_PAGES_BASE_URL}photo1.png`,
+                `${GITHUB_PAGES_BASE_URL}photo2.png`,
+                `${GITHUB_PAGES_BASE_URL}photo3.png`,
+                `${GITHUB_PAGES_BASE_URL}photo4.png`,
+                `${GITHUB_PAGES_BASE_URL}photo5.png`,
+                `${GITHUB_PAGES_BASE_URL}photo6.png`,
+                `${GITHUB_PAGES_BASE_URL}photo7.png`,
+                `${GITHUB_PAGES_BASE_URL}photo8.png`,
+                `${GITHUB_PAGES_BASE_URL}photo9.png`,
+                `${GITHUB_PAGES_BASE_URL}photo10.png`
             ];
 
             const [currentImageIndex, setCurrentImageIndex] = useState(0);
