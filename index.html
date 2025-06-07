@@ -696,7 +696,8 @@
 
         // Composant pour la page de la voiture vitrine
         const ShowcaseCarPage = () => {
-            // Liste des images pour le carrousel, avec des chemins absolus pour GitHub Pages
+            // Liste des images pour le carrousel, avec des chemins absolus pour GitHub Pages.
+            // Les extensions ont été vérifiées et correspondent aux fichiers téléchargés.
             const images = [
                 "https://lexus03200.github.io/Brmotorsport/FA9BD388-7ABF-4FAE-813B-F9748FA7025C.jpeg",
                 "https://lexus03200.github.io/Brmotorsport/C02F5E47-F3D9-4B2E-844B-5DB9F36BCFE2.jpeg",
@@ -705,7 +706,7 @@
                 "https://lexus03200.github.io/Brmotorsport/03AAF089-76F9-4183-9F7E-3D0DA0214DD2.jpeg",
                 "https://lexus03200.github.io/Brmotorsport/9387E5BB-54F7-4C00-8021-8DD6B8388253.jpeg",
                 "https://lexus03200.github.io/Brmotorsport/8226BEEB-BC69-4792-AD40-9771D0F7AAB1.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/F8B8AAF1-7917-4201-A1B7-1D5E0C566BE4.jpg",
+                "https://lexus03200.github.io/Brmotorsport/F8B8AAF1-7917-4201-A1B7-1D5E0C566BE4.jpg", // Celui-ci est bien un .jpg
                 "https://lexus03200.github.io/Brmotorsport/25815A1A-2A6E-4DF4-A7B3-21DFEDBE97E0.jpeg"
             ];
             const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -749,7 +750,8 @@
                                             alt={`Volkswagen Scirocco R préparée - Image ${index + 1}`}
                                             className={`carousel-image ${index === currentImageIndex ? 'active' : ''}`}
                                             onError={(e) => {
-                                                console.error(`Erreur de chargement d'image pour: ${src}`);
+                                                // Ceci va imprimer l'URL exacte qui a échoué dans la console du navigateur
+                                                console.error(`Erreur de chargement d'image pour: ${src}. Veuillez vérifier le nom du fichier et l'extension sur GitHub.`, e);
                                                 e.target.onerror = null; // Empêche les boucles infinies en cas d'erreur persistante
                                                 e.target.src="https://placehold.co/800x450/FF0000/FFFFFF?text=Image+introuvable"; // Fallback plus visible
                                             }}
