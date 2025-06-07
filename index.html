@@ -539,10 +539,10 @@
             },
             {
               id: 7, // Nouvel ID pour l'article Seat
-              image: "Seat1.png", // CORRIGÉ: Chemin relatif de l'image de la Seat en .png
+              image: "Seat1.png", // Chemin relatif de l'image de la Seat en .png
               title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)",
               description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm.",
-              originalImage: "Seat1.png" // CORRIGÉ: Nom du fichier original avec l'extension .png
+              originalImage: "Seat1.png" // Nom du fichier original avec l'extension .png
             },
             {
               id: 8, // Nouvel ID pour l'ancienne voiture
@@ -550,6 +550,27 @@
               title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine",
               description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité.",
               originalImage: "anciennevoiture.png"
+            },
+            {
+              id: 9, // Nouvel ID pour l'Audi
+              image: "audi1.png", // Chemin relatif de l'image
+              title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU",
+              description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité.",
+              originalImage: "audi1.png"
+            },
+            {
+              id: 10, // Nouvel ID pour le GX
+              image: "gx.png", // Chemin relatif de l'image
+              title: "Triumph TR3 : Check-up Complet et Optimisation",
+              description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité.",
+              originalImage: "gx.png"
+            },
+            {
+              id: 11, // Nouvel ID pour la Mercedes
+              image: "mercedes2021.png", // Chemin relatif de l'image
+              title: "Mercedes (2021) : Solution ADBLUE",
+              description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système.",
+              originalImage: "mercedes2021.png"
             }
           ];
 
@@ -1065,12 +1086,18 @@
         };
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
-        // Cette partie du code a été déplacée à l'intérieur de window.onload pour s'assurer que ReactDOM est défini.
-        window.onload = function() {
-            const container = document.getElementById('root');
-            const root = ReactDOM.createRoot(container);
-            root.render(<App />);
-        };
+        // Ancien code dans window.onload:
+        // window.onload = function() {
+        //     const container = document.getElementById('root');
+        //     const root = ReactDOM.createRoot(container);
+        //     root.render(<App />);
+        // };
+
+        // Nouveau code de rendu direct après la définition de l'App,
+        // s'assurant que ReactDOM est disponible une fois les scripts chargés et parsés.
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
     </script>
 </body>
 </html>
