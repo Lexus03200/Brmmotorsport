@@ -708,23 +708,20 @@
             // Utilisez cette URL pour des chemins absolus vers vos assets.
             const GITHUB_PAGES_BASE_URL = "https://lexus03200.github.io/Brmotorsport/";
 
-            // Liste des images pour la galerie, AVEC DES CHEMINS ABSOLUS pour une meilleure fiabilité.
-            // CAUSES FRÉQUENTES DE PROBLÈMES DE CHARGEMENT D'IMAGES SUR GITHUB PAGES :
-            // 1. ERREURS DE FRAPPE : Vérifiez que les noms de fichiers dans la liste `images` correspondent EXACTEMENT aux noms de fichiers sur votre dépôt GitHub (sensible à la casse !). Par exemple, `photo1.png` n'est pas la même chose que `Photo1.PNG`.
-            // 2. EMPLACEMENT INCORRECT : Assurez-vous que les fichiers images (photo1.png, photo2.png, etc.) sont bien à la racine de votre dépôt GitHub. Si elles sont dans un sous-dossier (ex: `/assets/images/`), la `GITHUB_PAGES_BASE_URL` ou les chemins dans le tableau `images` doivent être ajustés en conséquence.
-            // 3. PROBLÈME DE CACHE : Après chaque modification sur GitHub, videz toujours le cache de votre navigateur (Ctrl+F5 ou Cmd+Shift+R) et/ou ouvrez le site en navigation privée.
-            // 4. MAUVAIS LIEN BASE : Vérifiez que la `GITHUB_PAGES_BASE_URL` ci-dessus correspond bien à l'URL réelle de votre site GitHub Pages.
+            // Liste des images pour la galerie.
+            // LES CHEMINS SONT MIS À JOUR POUR CORRESPONDRE AUX FICHIERS .png QUE VOUS AVEZ FOURNIS
+            // DANS LE DERNIER SCREENSHOT, y compris 'Photo1.png' avec un 'P' majuscule.
             const images = [
-                `${GITHUB_PAGES_BASE_URL}photo1.jpeg`, // Mise à jour pour utiliser .jpeg
-                `${GITHUB_PAGES_BASE_URL}photo2.jpeg`,
-                `${GITHUB_PAGES_BASE_URL}photo3.jpeg`,
-                `${GITHUB_PAGES_BASE_URL}photo4.jpeg`,
-                `${GITHUB_PAGES_BASE_URL}photo5.jpeg`,
-                `${GITHUB_PAGES_BASE_URL}photo6.jpeg`,
-                `${GITHUB_PAGES_BASE_URL}photo7.jpeg`,
-                `${GITHUB_PAGES_BASE_URL}photo8.jpg`, // Mise à jour pour utiliser .jpg
-                `${GITHUB_PAGES_BASE_URL}photo9.jpeg`,
-                `${GITHUB_PAGES_BASE_URL}unnamed%20(1).jpg` // Mise à jour pour utiliser .jpg et gérer l'espace dans le nom
+                `${GITHUB_PAGES_BASE_URL}Photo1.png`, // Mis à jour pour Photo1.png (P majuscule)
+                `${GITHUB_PAGES_BASE_URL}photo2.png`,
+                `${GITHUB_PAGES_BASE_URL}photo3.png`,
+                `${GITHUB_PAGES_BASE_URL}photo4.png`,
+                `${GITHUB_PAGES_BASE_URL}photo5.png`,
+                `${GITHUB_PAGES_BASE_URL}photo6.png`,
+                `${GITHUB_PAGES_BASE_URL}photo7.png`,
+                `${GITHUB_PAGES_BASE_URL}photo8.png`, // Confirmé en .png
+                `${GITHUB_PAGES_BASE_URL}photo9.png`,
+                `${GITHUB_PAGES_BASE_URL}photo10.png`
             ];
 
             const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -771,8 +768,15 @@
                                     alt={`Volkswagen Scirocco R préparée - Image ${currentImageIndex + 1}`}
                                     className="carousel-image rounded-lg shadow-md"
                                     onError={(e) => {
-                                        // Affiche l'URL exacte qui a échoué dans la console du navigateur
-                                        console.error(`Échec du chargement de l'image. Vérifiez l'URL et la casse du nom de fichier sur GitHub: ${e.target.src}`, e);
+                                        // Affiche l'URL exacte qui a échoué et un message explicite dans la console du navigateur
+                                        console.error(
+                                            `ERREUR DE CHARGEMENT D'IMAGE dans le carrousel:
+                                            Vérifiez l'URL exacte affichée ci-dessous dans votre navigateur.
+                                            Vérifiez la CASSE (majuscules/minuscules) et l'EXTENSION (ex: .jpeg vs .png)
+                                            du nom de fichier sur votre dépôt GitHub.
+                                            URL échouée: ${e.target.src}`,
+                                            e
+                                        );
                                         e.target.onerror = null; // Empêche une boucle infinie d'erreurs
                                         e.target.src="https://placehold.co/800x450/FF0000/FFFFFF?text=Erreur+chargement+image"; // Image de remplacement
                                     }}
