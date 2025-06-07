@@ -237,33 +237,6 @@
             </svg>
         );
 
-        // Nouvelle icône de rouage (GearIcon) pour représenter un turbo
-        const GearIcon = (props) => (
-            <svg
-              {...props}
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-cog"
-            >
-              <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/>
-              <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/>
-              <path d="M15.4 9.1a1 1 0 0 1 1.4 0l1.4 1.4a1 1 0 0 1 0 1.4L15.4 14.9a1 1 0 0 1-1.4 0L12.6 13.6a1 1 0 0 1 0-1.4L14.9 11.2a1 1 0 0 1 .5-.3Z"/>
-              <path d="M8.6 9.1a1 1 0 0 0-1.4 0L5.8 10.5a1 1 0 0 0 0 1.4L8.6 14.9a1 1 0 0 0 1.4 0l1.4-1.4a1 1 0 0 0 0-1.4L9.1 11.2a1 1 0 0 0-.5-.3Z"/>
-              <path d="M12 4v2"/>
-              <path d="M12 18v2"/>
-              <path d="M4 12h2"/>
-              <path d="M18 12h2"/>
-            </svg>
-        );
-
-
         // Composant de la barre de navigation
         const Navbar = ({ setCurrentPage }) => {
           const [isOpen, setIsOpen] = useState(false); // État pour la visibilité du menu mobile
@@ -279,7 +252,8 @@
                 <div className="text-3xl md:text-4xl font-extrabold tracking-widest animate-pulse drop-shadow-lg">
                   <span className="text-red-500">BR</span>
                   <span className="text-white">MOTOR</span>
-                  <span className="text-blue-500">SP<GearIcon className="inline-block align-middle w-6 h-6 md:w-8 md:h-8" />RT</span>
+                  {/* Titre classique sans icône pour SPORT */}
+                  <span className="text-blue-500">SPORT</span>
                 </div>
 
                 {/* Icône du menu hamburger pour mobile */}
@@ -366,10 +340,10 @@
                 </p>
               </section>
 
-              {/* Section "Ce que je vous propose" */}
+              {/* Section "Ce que nous vous proposons" */}
               <section className="mb-20">
                 <h2 className="text-5xl font-bold text-center mb-12 text-red-400 animate-fade-in">
-                  Ce que je vous propose
+                  Ce que nous vous proposons
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                   <ServiceCard
@@ -385,7 +359,7 @@
                   <ServiceCard
                     icon={<span className="text-3xl">📈</span>} // Utilisation d'un emoji pour variété
                     title="Optimisation des performances moteur"
-                    description="Une puissance sur mesure, adaptée à vos exigences et votre style."
+                    description="Une puissance sur mesure, adaptée à nos exigences et votre style."
                   />
                   <ServiceCard
                     icon={<span className="text-3xl">💡</span>} // Utilisation d'un emoji pour variété
@@ -395,10 +369,10 @@
                 </div>
               </section>
 
-              {/* Section "Pourquoi me faire confiance ?" */}
+              {/* Section "Pourquoi nous faire confiance ?" */}
               <section className="mb-20">
                 <h2 className="text-5xl font-bold text-center mb-12 text-blue-400 animate-fade-in">
-                  Pourquoi me faire confiance ?
+                  Pourquoi nous faire confiance ?
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <TrustCard
@@ -424,13 +398,13 @@
                 </div>
               </section>
 
-              {/* Section "Faites confiance à un passionné" */}
+              {/* Section "Faites confiance à une équipe de passionnés" */}
               <section className="text-center mb-20 bg-gray-800 p-12 rounded-2xl shadow-xl transform transition duration-500 hover:scale-[1.02] hover:shadow-2xl">
                 <h2 className="text-4xl font-bold mb-6 text-orange-400 animate-fade-in">
-                  Faites confiance à un passionné qui maîtrise son art
+                  Faites confiance à une équipe de passionnés qui maîtrisent leur art
                 </h2>
                 <p className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
-                  <span className="font-semibold text-white">Rémy Bruyant</span>, votre expert automobile dédié à la performance et à la qualité.
+                  <span className="font-semibold text-white">Rémy Bruyant</span>, notre expert automobile dédié à la performance et à la qualité.
                   Chez BRMOTORSPORT, la passion du moteur est notre moteur, assurant des résultats qui dépassent vos attentes.
                 </p>
                 <div className="mt-8">
@@ -513,7 +487,7 @@
               id: 4,
               image: "IMG_9608.png", // Chemin relatif réactivé
               title: "Seat Ibiza : Amélioration de la Réactivité Moteur",
-              description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et une conduite plus dynamique. Un plaisir garanti.",
+              description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garanti.",
               originalImage: "IMG_9608.png"
             },
             {
@@ -532,7 +506,7 @@
                   Nos Réalisations et Actus
                 </h1>
                 <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
-                  Découvrez nos dernières interventions, projets d'optimisation et les coulisses de BRMOTORSPORT.
+                  Découvrez nos dernières interventions, nos projets d'optimisation et les coulisses de BRMOTORSPORT.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -600,7 +574,7 @@
               <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-12 animate-fade-in-up">
                 <h2 className="text-4xl font-bold mb-6 text-yellow-300 text-center">Notre Histoire</h2>
                 <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                  BRMOTORSPORT est né de la passion inébranlable de Rémy Bruyant pour l'automobile et la performance. Fort de plus de 10 ans d'expérience sur le terrain, Rémy a concrétisé son rêve en créant un atelier dédié à l'optimisation des véhicules et à l'excellence mécanique. Ce qui a commencé comme une fascination pour les moteurs et leur potentiel est devenu une entreprise florissante, réputée pour son expertise et son approche personnalisée.
+                  BRMOTORSPORT est né de la passion inébranlable de Rémy Bruyant pour l'automobile et la performance. Fort de plus de 10 ans d'expérience sur le terrain, Rémy a concrétisé notre vision en créant un atelier dédié à l'optimisation des véhicules et à l'excellence mécanique. Ce qui a commencé comme une fascination pour les moteurs et leur potentiel est devenu une entreprise florissante, réputée pour notre expertise et notre approche personnalisée.
                 </p>
                 <p className="text-lg text-gray-300 leading-relaxed">
                   Notre parcours est jalonné de défis relevés et de succès partagés avec nos clients, qui nous font confiance pour libérer la pleine puissance de leur véhicule, qu'il s'agisse d'une voiture de sport, d'un utilitaire ou d'un véhicule de tous les jours. Chaque projet est traité avec le même engagement : la qualité, la fiabilité et la performance.
@@ -700,7 +674,7 @@
                   **Responsabilité sur l’usage des véhicules reprogrammés**
                 </p>
                 <p className="text-lg text-gray-300 leading-relaxed">
-                  La société Brmotorsport, dirigée par Rémy Bruyant, spécialisée dans la reprogrammation moteur et l’optimisation de performances automobiles, informe sa clientèle que toutes les interventions réalisées sur les calculateurs électroniques (ECU) sont exclusivement destinées à un usage sur circuit fermé ou terrain privé, sauf mention contraire spécifiant une conformité avec la réglementation en vigueur.
+                  La société Brmotorsport, dirigée par Rémy Bruyant, spécialisée dans la reprogrammation moteur et l’optimisation de performances automobiles, informe notre clientèle que toutes les interventions réalisées sur les calculateurs électroniques (ECU) sont exclusivement destinées à un usage sur circuit fermé ou terrain privé, sauf mention contraire spécifiant une conformité avec la réglementation en vigueur.
                 </p>
                 <p className="text-lg text-gray-300 leading-relaxed">
                   Brmotorsport décline toute responsabilité en cas d’utilisation d’un véhicule reprogrammé sur la voie publique lorsque cette modification entraîne une non-conformité :
@@ -924,26 +898,25 @@
         const MusicControl = () => {
             const audioRef = useRef(null);
             const [isPlaying, setIsPlaying] = useState(false);
+            const [showAutoplayMessage, setShowAutoplayMessage] = useState(false); // Nouvel état pour le message d'autoplay
 
             useEffect(() => {
-                // Tente de jouer la musique au chargement
-                // Cette action peut être bloquée par les navigateurs
                 const audio = document.getElementById('background-music');
                 if (audio) {
                     audioRef.current = audio;
-                    // Vérifie si la musique est déjà en lecture (peut arriver après une navigation sur le site)
                     setIsPlaying(!audio.paused);
 
-                    // Tente de lancer la lecture si ce n'est pas déjà le cas
                     const playPromise = audio.play();
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
-                            // La lecture automatique a fonctionné
                             setIsPlaying(true);
                         }).catch(error => {
-                            // La lecture automatique a échoué (souvent à cause des politiques des navigateurs)
                             console.log("La lecture automatique de la musique a été bloquée. L'utilisateur peut la démarrer manuellement.");
                             setIsPlaying(false);
+                            setShowAutoplayMessage(true); // Afficher le message
+                            setTimeout(() => {
+                                setShowAutoplayMessage(false); // Masquer le message après 5 secondes
+                            }, 5000);
                         });
                     }
                 }
@@ -958,17 +931,25 @@
                         audio.play();
                     }
                     setIsPlaying(!isPlaying);
+                    setShowAutoplayMessage(false); // Masquer le message si l'utilisateur interagit
                 }
             };
 
             return (
-                <button
-                    onClick={togglePlayPause}
-                    className="fixed bottom-8 right-8 bg-red-600 hover:bg-red-700 text-white p-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-110 active:scale-90 z-50 flex items-center justify-center w-14 h-14"
-                    aria-label={isPlaying ? "Mettre la musique en pause" : "Jouer la musique"}
-                >
-                    {isPlaying ? <PauseIcon /> : <PlayIcon />}
-                </button>
+                <>
+                    <button
+                        onClick={togglePlayPause}
+                        className="fixed bottom-8 right-8 bg-red-600 hover:bg-red-700 text-white p-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-110 active:scale-90 z-50 flex items-center justify-center w-14 h-14"
+                        aria-label={isPlaying ? "Mettre la musique en pause" : "Jouer la musique"}
+                    >
+                        {isPlaying ? <PauseIcon /> : <PlayIcon />}
+                    </button>
+                    {showAutoplayMessage && (
+                        <div className="fixed bottom-24 right-8 bg-yellow-500 text-gray-900 px-4 py-2 rounded-lg shadow-lg text-sm animate-fade-in z-50">
+                            Cliquez sur le bouton de lecture pour lancer la musique !
+                        </div>
+                    )}
+                </>
             );
         };
 
@@ -1015,7 +996,7 @@
                                 <span className="text-gray-600">|</span>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
                             </div>
-                            <p className="text-sm mt-2">Réalisé avec soin par Monsieur Viremot Giovanni</p>
+                            <p className="text-sm mt-2">Réalisé avec passion par Rémy Bruyant</p>
                         </div>
                     </footer>
                 </div>
@@ -1023,9 +1004,12 @@
         };
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
-        const container = document.getElementById('root');
-        const root = ReactDOM.createRoot(container);
-        root.render(<App />);
+        // Cette partie du code a été déplacée à l'intérieur de window.onload pour s'assurer que ReactDOM est défini.
+        window.onload = function() {
+            const container = document.getElementById('root');
+            const root = ReactDOM.createRoot(container);
+            root.render(<App />);
+        };
     </script>
 </body>
 </html>
