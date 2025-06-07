@@ -696,9 +696,7 @@
 
         // Composant pour la page de la voiture vitrine
         const ShowcaseCarPage = () => {
-            // Liste des images pour le carrousel, avec des chemins absolus pour GitHub Pages.
-            // ** IMPORTANT : Une fois vos nouvelles images renommées et uploadées sur GitHub,
-            // REMPLACEZ le placeholder ci-dessous par les URLs complètes de VOS images. **
+            // Liste des images pour la galerie, avec des chemins absolus pour GitHub Pages.
             const images = [
                 "https://lexus03200.github.io/Brmotorsport/photo9.jpeg",
                 "https://lexus03200.github.io/Brmotorsport/photo1.jpeg",
@@ -710,25 +708,6 @@
                 "https://lexus03200.github.io/Brmotorsport/photo7.jpeg",
                 "https://lexus03200.github.io/Brmotorsport/photo8.jpg" // Celui-ci est bien un .jpg
             ];
-            const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-            // Gère l'avance automatique du carrousel
-            useEffect(() => {
-                const interval = setInterval(() => {
-                    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-                }, 5000); // Change d'image toutes les 5 secondes
-                return () => clearInterval(interval); // Nettoie l'intervalle au démontage du composant
-            }, [images.length]); // Dépend de la longueur des images pour se réinitialiser si les images changent
-
-            // Gère la navigation manuelle vers l'image précédente
-            const goToPrevious = () => {
-                setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-            };
-
-            // Gère la navigation manuelle vers l'image suivante
-            const goToNext = () => {
-                setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-            };
 
             return (
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
@@ -741,39 +720,22 @@
                         </p>
 
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                            {/* Carrousel d'images */}
-                            <div className="relative flex justify-center items-center w-full max-w-3xl mx-auto">
-                                <div className="carousel-container shadow-lg border border-gray-600">
-                                    {images.map((src, index) => (
+                            {/* Grille d'images */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                                {images.map((src, index) => (
+                                    <div key={index} className="rounded-lg overflow-hidden shadow-lg border border-gray-700 transform transition duration-300 ease-in-out hover:scale-105">
                                         <img
-                                            key={index}
                                             src={src}
                                             alt={`Volkswagen Scirocco R préparée - Image ${index + 1}`}
-                                            className={`carousel-image ${index === currentImageIndex ? 'active' : ''}`}
+                                            className="w-full h-48 object-cover object-center"
                                             onError={(e) => {
-                                                // Ceci va imprimer l'URL exacte qui a échoué dans la console du navigateur
                                                 console.error(`Erreur de chargement d'image pour: ${src}. Veuillez vérifier le nom du fichier et l'extension sur GitHub.`, e);
-                                                e.target.onerror = null; // Empêche les boucles infinies en cas d'erreur persistante
-                                                e.target.src="https://placehold.co/800x450/FF0000/FFFFFF?text=Image+introuvable"; // Fallback plus visible
+                                                e.target.onerror = null;
+                                                e.target.src="https://placehold.co/400x300/FF0000/FFFFFF?text=Image+introuvable";
                                             }}
                                         />
-                                    ))}
-                                </div>
-                                {/* Boutons de navigation du carrousel */}
-                                <button
-                                    onClick={goToPrevious}
-                                    className="absolute left-4 bg-gray-700 bg-opacity-75 text-white p-2 rounded-full hover:bg-opacity-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                    aria-label="Image précédente"
-                                >
-                                    <ArrowLeftIcon />
-                                </button>
-                                <button
-                                    onClick={goToNext}
-                                    className="absolute right-4 bg-gray-700 bg-opacity-75 text-white p-2 rounded-full hover:bg-opacity-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                    aria-label="Image suivante"
-                                >
-                                    <ArrowRightIcon />
-                                </button>
+                                    </div>
+                                ))}
                             </div>
 
                             <h2 className="text-3xl font-bold mb-4 text-white">Préparation Moteur et Optimisations</h2>
