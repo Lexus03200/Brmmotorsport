@@ -749,21 +749,23 @@
         // Composant pour la page Voiture Vitrine
         const ShowcaseCarPage = () => {
             // Base URL de votre dépôt GitHub Pages. À ajuster si votre dépôt change.
-            const GITHUB_PAGES_BASE_URL = "https://lexus03200.github.io/Brmotorsport/";
+            // SUPPRIMÉE, les chemins sont maintenant relatifs pour la cohérence avec les images du blog.
+            // const GITHUB_PAGES_BASE_URL = "https://lexus03200.github.io/Brmotorsport/";
 
             // Liste des images pour la galerie.
             // Mise à jour pour correspondre aux noms et extensions .png que vous avez fournis.
+            // Les chemins sont maintenant RELATIFS, comme pour les images du blog.
             const images = [
-                `${GITHUB_PAGES_BASE_URL}Photo1.png`,
-                `${GITHUB_PAGES_BASE_URL}photo2.png`,
-                `${GITHUB_PAGES_BASE_URL}photo3.png`,
-                `${GITHUB_PAGES_BASE_URL}photo4.png`,
-                `${GITHUB_PAGES_BASE_URL}photo5.png`,
-                `${GITHUB_PAGES_BASE_URL}photo6.png`,
-                `${GITHUB_PAGES_BASE_URL}photo7.png`,
-                `${GITHUB_PAGES_BASE_URL}photo8.png`,
-                `${GITHUB_PAGES_BASE_URL}photo9.png`,
-                `${GITHUB_PAGES_BASE_URL}photo10.png`
+                `Photo1.png`, // Chemin relatif
+                `photo2.png`, // Chemin relatif
+                `photo3.png`, // Chemin relatif
+                `photo4.png`, // Chemin relatif
+                `photo5.png`, // Chemin relatif
+                `photo6.png`, // Chemin relatif
+                `photo7.png`, // Chemin relatif
+                `photo8.png`, // Chemin relatif
+                `photo9.png`, // Chemin relatif
+                `photo10.png`  // Chemin relatif
             ];
 
             const [selectedImageIndex, setSelectedImageIndex] = useState(null); // Index de l'image sélectionnée pour la modale
