@@ -50,6 +50,11 @@
             66% { transform: translate(-20px, 20px) scale(0.9); }
             100% { transform: translate(0px, 0px) scale(1); }
         }
+        /* Nouvelle animation pour le défilement de la bannière */
+        @keyframes scrollText {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-100%); }
+        }
         .animate-fade-in-down { animation: fadeInDown 0.8s ease-out forwards; }
         .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
@@ -57,6 +62,16 @@
         .animate-blob { animation: blob 7s infinite; }
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
+        /* Style pour l'animation de défilement */
+        .scrolling-banner-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scrollText 30s linear infinite; /* 30s pour la durée, linear pour un mouvement fluide, infinite pour la répétition */
+        }
+        /* Pour assurer que le texte déborde et puisse défiler */
+        .scrolling-banner-container {
+            overflow: hidden;
+        }
 
         /* Styles spécifiques pour la Lightbox (modale) */
         .lightbox-overlay {
@@ -237,6 +252,25 @@
             </svg>
         );
 
+        // Composant de la bannière défilante
+        const ScrollingBanner = () => {
+            const bannerText = "BRMOTORSPORT • VOTRE SATISFACTION EST NOTRE PRIORITÉ • "; // Texte à répéter
+            const repeatedText = Array(10).fill(bannerText).join(''); // Répéter le texte plusieurs fois pour l'effet de défilement continu
+
+            return (
+                <div className="w-full bg-red-700 text-white text-lg font-bold py-2 overflow-hidden whitespace-nowrap fixed top-0 left-0 z-50 shadow-md">
+                    <div className="scrolling-banner-container">
+                        <span className="scrolling-banner-text">
+                            {repeatedText}
+                        </span>
+                        <span className="scrolling-banner-text" aria-hidden="true">
+                            {repeatedText} {/* Une copie pour assurer la continuité du défilement */}
+                        </span>
+                    </div>
+                </div>
+            );
+        };
+
         // Composant de la barre de navigation
         const Navbar = ({ setCurrentPage }) => {
           const [isOpen, setIsOpen] = useState(false); // État pour la visibilité du menu mobile
@@ -246,7 +280,7 @@
           };
 
           return (
-            <nav className="bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg">
+            <nav className="bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg mt-12"> {/* Ajout de mt-12 pour décaler la navbar sous le bandeau */}
               <div className="container mx-auto flex justify-between items-center px-4">
                 {/* Titre BRMOTORSPORT avec un style amélioré et des couleurs */}
                 <div className="text-3xl md:text-4xl font-extrabold tracking-widest animate-pulse drop-shadow-lg">
@@ -307,7 +341,7 @@
 
         // Composant Page d'Accueil
         const HomePage = ({ setCurrentPage }) => (
-          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter relative overflow-hidden">
+          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter"> {/* pt-24 pour décaler le contenu sous le bandeau et la navbar */}
             {/* Effet de fond avec des formes abstraites pour un look dynamique */}
             <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
               <div className="absolute w-64 h-64 bg-red-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob top-10 left-1/4"></div>
@@ -500,7 +534,7 @@
           ];
 
           return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter">
+            <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter"> {/* pt-24 pour décaler le contenu sous le bandeau et la navbar */}
               <div className="container mx-auto px-6">
                 <h1 className="text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down">
                   Nos Réalisations et Actus
@@ -562,7 +596,7 @@
 
         // Composant Page Qui Sommes-nous
         const AboutUsPage = () => (
-          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter">
+          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter"> {/* pt-24 pour décaler le contenu sous le bandeau et la navbar */}
             <div className="container mx-auto px-6 max-w-4xl">
               <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down">
                 Qui Sommes-nous
@@ -623,7 +657,7 @@
 
         // Composant Page Contact
         const ContactPage = () => (
-            <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter">
+            <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter"> {/* pt-24 pour décaler le contenu sous le bandeau et la navbar */}
                 <div className="container mx-auto px-6 max-w-2xl">
                     <h1 className="text-5xl font-extrabold text-center mb-12 text-pink-400 animate-fade-in-down">
                         Contactez-nous
@@ -663,7 +697,7 @@
 
         // Composant pour la page des mentions légales
         const LegalMentionsPage = () => (
-          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter">
+          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter"> {/* pt-24 pour décaler le contenu sous le bandeau et la navbar */}
             <div className="container mx-auto px-6 max-w-4xl">
               <h1 className="text-5xl font-extrabold text-center mb-12 text-teal-400 animate-fade-in-down">
                 Mentions Légales & Clause de Non-responsabilité
@@ -702,7 +736,7 @@
 
         // Composant pour la page de politique de confidentialité
         const PrivacyPolicyPage = () => (
-          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter">
+          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter"> {/* pt-24 pour décaler le contenu sous le bandeau et la navbar */}
             <div className="container mx-auto px-6 max-w-4xl">
               <h1 className="text-5xl font-extrabold text-center mb-12 text-purple-400 animate-fade-in-down">
                 Politique de Confidentialité
@@ -791,7 +825,7 @@
             };
 
             return (
-                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter">
+                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-24 pb-12 font-inter"> {/* pt-24 pour décaler le contenu sous le bandeau et la navbar */}
                     <div className="container mx-auto px-6 max-w-5xl">
                         <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down">
                             Notre Voiture Vitrine : Le Projet Scirocco R
@@ -983,6 +1017,7 @@
 
             return (
                 <div className="min-h-screen bg-black font-inter">
+                    <ScrollingBanner /> {/* Nouvelle bannière défilante */}
                     <Navbar setCurrentPage={setCurrentPage} />
                     <main className="flex-grow">
                         {renderPage()}
