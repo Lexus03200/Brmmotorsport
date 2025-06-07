@@ -220,7 +220,7 @@
                 {/* Menu de bureau */}
                 <div className="hidden md:flex space-x-8">
                   <NavItem icon={<CarIcon />} text="Accueil" page="accueil" setCurrentPage={setCurrentPage} />
-                  <NavItem icon={<StarIcon />} text="Voiture Vitrine" page="voiture-vitrine" setCurrentPage={setCurrentPage} /> {/* Nouveau lien */}
+                  {/* Le lien "Voiture Vitrine" a été supprimé ici */}
                   <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} />
                   <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} />
                   <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} />
@@ -232,7 +232,7 @@
                              transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} z-40`}>
                 <div className="flex flex-col items-center py-4 space-y-4">
                   <NavItem icon={<CarIcon />} text="Accueil" page="accueil" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
-                  <NavItem icon={<StarIcon />} text="Voiture Vitrine" page="voiture-vitrine" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} /> {/* Nouveau lien mobile */}
+                  {/* Le lien "Voiture Vitrine" a été supprimé ici pour le mobile */}
                   <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
                   <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
                   <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
@@ -412,38 +412,38 @@
           const blogPosts = [
             {
               id: 1,
-              image: "IMG_9611.png", // Corrigé de .jpg à .png
+              image: "https://lexus03200.github.io/Brmotorsport/IMG_9611.png", // Chemin absolu corrigé
               title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur",
               description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime.",
-              originalImage: "IMG_9611.png" // Corrigé de .jpg à .png
+              originalImage: "IMG_9611.png"
             },
             {
               id: 2,
-              image: "IMG_9609.png", // Corrigé de .jpg à .png
+              image: "https://lexus03200.github.io/Brmotorsport/IMG_9609.png", // Chemin absolu corrigé
               title: "BMW Série 2 : Reprogrammation et FAP OFF",
               description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité.",
-              originalImage: "IMG_9609.png" // Corrigé de .jpg à .png
+              originalImage: "IMG_9609.png"
             },
             {
               id: 3,
-              image: "IMG_9607.png", // Corrigé de .jpg à .png
+              image: "https://lexus03200.github.io/Brmotorsport/IMG_9607.png", // Chemin absolu corrigé
               title: "VW Golf GTI : Boost de Performance Ultime",
               description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !",
-              originalImage: "IMG_9607.png" // Corrigé de .jpg à .png
+              originalImage: "IMG_9607.png"
             },
             {
               id: 4,
-              image: "IMG_9608.png", // Corrigé de .jpg à .png
+              image: "https://lexus03200.github.io/Brmotorsport/IMG_9608.png", // Chemin absolu corrigé
               title: "Seat Ibiza : Amélioration de la Réactivité Moteur",
               description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et une conduite plus dynamique. Un plaisir garanti.",
-              originalImage: "IMG_9608.png" // Corrigé de .jpg à .png
+              originalImage: "IMG_9608.png"
             },
             {
               id: 5,
-              image: "IMG_9610.png", // Corrigé de .jpg à .png
+              image: "https://lexus03200.github.io/Brmotorsport/IMG_9610.png", // Chemin absolu corrigé
               title: "VW Golf 5 GTI : Mise à Jour Cartographie",
               description: "Une mise à jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !",
-              originalImage: "IMG_9610.png" // Corrigé de .jpg à .png
+              originalImage: "IMG_9610.png"
             }
           ];
 
@@ -694,80 +694,7 @@
           </div>
         );
 
-        // Composant pour la page de la voiture vitrine
-        const ShowcaseCarPage = () => {
-            // Liste des images pour la galerie, avec des chemins absolus pour GitHub Pages.
-            const images = [
-                "https://lexus03200.github.io/Brmotorsport/photo9.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/photo1.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/photo2.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/photo3.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/photo4.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/photo5.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/photo6.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/photo7.jpeg",
-                "https://lexus03200.github.io/Brmotorsport/photo8.jpg" // Celui-ci est bien un .jpg
-            ];
-
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
-                    <div className="container mx-auto px-6 max-w-5xl">
-                        <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down">
-                            Notre Voiture Vitrine : Le Projet Scirocco R
-                        </h1>
-                        <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
-                            Découvrez en détail la préparation ultime de notre Volkswagen Scirocco R, un chef-d'œuvre de performance et d'ingénierie.
-                        </p>
-
-                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                            {/* Grille d'images */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-                                {images.map((src, index) => (
-                                    <div key={index} className="rounded-lg overflow-hidden shadow-lg border border-gray-700 transform transition duration-300 ease-in-out hover:scale-105">
-                                        <img
-                                            src={src}
-                                            alt={`Volkswagen Scirocco R préparée - Image ${index + 1}`}
-                                            className="w-full h-48 object-cover object-center"
-                                            onError={(e) => {
-                                                console.error(`Erreur de chargement d'image pour: ${src}. Veuillez vérifier le nom du fichier et l'extension sur GitHub.`, e);
-                                                e.target.onerror = null;
-                                                e.target.src="https://placehold.co/400x300/FF0000/FFFFFF?text=Image+introuvable";
-                                            }}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-
-                            <h2 className="text-3xl font-bold mb-4 text-white">Préparation Moteur et Optimisations</h2>
-                            <p className="text-lg text-gray-300 leading-relaxed">
-                                Ce projet sur le Volkswagen Scirocco R a été une démonstration de notre expertise en performance automobile. Chaque composant a été soigneusement sélectionné et optimisé pour atteindre un niveau de puissance et de fiabilité exceptionnel.
-                            </p>
-
-                            <h3 className="text-2xl font-semibold mb-3 text-white">Détails de la Préparation :</h3>
-                            <ul className="list-disc list-inside text-lg text-gray-300 pl-6 space-y-2">
-                                <li>**Piston ITG :** Installation de pistons forgés pour une résistance accrue et une meilleure gestion des contraintes.</li>
-                                <li>**Bielles titane :** Remplacement par des bielles en titane, offrant légèreté et robustesse pour les hautes performances.</li>
-                                <li>**Soupapes inconel :** Utilisation de soupapes en Inconel, un alliage résistant aux températures extrêmes et à la corrosion.</li>
-                                <li>**ADM (Admission Directe Moteur) :** Optimisation de l'admission d'air pour un flux plus direct et un gain de puissance.</li>
-                                <li>**Ressort bar teck :** Mise en place de ressorts de soupapes renforcés pour éviter le flottement à haut régime.</li>
-                                <li>**Viserie ARP 2000 :** Boulonnerie de haute résistance pour une fixation sécurisée des éléments critiques du moteur.</li>
-                                <li>**Pompe 20VT :** Amélioration du système de carburant avec une pompe à essence plus performante.</li>
-                                <li>**Turbo GTX :** Installation d'un turbocompresseur Garrett GTX pour une augmentation significative de la puissance.</li>
-                                <li>**Westgate Tial 44 mm :** Contrôle précis de la pression du turbo avec une wastegate externe de haute qualité.</li>
-                                <li>**Injecteurs Porsche :** Mise à niveau des injecteurs pour fournir le carburant nécessaire à la puissance accrue.</li>
-                                <li>**Pip admission :** Optimisation du conduit d'admission pour un flux d'air maximal.</li>
-                                <li>**WMI (Water Methanol Injection) :** Système d'injection eau-méthanol pour refroidir l'admission et augmenter la puissance.</li>
-                                <li>**Embrayage 880 nm :** Installation d'un embrayage renforcé capable de supporter un couple moteur de 880 Nm.</li>
-                            </ul>
-
-                            <p className="text-lg text-gray-300 leading-relaxed">
-                                Cette préparation complète garantit non seulement une performance époustouflante sur piste, mais aussi une fiabilité à toute épreuve pour un usage sportif.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
+        {/* Le composant ShowcaseCarPage a été supprimé ici */}
 
 
         // Nouveau composant pour le contrôle de la musique
@@ -843,8 +770,7 @@
                   return <LegalMentionsPage />;
                 case 'confidentialite': // Nouveau cas pour la politique de confidentialité
                   return <PrivacyPolicyPage />;
-                case 'voiture-vitrine': // Nouveau cas pour la voiture vitrine
-                  return <ShowcaseCarPage />;
+                {/* Le cas 'voiture-vitrine' a été supprimé ici */}
                 default:
                   return <HomePage />;
               }
