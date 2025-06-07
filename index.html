@@ -666,13 +666,13 @@
               </p>
 
               <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                {/* Image de la voiture vitrine */}
+                {/* Image de la voiture vitrine - Utilisation de l'URL absolue pour une meilleure fiabilité */}
                 <div className="flex justify-center mb-6">
                     <img
-                        src="IMG_9627 (1).jpg"
+                        src="https://lexus03200.github.io/Brmotorsport/IMG_9627%20(1).jpg"
                         alt="Volkswagen Scirocco R préparée"
                         className="rounded-xl shadow-lg w-full max-w-3xl object-cover object-center border border-gray-600 transform transition duration-500 hover:scale-105"
-                        onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/800x450/000/FFF?text=Image+Scirocco+R"; }}
+                        onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/800x450/000/FFF?text=Image+Scirocco+R+Non+Trouvée"; }}
                     />
                 </div>
 
