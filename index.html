@@ -710,6 +710,32 @@
                 "./photo10.png" // Screenshot Instagram (CORRIGÉ : converti en .png, nom du fichier changé)
             ];
 
+            const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+            const goToPrevious = () => {
+                setCurrentImageIndex((prevIndex) =>
+                    prevIndex === 0 ? images.length - 1 : prevIndex - 1
+                );
+            };
+
+            const goToNext = () => {
+                setCurrentImageIndex((prevIndex) =>
+                    prevIndex === images.length - 1 ? 0 : prevIndex + 1
+                );
+            };
+
+            // Auto-slide effect
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    setCurrentImageIndex((prevIndex) =>
+                        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+                    );
+                }, 4000); // Change image every 4 seconds
+
+                return () => clearInterval(interval); // Cleanup on component unmount
+            }, [images.length]); // Re-run if images array length changes
+
+
             return (
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
                     <div className="container mx-auto px-6 max-w-5xl">
@@ -721,22 +747,44 @@
                         </p>
 
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                            {/* Grille d'images */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-                                {images.map((src, index) => (
-                                    <div key={index} className="rounded-lg overflow-hidden shadow-lg border border-gray-700 transform transition duration-300 ease-in-out hover:scale-105">
-                                        <img
-                                            src={src}
-                                            alt={`Volkswagen Scirocco R préparée - Image ${index + 1}`}
-                                            className="w-full h-48 object-cover object-center"
-                                            onError={(e) => {
-                                                console.error(`Erreur de chargement d'image : ${src}. Veuillez vérifier le nom du fichier et l'extension sur GitHub.`, e);
-                                                e.target.onerror = null;
-                                                e.target.src="https://placehold.co/400x300/FF0000/FFFFFF?text=Image+introuvable";
-                                            }}
-                                        />
-                                    </div>
-                                ))}
+                            {/* Carousel Container */}
+                            <div className="relative carousel-container group">
+                                <img
+                                    src={images[currentImageIndex]}
+                                    alt={`Volkswagen Scirocco R préparée - Image ${currentImageIndex + 1}`}
+                                    className="carousel-image rounded-lg shadow-md"
+                                    onError={(e) => {
+                                        console.error(`Erreur de chargement d'image : ${images[currentImageIndex]}. Veuillez vérifier le nom du fichier et l'extension sur GitHub.`, e);
+                                        e.target.onerror = null;
+                                        e.target.src="https://placehold.co/800x450/FF0000/FFFFFF?text=Image+introuvable"; // Larger placeholder for carousel
+                                    }}
+                                />
+                                {/* Navigation buttons */}
+                                <button
+                                    onClick={goToPrevious}
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-900 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 transform scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 focus:outline-none"
+                                    aria-label="Previous image"
+                                >
+                                    <ArrowLeftIcon />
+                                </button>
+                                <button
+                                    onClick={goToNext}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-900 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 transform scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 focus:outline-none"
+                                    aria-label="Next image"
+                                >
+                                    <ArrowRightIcon />
+                                </button>
+                                {/* Indicators (dots) */}
+                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    {images.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => setCurrentImageIndex(index)}
+                                            className={`w-3 h-3 rounded-full ${index === currentImageIndex ? 'bg-red-500' : 'bg-gray-400'} hover:bg-red-400 transition-colors duration-200 focus:outline-none`}
+                                            aria-label={`Go to image ${index + 1}`}
+                                        ></button>
+                                    ))}
+                                </div>
                             </div>
 
                             <h2 className="text-3xl font-bold mb-4 text-white">Préparation Moteur et Optimisations</h2>
