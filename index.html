@@ -57,6 +57,34 @@
         .animate-blob { animation: blob 7s infinite; }
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
+
+        /* Styles spécifiques au carrousel pour éviter le CLS */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* Ratio 16:9 pour les images, ajuste si vos images ont un autre ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.75rem; /* rounded-xl */
+        }
+
+        .carousel-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .carousel-image.active {
+            opacity: 1;
+        }
+
+        .carousel-image:not(.active) {
+            opacity: 0;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-black font-inter">
@@ -150,6 +178,18 @@
         const StarIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-star">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+        );
+
+        const ArrowLeftIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left">
+                <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
+            </svg>
+        );
+
+        const ArrowRightIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
             </svg>
         );
 
@@ -655,56 +695,109 @@
         );
 
         // Composant pour la page de la voiture vitrine
-        const ShowcaseCarPage = () => (
-          <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
-            <div className="container mx-auto px-6 max-w-5xl">
-              <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down">
-                Notre Voiture Vitrine : Le Projet Scirocco R
-              </h1>
-              <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
-                Découvrez en détail la préparation ultime de notre Volkswagen Scirocco R, un chef-d'œuvre de performance et d'ingénierie.
-              </p>
+        const ShowcaseCarPage = () => {
+            const images = [
+                "https://lexus03200.github.io/Brmotorsport/FA9BD388-7ABF-4FAE-813B-F9748FA7025C.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/C02F5E47-F3D9-4B2E-844B-5DB9F36BCFE2.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/299A8513-7A30-4959-8939-9DC90C108120.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/2FEAEEDD-8CBD-4B37-B959-6CE7E5A7E5B0.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/03AAF089-76F9-4183-9F7E-3D0DA0214DD2.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/9387E5BB-54F7-4C00-8021-8DD6B8388253.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/8226BEEB-BC69-4792-AD40-9771D0F7AAB1.jpeg",
+                "https://lexus03200.github.io/Brmotorsport/F8B8AAF1-7917-4201-A1B7-1D5E0C566BE4.jpg",
+                "https://lexus03200.github.io/Brmotorsport/25815A1A-2A6E-4DF4-A7B3-21DFEDBE97E0.jpeg"
+            ];
+            const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-              <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                {/* Image de la voiture vitrine - Utilisation de l'URL absolue pour une meilleure fiabilité */}
-                <div className="flex justify-center mb-6">
-                    <img
-                        src="https://lexus03200.github.io/Brmotorsport/IMG_9627%20(1).jpg"
-                        alt="Volkswagen Scirocco R préparée"
-                        className="rounded-xl shadow-lg w-full max-w-3xl object-cover object-center border border-gray-600 transform transition duration-500 hover:scale-105"
-                        onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/800x450/000/FFF?text=Image+Scirocco+R+Non+Trouvée"; }}
-                    />
+            // Gère l'avance automatique du carrousel
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+                }, 5000); // Change d'image toutes les 5 secondes
+                return () => clearInterval(interval); // Nettoie l'intervalle au démontage du composant
+            }, [images.length]); // Dépend de la longueur des images pour se réinitialiser si les images changent
+
+            // Gère la navigation manuelle vers l'image précédente
+            const goToPrevious = () => {
+                setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+            };
+
+            // Gère la navigation manuelle vers l'image suivante
+            const goToNext = () => {
+                setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-24 pb-12 font-inter">
+                    <div className="container mx-auto px-6 max-w-5xl">
+                        <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down">
+                            Notre Voiture Vitrine : Le Projet Scirocco R
+                        </h1>
+                        <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
+                            Découvrez en détail la préparation ultime de notre Volkswagen Scirocco R, un chef-d'œuvre de performance et d'ingénierie.
+                        </p>
+
+                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
+                            {/* Carrousel d'images */}
+                            <div className="relative flex justify-center items-center w-full max-w-3xl mx-auto">
+                                <div className="carousel-container shadow-lg border border-gray-600">
+                                    {images.map((src, index) => (
+                                        <img
+                                            key={index}
+                                            src={src}
+                                            alt={`Volkswagen Scirocco R préparée - Image ${index + 1}`}
+                                            className={`carousel-image ${index === currentImageIndex ? 'active' : ''}`}
+                                            onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/800x450/000/FFF?text=Image+Non+Trouvée"; }}
+                                        />
+                                    ))}
+                                </div>
+                                {/* Boutons de navigation du carrousel */}
+                                <button
+                                    onClick={goToPrevious}
+                                    className="absolute left-4 bg-gray-700 bg-opacity-75 text-white p-2 rounded-full hover:bg-opacity-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                    aria-label="Image précédente"
+                                >
+                                    <ArrowLeftIcon />
+                                </button>
+                                <button
+                                    onClick={goToNext}
+                                    className="absolute right-4 bg-gray-700 bg-opacity-75 text-white p-2 rounded-full hover:bg-opacity-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                    aria-label="Image suivante"
+                                >
+                                    <ArrowRightIcon />
+                                </button>
+                            </div>
+
+                            <h2 className="text-3xl font-bold mb-4 text-white">Préparation Moteur et Optimisations</h2>
+                            <p className="text-lg text-gray-300 leading-relaxed">
+                                Ce projet sur le Volkswagen Scirocco R a été une démonstration de notre expertise en performance automobile. Chaque composant a été soigneusement sélectionné et optimisé pour atteindre un niveau de puissance et de fiabilité exceptionnel.
+                            </p>
+
+                            <h3 className="text-2xl font-semibold mb-3 text-white">Détails de la Préparation :</h3>
+                            <ul className="list-disc list-inside text-lg text-gray-300 pl-6 space-y-2">
+                                <li>**Piston ITG :** Installation de pistons forgés pour une résistance accrue et une meilleure gestion des contraintes.</li>
+                                <li>**Bielles titane :** Remplacement par des bielles en titane, offrant légèreté et robustesse pour les hautes performances.</li>
+                                <li>**Soupapes inconel :** Utilisation de soupapes en Inconel, un alliage résistant aux températures extrêmes et à la corrosion.</li>
+                                <li>**ADM (Admission Directe Moteur) :** Optimisation de l'admission d'air pour un flux plus direct et un gain de puissance.</li>
+                                <li>**Ressort bar teck :** Mise en place de ressorts de soupapes renforcés pour éviter le flottement à haut régime.</li>
+                                <li>**Viserie ARP 2000 :** Boulonnerie de haute résistance pour une fixation sécurisée des éléments critiques du moteur.</li>
+                                <li>**Pompe 20VT :** Amélioration du système de carburant avec une pompe à essence plus performante.</li>
+                                <li>**Turbo GTX :** Installation d'un turbocompresseur Garrett GTX pour une augmentation significative de la puissance.</li>
+                                <li>**Westgate Tial 44 mm :** Contrôle précis de la pression du turbo avec une wastegate externe de haute qualité.</li>
+                                <li>**Injecteurs Porsche :** Mise à niveau des injecteurs pour fournir le carburant nécessaire à la puissance accrue.</li>
+                                <li>**Pip admission :** Optimisation du conduit d'admission pour un flux d'air maximal.</li>
+                                <li>**WMI (Water Methanol Injection) :** Système d'injection eau-méthanol pour refroidir l'admission et augmenter la puissance.</li>
+                                <li>**Embrayage 880 nm :** Installation d'un embrayage renforcé capable de supporter un couple moteur de 880 Nm.</li>
+                            </ul>
+
+                            <p className="text-lg text-gray-300 leading-relaxed">
+                                Cette préparation complète garantit non seulement une performance époustouflante sur piste, mais aussi une fiabilité à toute épreuve pour un usage sportif.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-
-                <h2 className="text-3xl font-bold mb-4 text-white">Préparation Moteur et Optimisations</h2>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Ce projet sur le Volkswagen Scirocco R a été une démonstration de notre expertise en performance automobile. Chaque composant a été soigneusement sélectionné et optimisé pour atteindre un niveau de puissance et de fiabilité exceptionnel.
-                </p>
-
-                <h3 className="text-2xl font-semibold mb-3 text-white">Détails de la Préparation :</h3>
-                <ul className="list-disc list-inside text-lg text-gray-300 pl-6 space-y-2">
-                  <li>**Piston ITG :** Installation de pistons forgés pour une résistance accrue et une meilleure gestion des contraintes.</li>
-                  <li>**Bielles titane :** Remplacement par des bielles en titane, offrant légèreté et robustesse pour les hautes performances.</li>
-                  <li>**Soupapes inconel :** Utilisation de soupapes en Inconel, un alliage résistant aux températures extrêmes et à la corrosion.</li>
-                  <li>**ADM (Admission Directe Moteur) :** Optimisation de l'admission d'air pour un flux plus direct et un gain de puissance.</li>
-                  <li>**Ressort bar teck :** Mise en place de ressorts de soupapes renforcés pour éviter le flottement à haut régime.</li>
-                  <li>**Viserie ARP 2000 :** Boulonnerie de haute résistance pour une fixation sécurisée des éléments critiques du moteur.</li>
-                  <li>**Pompe 20VT :** Amélioration du système de carburant avec une pompe à essence plus performante.</li>
-                  <li>**Turbo GTX :** Installation d'un turbocompresseur Garrett GTX pour une augmentation significative de la puissance.</li>
-                  <li>**Westgate Tial 44 mm :** Contrôle précis de la pression du turbo avec une wastegate externe de haute qualité.</li>
-                  <li>**Injecteurs Porsche :** Mise à niveau des injecteurs pour fournir le carburant nécessaire à la puissance accrue.</li>
-                  <li>**Pip admission :** Optimisation du conduit d'admission pour un flux d'air maximal.</li>
-                  <li>**WMI (Water Methanol Injection) :** Système d'injection eau-méthanol pour refroidir l'admission et augmenter la puissance.</li>
-                  <li>**Embrayage 880 nm :** Installation d'un embrayage renforcé capable de supporter un couple moteur de 880 Nm.</li>
-                </ul>
-
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Cette préparation complète garantit non seulement une performance époustouflante sur piste, mais aussi une fiabilité à toute épreuve pour un usage sportif.
-                </p>
-              </div>
-            </div>
-          </div>
-        );
+            );
+        };
 
 
         // Nouveau composant pour le contrôle de la musique
