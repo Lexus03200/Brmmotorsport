@@ -205,8 +205,12 @@
           return (
             <nav className="bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg">
               <div className="container mx-auto flex justify-between items-center px-4">
-                {/* Titre BRMOTORSPORT avec un style amélioré */}
-                <div className="text-3xl md:text-4xl font-extrabold text-white tracking-widest animate-pulse drop-shadow-lg">BRMOTORSPORT</div>
+                {/* Titre BRMOTORSPORT avec un style amélioré et des couleurs */}
+                <div className="text-3xl md:text-4xl font-extrabold tracking-widest animate-pulse drop-shadow-lg">
+                  <span className="text-red-500">BR</span>
+                  <span className="text-white">MOTOR</span>
+                  <span className="text-blue-500">SPORT</span>
+                </div>
 
                 {/* Icône du menu hamburger pour mobile */}
                 <div className="md:hidden">
@@ -276,8 +280,12 @@
                 <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
                   Chez BRMOTORSPORT, nous transformons votre passion pour l'automobile en une expérience de conduite inégalée.
                 </p>
-                <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in">
-                  Découvrez nos Services
+                {/* Bouton "Découvrez notre blog" qui redirige vers la page blog */}
+                <button
+                  onClick={() => setCurrentPage('blog')}
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in"
+                >
+                  Découvrez notre blog
                 </button>
               </section>
 
@@ -922,7 +930,7 @@
                                 <span className="text-gray-600">|</span>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
                             </div>
-                            <p className="text-sm mt-2">Réalisé avec passion par Rémy Bruyant</p>
+                            <p className="text-sm mt-2">Réalisé avec soin par Monsieur Viremot Giovanni</p>
                         </div>
                     </footer>
                 </div>
