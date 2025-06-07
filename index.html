@@ -697,17 +697,22 @@
         // Composant pour la page Voiture Vitrine
         const ShowcaseCarPage = () => {
             // Liste des images pour la galerie, avec des chemins relatifs à la racine de votre dépôt GitHub Pages.
+            // CAUSES COURANTES DE PROBLÈMES DE CHARGEMENT D'IMAGES :
+            // 1. Erreurs de frappe dans le nom du fichier ou l'extension (ex: 'photo1.PNG' au lieu de 'photo1.png')
+            // 2. Sensibilité à la casse (Linux/serveurs web comme GitHub Pages sont sensibles à la casse)
+            // 3. Le fichier image n'est pas dans le répertoire spécifié (ici, on s'attend à ce qu'ils soient à la racine du dépôt).
+            // 4. Problème de cache du navigateur (vider le cache est crucial après chaque modification sur GitHub).
             const images = [
-                "./photo1.png", // Bielle (CORRIGÉ : converti en .png)
-                "./photo2.png", // Scirocco avant moteur ouvert (converti en .png)
-                "./photo3.png", // Moteur sur table (converti en .png)
-                "./photo4.png", // Scirocco avant avec autre voiture (converti en .png)
-                "./photo5.png", // Scirocco avant moteur ouvert (similaire, converti en .png)
-                "./photo6.png", // Scirocco arrière diffuseur (converti en .png)
-                "./photo7.png", // Bloc moteur pistons (converti en .png)
-                "./photo8.png",  // Scirocco arrière vue large (converti en .png)
-                "./photo9.png", // Atelier carrosserie/moteur (converti en .png)
-                "./photo10.png" // Screenshot Instagram (CORRIGÉ : converti en .png, nom du fichier changé)
+                "./photo1.png",
+                "./photo2.png",
+                "./photo3.png",
+                "./photo4.png",
+                "./photo5.png",
+                "./photo6.png",
+                "./photo7.png",
+                "./photo8.png",
+                "./photo9.png",
+                "./photo10.png"
             ];
 
             const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -759,6 +764,10 @@
                                         e.target.src="https://placehold.co/800x450/FF0000/FFFFFF?text=Image+introuvable"; // Larger placeholder for carousel
                                     }}
                                 />
+                                {/* Display current image path for debugging */}
+                                <p className="text-sm text-gray-500 text-center mt-2">
+                                    Chemin de l'image actuelle : {images[currentImageIndex]}
+                                </p>
                                 {/* Navigation buttons */}
                                 <button
                                     onClick={goToPrevious}
