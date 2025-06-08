@@ -66,12 +66,12 @@
                 opacity: 1;
             }
         }
-        /* Nouvelle animation pour l'effet de vibration (ralentie) */
+        /* Nouvelle animation pour l'effet de vibration (ralentie et plus subtile) */
         @keyframes vibrate {
             0% { transform: translate(0px, 0px); }
-            25% { transform: translate(-0.5px, 0.5px); }
-            50% { transform: translate(0.5px, -0.5px); }
-            75% { transform: translate(-0.5px, -0.5px); }
+            25% { transform: translate(-0.2px, 0.2px); } /* Mouvement plus petit */
+            50% { transform: translate(0.2px, -0.2px); }
+            75% { transform: translate(-0.2px, -0.2px); }
             100% { transform: translate(0px, 0px); }
         }
         /* Animation pour la fumée d'échappement */
@@ -91,7 +91,7 @@
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
         .animate-bounce-in { animation: bounceIn 1s; }
         .animate-blob { animation: blob 7s infinite; }
-        .animate-vibrate { animation: vibrate 0.15s ease-in-out infinite; } /* Vitesse ajustée */
+        .animate-vibrate { animation: vibrate 1s ease-in-out infinite; } /* Vitesse réduite de 0.15s à 1s */
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
         /* Style pour l'animation de défilement */
@@ -637,7 +637,7 @@
           return (
             <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
               <div className="container mx-auto px-6">
-                <h1 className="text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down">
+                <h1 className="text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
                   Nos Réalisations et Actus
                 </h1>
                 <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
@@ -703,7 +703,7 @@
         const AboutUsPage = () => (
           <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
             <div className="container mx-auto px-6 max-w-4xl">
-              <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down">
+              <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
                 Qui Sommes-nous
               </h1>
               <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
@@ -764,7 +764,7 @@
         const ContactPage = () => (
             <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
                 <div className="container mx-auto px-6 max-w-2xl">
-                    <h1 className="text-5xl font-extrabold text-center mb-12 text-pink-400 animate-fade-in-down">
+                    <h1 className="text-5xl font-extrabold text-center mb-12 text-pink-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
                         Contactez-nous
                     </h1>
                     <p className="text-xl text-center text-gray-300 max-w-xl mx-auto mb-10 animate-fade-in-up">
@@ -804,7 +804,7 @@
         const LegalMentionsPage = () => (
           <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
             <div className="container mx-auto px-6 max-w-4xl">
-              <h1 className="text-5xl font-extrabold text-center mb-12 text-teal-400 animate-fade-in-down">
+              <h1 className="text-5xl font-extrabold text-center mb-12 text-teal-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
                 Mentions Légales & Clause de Non-responsabilité
               </h1>
               <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-6">
@@ -843,7 +843,7 @@
         const PrivacyPolicyPage = () => (
           <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
             <div className="container mx-auto px-6 max-w-4xl">
-              <h1 className="text-5xl font-extrabold text-center mb-12 text-purple-400 animate-fade-in-down">
+              <h1 className="text-5xl font-extrabold text-center mb-12 text-purple-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
                 Politique de Confidentialité
               </h1>
               <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-6">
@@ -940,7 +940,7 @@
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
                     <div className="container mx-auto px-6 max-w-5xl">
-                        <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down">
+                        <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
                             Notre Voiture Vitrine : Le Projet Scirocco R
                         </h1>
                         <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
@@ -950,11 +950,11 @@
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
                             {/* Conteneur du carrousel avec centrage flexbox */}
                             <div className="relative w-full h-96 md:h-[500px] overflow-hidden rounded-lg shadow-2xl border-4 border-red-700 group flex items-center justify-center">
-                                {/* Image actuelle du diaporama - Utilise object-cover pour remplir le cadre */}
+                                {/* Image actuelle du diaporama - Utilise object-contain pour afficher l'image entière */}
                                 <img
                                     src={images[currentImageIndex]}
                                     alt={`Volkswagen Scirocco R - Image ${currentImageIndex + 1}`}
-                                    className="w-full h-full object-cover object-center animate-fade-in transition-opacity duration-700" /* Changé object-contain en object-cover */
+                                    className="w-full h-full object-contain object-center animate-fade-in transition-opacity duration-700" /* Changé object-cover en object-contain */
                                     onError={(e) => {
                                         console.error(
                                             `ERREUR DE CHARGEMENT D'IMAGE dans le diaporama:
