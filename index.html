@@ -573,13 +573,13 @@
         );
 
         // Composant Page Blog
-        const BlogPage = ({ isAdmin, onEditBlogPost, onDeleteBlogPost, firebaseDb, firebaseServices }) => { // Added firebaseServices
+        const BlogPage = ({ isAdmin, onEditBlogPost, onDeleteBlogPost, firebaseDb, firebaseServices, isAuthReady }) => { // Added isAuthReady
           const [blogPosts, setBlogPosts] = useState([]);
           const [loading, setLoading] = useState(true);
           const [error, setError] = useState(null);
 
           useEffect(() => {
-            if (firebaseDb && firebaseServices) { // Ensure firebaseServices is available
+            if (firebaseDb && firebaseServices && firebaseServices.appId && isAuthReady) { // Only run if auth is ready
               const colRef = firebaseServices.collection(firebaseDb, `artifacts/${firebaseServices.appId}/public/data/blogPosts`); // Updated path
               const unsubscribe = firebaseServices.onSnapshot(colRef, (snapshot) => {
                 const postsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -592,13 +592,18 @@
               });
               return () => unsubscribe();
             } else {
-              // Fallback to static data if Firebase not available (shouldn't happen with proper setup)
-              setBlogPosts([
-                { id: "fallback1", image: "https://placehold.co/600x400/000/FFF?text=Fallback", title: "Article de Blog Statique", description: "Ceci est un article de blog statique car Firebase n'est pas disponible.", originalImage: "fallback.png" }
-              ]);
-              setLoading(false);
+              // Handle loading/error state if auth is not ready yet
+              if (!isAuthReady) {
+                  setLoading(true);
+                  setError(null); // Clear previous errors
+              } else { // Fallback to static data if firebaseDb or firebaseServices are not available (shouldn't happen with proper setup)
+                  setBlogPosts([
+                    { id: "fallback1", image: "https://placehold.co/600x400/000/FFF?text=Fallback", title: "Article de Blog Statique", description: "Ceci est un article de blog statique car Firebase n'est pas disponible.", originalImage: "fallback.png" }
+                  ]);
+                  setLoading(false);
+              }
             }
-          }, [firebaseDb, firebaseServices]); // Add firebaseServices to dependency array
+          }, [firebaseDb, firebaseServices, isAuthReady]); // Add isAuthReady to dependency array
 
           if (loading) return <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter flex items-center justify-center"><p className="text-2xl animate-pulse">Chargement des articles de blog...</p></div>;
           if (error) return <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter flex items-center justify-center"><p className="text-2xl text-red-500">{error}</p></div>;
@@ -1311,14 +1316,14 @@
         );
 
         // Composant pour la page Voiture Vitrine
-        const ShowcaseCarPage = ({ isAdmin, firebaseDb, firebaseServices }) => { // Added firebaseServices
+        const ShowcaseCarPage = ({ isAdmin, firebaseDb, firebaseServices, isAuthReady }) => { // Added isAuthReady
             const [showcaseImages, setShowcaseImages] = useState([]);
             const [loading, setLoading] = useState(true);
             const [error, setError] = useState(null);
             const [selectedImageIndex, setSelectedImageIndex] = useState(null); // Index de l'image sélectionnée pour la modale
 
             useEffect(() => {
-                if (firebaseDb && firebaseServices && firebaseServices.appId) { // Ensure firebaseServices and appId are available
+                if (firebaseDb && firebaseServices && firebaseServices.appId && isAuthReady) { // Only run if auth is ready
                     const colRef = firebaseServices.collection(firebaseDb, `artifacts/${firebaseServices.appId}/public/data/showcaseImages`); // Updated path
                     const unsubscribe = firebaseServices.onSnapshot(colRef, (snapshot) => {
                         const imagesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -1331,13 +1336,18 @@
                     });
                     return () => unsubscribe();
                 } else {
-                    // Fallback to static data if Firebase not available (shouldn't happen with proper setup)
-                    setShowcaseImages([
-                        { id: "fallback1", url: "https://placehold.co/400x300/000/FFF?text=Fallback", description: "Image Vitrine Statique" }
-                    ]);
-                    setLoading(false);
+                    // Handle loading/error state if auth is not ready yet
+                    if (!isAuthReady) {
+                        setLoading(true);
+                        setError(null); // Clear previous errors
+                    } else { // Fallback to static data if firebaseDb or firebaseServices are not available (shouldn't happen with proper setup)
+                        setShowcaseImages([
+                            { id: "fallback1", url: "https://placehold.co/400x300/000/FFF?text=Fallback", description: "Image Vitrine Statique" }
+                        ]);
+                        setLoading(false);
+                    }
                 }
-            }, [firebaseDb, firebaseServices]); // Add firebaseServices to dependency array
+            }, [firebaseDb, firebaseServices, isAuthReady]); // Add isAuthReady to dependency array
 
             const openLightbox = (index) => {
                 setSelectedImageIndex(index);
@@ -1531,33 +1541,48 @@
             const [isAdmin, setIsAdmin] = useState(false);
             const [appLoading, setAppLoading] = useState(true); // Renommé de authLoading
             const [firebaseReadyServices, setFirebaseReadyServices] = useState(null); // État pour stocker l'objet firebaseServices
+            const [isAuthReady, setIsAuthReady] = useState(false); // Nouveau: État pour indiquer si l'authentification est prête
 
             useEffect(() => {
+                let unsubscribeAuth; // Pour stocker la fonction de désabonnement de l'écouteur d'auth
+
                 const checkAndSetFirebase = () => {
                     if (window.firebaseServices && window.firebaseServices.auth && window.firebaseServices.db) {
                         setFirebaseReadyServices(window.firebaseServices);
-                        // Une fois les services Firebase chargés, configurer l'écouteur d'authentification
+
                         const auth = window.firebaseServices.auth;
-                        const unsubscribe = window.firebaseServices.onAuthStateChanged(auth, (user) => {
+                        unsubscribeAuth = window.firebaseServices.onAuthStateChanged(auth, async (user) => {
                             setCurrentUser(user);
                             setIsAdmin(user && user.email === 'admin@brmotorsport.com');
-                            setAppLoading(false); // L'état d'authentification est déterminé, l'application peut se rendre
+                            setIsAuthReady(true); // L'état d'authentification est maintenant résolu
+                            setAppLoading(false); // L'application n'est plus en attente d'authentification
+
+                            // Appeler populateInitialData seulement si un utilisateur est authentifié (même anonymement)
+                            // et seulement une fois après que l'authentification est prête
+                            if (user) {
+                                await populateInitialData(window.firebaseServices);
+                            }
                         });
-                        // Initialiser la population des données ici (s'assurer que cela ne s'exécute qu'une seule fois après que Firebase soit prêt)
-                        populateInitialData(window.firebaseServices); // Pass the entire firebaseServices object
-                        return unsubscribe; // Retourner la fonction de désabonnement pour le nettoyage
                     } else {
                         // Continuer à vérifier jusqu'à ce que les services Firebase soient disponibles
                         setTimeout(checkAndSetFirebase, 50); // Interrogation toutes les 50ms
                     }
                 };
 
-                const populateInitialData = async (services) => { // Receive services as argument
-                    const db = services.db;
-                    const appId = services.appId;
-                    const blogColRef = services.collection(db, `artifacts/${appId}/public/data/blogPosts`); // Updated path
-                    const showcaseColRef = services.collection(db, `artifacts/${appId}/public/data/showcaseImages`); // Updated path
+                checkAndSetFirebase(); // Démarre le processus de vérification
 
+                return () => {
+                    if (unsubscribeAuth) unsubscribeAuth(); // Nettoyer l'écouteur lors du démontage du composant
+                };
+            }, []); // S'exécute une seule fois au montage du composant App
+
+            const populateInitialData = async (services) => { // Reçoit les services en argument
+                const db = services.db;
+                const appId = services.appId;
+                const blogColRef = services.collection(db, `artifacts/${appId}/public/data/blogPosts`); // Chemin mis à jour
+                const showcaseColRef = services.collection(db, `artifacts/${appId}/public/data/showcaseImages`); // Chemin mis à jour
+
+                try {
                     const blogSnapshot = await services.getDocs(blogColRef);
                     if (blogSnapshot.empty) {
                         console.log("Initialisation des articles de blog dans Firestore...");
@@ -1575,12 +1600,12 @@
                             { title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système.", image: "https://lexus03200.github.io/Brmotorsport/mercedes2021.png", originalImage: "mercedes2021.png" }
                         ];
                         for (const post of initialBlogPosts) {
-                            await services.addDoc(blogColRef, post); // Use services.addDoc
+                            await services.addDoc(blogColRef, post); // Utilise services.addDoc
                         }
                         console.log("Articles de blog initialisés.");
                     }
 
-                    const showcaseSnapshot = await services.getDocs(showcaseColRef); // Use services.getDocs
+                    const showcaseSnapshot = await services.getDocs(showcaseColRef); // Utilise services.getDocs
                     if (showcaseSnapshot.empty) {
                         console.log("Initialisation des images de la voiture vitrine dans Firestore...");
                         const initialShowcaseImages = [
@@ -1596,17 +1621,14 @@
                             { url: "https://lexus03200.github.io/Brmotorsport/photo10.png", description: "Scirocco R Phares" }
                         ];
                         for (const img of initialShowcaseImages) {
-                            await services.addDoc(showcaseColRef, img); // Use services.addDoc
+                            await services.addDoc(showcaseColRef, img); // Utilise services.addDoc
                         }
                         console.log("Images de la voiture vitrine initialisées.");
                     }
-                };
-
-                const unsubscribe = checkAndSetFirebase();
-                return () => {
-                    if (unsubscribe) unsubscribe();
-                };
-            }, []);
+                } catch (error) {
+                    console.error("Erreur lors de la population initiale des données:", error);
+                }
+            };
 
 
             // Ajout d'un effet pour faire défiler la page vers le haut à chaque changement de page
@@ -1617,7 +1639,7 @@
 
             // Fonction de rendu du contenu de la page en fonction de l'état
             const renderPage = () => {
-                if (appLoading || !firebaseReadyServices) {
+                if (appLoading || !firebaseReadyServices || !isAuthReady) { // Attendre que Firebase et l'authentification soient prêts
                     return (
                         <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter flex items-center justify-center">
                             <p className="text-2xl animate-pulse">Chargement de l'application et des services Firebase...</p>
@@ -1641,6 +1663,7 @@
                             onDeleteBlogPost={null} // onDeleteBlogPost is handled in AdminDashboardPage
                             firebaseDb={firebaseReadyServices.db} // Passer la base de données Firebase
                             firebaseServices={firebaseReadyServices} // Passer firebaseServices
+                            isAuthReady={isAuthReady} // Passer isAuthReady
                          />;
                 case 'qui-sommes-nous':
                   return <AboutUsPage />;
@@ -1651,7 +1674,7 @@
                 case 'confidentialite': // Nouveau cas pour la politique de confidentialité
                   return <PrivacyPolicyPage />;
                 case 'voiture-vitrine': // Réactivation du cas pour la voiture vitrine
-                  return <ShowcaseCarPage isAdmin={isAdmin} firebaseDb={firebaseReadyServices.db} firebaseServices={firebaseReadyServices} />; // Passer la base de données Firebase et firebaseServices
+                  return <ShowcaseCarPage isAdmin={isAdmin} firebaseDb={firebaseReadyServices.db} firebaseServices={firebaseReadyServices} isAuthReady={isAuthReady} />; // Passer la base de données Firebase et firebaseServices et isAuthReady
                 case 'login': // Nouveau cas pour la page de connexion
                     return <LoginPage
                                 setCurrentUser={setCurrentUser}
