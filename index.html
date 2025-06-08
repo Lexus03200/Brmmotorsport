@@ -290,11 +290,42 @@
         // --- Context pour la gestion du contenu éditable ---
         const ContentContext = createContext();
 
-        // Le contenu par défaut ne sera plus codé en dur ici,
-        // mais chargé depuis content.json
-        // const defaultSiteContent = {...}; // C'est supprimé
+        // Fonction utilitaire pour définir une propriété imbriquée par un chemin (similaire à lodash.set)
+        const setNestedProperty = (obj, path, value) => {
+            const pathParts = path.split('.');
+            let current = obj;
+            for (let i = 0; i < pathParts.length; i++) {
+                const part = pathParts[i];
+                const isLastPart = (i === pathParts.length - 1);
+                // Vérifie si la partie est un index numérique (pour les tableaux)
+                const isArrayIndex = !isNaN(parseInt(part)) && String(parseInt(part)) === part;
 
-        // Composant pour l'édition de texte in-situ
+                if (isLastPart) {
+                    // C'est la dernière partie du chemin, définissez la valeur
+                    current[isArrayIndex ? parseInt(part) : part] = value;
+                } else {
+                    // Si ce n'est pas la dernière partie, naviguez plus profondément
+                    if (isArrayIndex) {
+                        if (!Array.isArray(current)) {
+                            console.warn(`Attempted to navigate array index ${part} on non-array:`, current);
+                            return obj; // Retourne l'objet original pour éviter de le corrompre
+                        }
+                        if (current[parseInt(part)] === undefined || current[parseInt(part)] === null) {
+                            current[parseInt(part)] = {}; // Assurez-vous que l'objet à cet index existe
+                        }
+                        current = current[parseInt(part)];
+                    } else {
+                        if (typeof current[part] !== 'object' || current[part] === null) {
+                            current[part] = {}; // Initialise comme objet si ce n'est pas déjà le cas
+                        }
+                        current = current[part];
+                    }
+                }
+            }
+            return obj; // Retourne l'objet modifié
+        };
+
+        // Composant pour l'édition de texte in-situ (utilisé hors du panneau admin pour l'affichage direct)
         const EditableText = ({ tag: Tag, contentKey, isAdminAuthenticated, className }) => {
             const { content, updateContent } = useContext(ContentContext);
             const path = contentKey.split('.'); // Ex: "home.mainTitle" -> ["home", "mainTitle"]
@@ -303,20 +334,30 @@
             const getValue = (obj, p) => {
                 let current = obj;
                 for (let i = 0; i < p.length; i++) {
-                    if (current && typeof current === 'object' && current.hasOwnProperty(p[i])) {
-                        current = current[p[i]];
+                    const part = p[i];
+                    const isArrayIndex = !isNaN(parseInt(part)) && String(parseInt(part)) === part;
+
+                    if (isArrayIndex) {
+                        if (Array.isArray(current) && current[parseInt(part)] !== undefined) {
+                            current = current[parseInt(part)];
+                        } else {
+                            return `[Contenu manquant ou invalide: ${contentKey}]`;
+                        }
                     } else {
-                        // Fournit un fallback ou un message d'erreur clair si la clé n'existe pas
-                        return `[Contenu manquant: ${contentKey}]`;
+                        if (current && typeof current === 'object' && current.hasOwnProperty(part)) {
+                            current = current[part];
+                        } else {
+                            return `[Contenu manquant: ${contentKey}]`;
+                        }
                     }
                 }
                 return current;
             };
 
-            const textValue = content ? getValue(content, path) : `Chargement...`;
+            const textValue = content ? getValue(content, contentKey.split('.')) : `Chargement...`;
 
 
-            // Gérer le changement du texte
+            // Gérer le changement du texte (seulement si isAdminAuthenticated)
             const handleChange = (e) => {
                 const newValue = e.target.value;
                 updateContent(contentKey, newValue); // Appelle la fonction de mise à jour du contexte
@@ -328,7 +369,7 @@
                     return (
                         <input
                             type="text"
-                            value={textValue}
+                            value={typeof textValue === 'string' ? textValue : ''} // Assurer que la valeur est une string
                             onChange={handleChange}
                             className={`${className} bg-gray-700 text-white rounded p-2 focus:ring-2 focus:ring-blue-500 w-full`}
                         />
@@ -336,16 +377,17 @@
                 }
                 return (
                     <textarea
-                        value={textValue}
+                        value={typeof textValue === 'string' ? textValue : ''} // Assurer que la valeur est une string
                         onChange={handleChange}
                         className={`${className} bg-gray-700 text-white rounded p-2 focus:ring-2 focus:ring-blue-500 w-full min-h-[50px]`}
-                        rows={textValue.split('\n').length} // Ajuste le nombre de lignes
+                        rows={typeof textValue === 'string' ? Math.max(3, textValue.split('\n').length) : 3} // Ajuste le nombre de lignes
                     />
                 );
             }
 
             // Rendu normal pour les clients
-            return <Tag className={className}>{textValue}</Tag>;
+            // Vérifie si textValue est une chaîne avant de le rendre
+            return <Tag className={className}>{typeof textValue === 'string' ? textValue : `[Contenu invalide: ${contentKey}]`}</Tag>;
         };
 
         // Composant de la bannière défilante
@@ -609,14 +651,14 @@
           </div>
         );
 
-        // Composant Carte de Blog - DÉPLACÉ AVANT BlogPage
+        // Composant Carte de Blog
         const BlogPostCard = ({ post, style }) => (
           <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400 animate-fade-in-up delay-animation" style={style}>
             <img
               src={post.image}
               alt={post.title}
               className="w-full h-64 object-cover object-center transform transition duration-500 hover:scale-110"
-              onError={(e) => { e.target.onerror = null; console.error(`ERREUR DE CHARGEMENT D'IMAGE pour l'article "${post.title}": Vérifiez le nom du fichier (${post.originalImage}) et son emplacement.`); e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }} // Fallback image with more specific error message
+              onError={(e) => { e.target.onerror = null; console.error(`ERREUR DE CHARGEMENT D'IMAGE pour l'article "${post.title}": Vérifiez le nom du fichier (${post.image}) et son emplacement.`); e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }} // Fallback image with more specific error message
             />
             <div className="p-6">
               <h3 className="text-2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
@@ -631,85 +673,8 @@
         // Composant Page Blog
         const BlogPage = ({ isAdminAuthenticated }) => {
           const { content } = useContext(ContentContext);
-          const blogPosts = [
-            {
-              id: 1,
-              image: "IMG_9611.png", // Chemin relatif
-              title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur",
-              description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime.",
-              originalImage: "IMG_9611.png"
-            },
-            {
-              id: 2,
-              image: "IMG_9609.png", // Chemin relatif
-              title: "BMW Série 2 : Reprogrammation et FAP OFF",
-              description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité.",
-              originalImage: "IMG_9609.png"
-            },
-            {
-              id: 3,
-              image: "IMG_9607.png", // Chemin relatif
-              title: "VW Golf GTI : Boost de Performance Ultime",
-              description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !",
-              originalImage: "IMG_9607.png"
-            },
-            {
-              id: 4,
-              image: "IMG_9608.png", // Chemin relatif
-              title: "Seat Ibiza : Amélioration de la Réactivité Moteur",
-              description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini.",
-              originalImage: "IMG_9608.png"
-            },
-            {
-              id: 5,
-              image: "IMG_9610.png", // Chemin relatif
-              title: "VW Golf 5 GTI : Mise à Jour Cartographie",
-              description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !",
-              originalImage: "IMG_9610.png"
-            },
-            {
-              id: 6, // Nouvel ID pour cet article
-              image: "Photopeugeot.png", // Chemin relatif de l'image avec l'extension .png
-              title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation",
-              description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led).",
-              originalImage: "Photopeugeot.png" // Nom du fichier original avec l'extension .png
-            },
-            {
-              id: 7, // Nouvel ID pour l'article Seat
-              image: "Seat1.png", // Chemin relatif de l'image de la Seat en .png
-              title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)",
-              description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm.",
-              originalImage: "Seat1.png" // Nom du fichier original avec l'extension .png
-            },
-            {
-              id: 8, // Nouvel ID pour l'ancienne voiture
-              image: "anciennevoiture.png", // Chemin relatif de l'image
-              title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine",
-              description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité.",
-              originalImage: "anciennevoiture.png"
-            },
-            {
-              id: 9, // Nouvel ID pour l'Audi
-              image: "audi1.png", // Chemin relatif de l'image
-              title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU",
-              description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité.",
-              originalImage: "audi1.png"
-            },
-            {
-              id: 10, // Nouvel ID pour le GX
-              image: "gx.png", // Chemin relatif de l'image
-              title: "Triumph TR3 : Check-up Complet et Optimisation",
-              description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité.",
-              originalImage: "gx.1png"
-            },
-            {
-              id: 11, // Nouvel ID pour la Mercedes
-              image: "mercedes2021.png", // Chemin relatif de l'image
-              title: "Mercedes (2021) : Solution ADBLUE",
-              description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système.",
-              originalImage: "mercedes2021.png"
-            }
-          ];
+          // Utilise content.blog.posts qui est chargé depuis content.json
+          const blogPosts = content?.blog?.posts || [];
 
           return (
             <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
@@ -730,7 +695,7 @@
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                   {blogPosts.map((post, index) => (
                     <BlogPostCard
-                      key={post.id}
+                      key={post.id || `blog-post-${index}`} // Utilise l'ID ou un index de secours
                       post={post}
                       style={{ '--delay-factor': `${index * 150}ms` }}
                     />
@@ -1453,7 +1418,9 @@
             return (
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-40 pb-12 font-inter flex items-center justify-center">
                     <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 w-full max-w-md animate-fade-in-up">
-                        <h1 className="text-4xl font-extrabold text-center mb-8 text-orange-400">Accès Administrateur</h1>
+                        <h1 className="text-4xl font-extrabold text-center mb-4 text-orange-400">Accès Administrateur</h1>
+                        {/* Nouvelle phrase ajoutée ici */}
+                        <p className="text-center text-sm text-gray-400 mb-6 italic">Giovanni te souhaite la bienvenue et un bon courage !</p>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <InputField
                                 label="Mot de passe"
@@ -1492,16 +1459,16 @@
                 console.log("AdminPanelPage: Content state updated. localContent initialized:", JSON.parse(JSON.stringify(content || {})));
             }, [content]);
 
+            // Fonction pour gérer les changements dans les champs de texte
+            // Prend en charge les chemins imbriqués (ex: 'home.mainTitle' ou 'blog.posts.0.title')
             const handleLocalChange = (pageKey, fieldKey, newValue) => {
                 setLocalContent(prevContent => {
-                    const newContent = { ...prevContent };
-                    if (!newContent[pageKey]) { // S'assurer que la page existe
-                        newContent[pageKey] = {};
-                    }
-                    newContent[pageKey] = {
-                        ...newContent[pageKey],
-                        [fieldKey]: newValue
-                    };
+                    const newContent = JSON.parse(JSON.stringify(prevContent)); // Deep copy
+                    const targetPage = newContent[pageKey]; // Obtient l'objet de la page spécifique
+
+                    // Utilise la fonction utilitaire setNestedProperty pour définir la valeur
+                    setNestedProperty(targetPage, fieldKey, newValue);
+
                     console.log(`AdminPanelPage: Local change - page: ${pageKey}, field: ${fieldKey}, new value: "${newValue}". Current localContent:`, newContent);
                     return newContent;
                 });
@@ -1533,10 +1500,28 @@
                         console.log("AdminPanelPage: Save successful. Response from backend:", data);
                         // Mettre à jour le contenu global avec le contenu local sauvegardé
                         // Cela est essentiel pour que l'application React reflète les changements après une sauvegarde réelle
+                        // Utilise setNestedProperty pour propager les changements à l'état global
                         Object.keys(localContent).forEach(pageKey => {
-                            Object.keys(localContent[pageKey]).forEach(fieldKey => {
-                                updateContent(`${pageKey}.${fieldKey}`, localContent[pageKey][fieldKey]);
-                            });
+                             const pageData = localContent[pageKey];
+                             if (pageData) { // S'assurer que la page existe
+                                 Object.keys(pageData).forEach(fieldKey => {
+                                     // Pour les champs simples, on met à jour directement
+                                     // Pour les tableaux comme 'posts', on met à jour l'objet complet
+                                     const value = pageData[fieldKey];
+                                     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                                         // C'est un objet imbriqué (pas un tableau)
+                                         Object.keys(value).forEach(nestedFieldKey => {
+                                             updateContent(`${pageKey}.${fieldKey}.${nestedFieldKey}`, value[nestedFieldKey]);
+                                         });
+                                     } else if (Array.isArray(value)) {
+                                         // Si c'est un tableau (comme 'posts'), on met à jour l'ensemble du tableau
+                                         // Cela implique que les modifications des éléments du tableau sont déjà dans 'localContent'
+                                         updateContent(`${pageKey}.${fieldKey}`, value);
+                                     } else {
+                                         updateContent(`${pageKey}.${fieldKey}`, value);
+                                     }
+                                 });
+                             }
                         });
                         console.log("AdminPanelPage: Global content update triggered.");
                     } else {
@@ -1568,48 +1553,110 @@
                         </p>
 
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                            {Object.keys(localContent).map(pageKey => (
-                                <div key={pageKey} className="mb-8 p-6 bg-gray-700 rounded-lg shadow-inner">
-                                    <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize">{pageKey.replace(/([A-Z])/g, ' $1')}</h2> {/* Formatage du nom de la page */}
-                                    <div className="space-y-4">
-                                        {Object.keys(localContent[pageKey]).map(fieldKey => {
-                                            const fieldValue = localContent[pageKey][fieldKey];
-                                            const contentPath = `${pageKey}.${fieldKey}`; // Chemin complet pour la clé de contenu
+                            {Object.keys(localContent).map(pageKey => {
+                                // Ne pas afficher les pages Admin Login/Panel ici
+                                if (pageKey === 'adminLogin' || pageKey === 'adminPanel') {
+                                    return null;
+                                }
 
-                                            // Gérer les champs manquants ou non-string en initialisant une chaîne vide
-                                            const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
+                                return (
+                                    <div key={pageKey} className="mb-8 p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                                        <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3">
+                                            {pageKey.replace(/([A-Z])/g, ' $1')}
+                                        </h2>
+                                        <div className="space-y-6">
+                                            {/* Rendu des champs simples de la page */}
+                                            {Object.keys(localContent[pageKey]).map(fieldKey => {
+                                                const fieldValue = localContent[pageKey][fieldKey];
+                                                const contentPath = `${pageKey}.${fieldKey}`;
 
-                                            return (
-                                                <div key={contentPath}>
-                                                    <label className="block text-gray-300 text-sm font-bold mb-2">
-                                                        {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}:
-                                                    </label>
-                                                    { (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('description') || fieldKey.includes('Text') || fieldKey.includes('Message')) ? ( // Ajout de 'Text' et 'Message' pour une meilleure détection des champs texte
-                                                        <input
-                                                            type="text"
-                                                            value={valueToDisplay}
-                                                            onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
-                                                            className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
-                                                        />
-                                                    ) : (
-                                                        <textarea
-                                                            value={valueToDisplay}
-                                                            onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
-                                                            rows={Math.max(3, valueToDisplay.split('\n').length)}
-                                                            className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
-                                                        />
-                                                    )}
-                                                    {typeof fieldValue !== 'string' && (
-                                                        <p className="text-red-400 text-sm mt-1">
-                                                            Ce champ ({contentPath}) n'est pas une chaîne de caractères ou est manquant dans content.json. Il sera enregistré comme une chaîne vide si vous le modifiez.
-                                                        </p>
-                                                    )}
+                                                // Ne pas afficher les 'posts' du blog ici, ils seront gérés séparément
+                                                if (fieldKey === 'posts' && Array.isArray(fieldValue)) {
+                                                    return null;
+                                                }
+
+                                                const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
+                                                const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram')) ? 'text' : 'textarea';
+                                                const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
+
+                                                return (
+                                                    <div key={contentPath} className="pb-4 border-b border-gray-600 last:border-b-0">
+                                                        <label className="block text-gray-300 text-sm font-bold mb-2">
+                                                            {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}:
+                                                        </label>
+                                                        {inputType === 'text' ? (
+                                                            <input
+                                                                type="text"
+                                                                value={valueToDisplay}
+                                                                onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                                                className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
+                                                            />
+                                                        ) : (
+                                                            <textarea
+                                                                value={valueToDisplay}
+                                                                onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                                                rows={rows}
+                                                                className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
+                                                            />
+                                                        )}
+                                                        {typeof fieldValue !== 'string' && (
+                                                            <p className="text-red-400 text-sm mt-1">
+                                                                Ce champ ({contentPath}) n'est pas une chaîne de caractères ou est manquant dans content.json. Il sera enregistré comme une chaîne vide si vous le modifiez.
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+
+                                            {/* Section spécifique pour les articles de blog */}
+                                            {pageKey === 'blog' && localContent.blog && Array.isArray(localContent.blog.posts) && (
+                                                <div className="mt-8 pt-6 border-t-2 border-green-600">
+                                                    <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
+                                                    <div className="space-y-8">
+                                                        {localContent.blog.posts.map((post, index) => (
+                                                            <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500">
+                                                                <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
+                                                                <div className="space-y-4">
+                                                                    <div>
+                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            value={post.title || ''}
+                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
+                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
+                                                                        <textarea
+                                                                            value={post.description || ''}
+                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.description`, e.target.value)}
+                                                                            rows={Math.max(3, (post.description || '').split('\n').length)}
+                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            value={post.image || ''}
+                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
+                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                        />
+                                                                        <p className="text-gray-400 text-xs mt-1">
+                                                                            Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
-                                            );
-                                        })}
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                             <div className="flex justify-center space-x-4 mt-8">
                                 <button
                                     onClick={handleSaveChanges}
@@ -1746,13 +1793,98 @@
                         setErrorContent("Impossible de charger le contenu du site. Veuillez réessayer plus tard.");
                         // Fallback vers un contenu par défaut si le chargement échoue
                         setContent({
-                            home: { mainTitle: "Erreur de Chargement", description: "Le contenu n'a pas pu être chargé.", contactMessage: "Veuillez vérifier votre connexion." },
-                            blog: { mainTitle: "Erreur", description: "Contenu non disponible." },
-                            aboutUs: { mainTitle: "Erreur", description: "Contenu non disponible." },
-                            contact: { mainTitle: "Erreur", description: "Contenu non disponible." },
-                            legalMentions: { mainTitle: "Erreur", sectionTitle: "", paragraph1: "Contenu non disponible." },
-                            privacyPolicy: { mainTitle: "Erreur", introTitle: "", introText: "Contenu non disponible.", disclaimerText: "Contenu non disponible." }, // Ajout de disclaimerText ici
-                            showcaseCar: { mainTitle: "Erreur", description: "Contenu non disponible." }
+                            home: {
+                                mainTitle: "BRMOTORSPORT",
+                                description: "Spécialiste de la reprogrammation moteur et de l'optimisation de véhicules. Performance, fiabilité et satisfaction client sont nos maîtres mots.",
+                                contactMessage: "Contactez-nous dès aujourd'hui pour transformer votre véhicule !"
+                            },
+                            blog: {
+                                mainTitle: "Notre Blog BRMOTORSPORT",
+                                description: "Découvrez nos dernières actualités, projets et optimisations automobiles.",
+                                posts: [
+                                    { id: 1, image: "IMG_9611.png", title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur", description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime." },
+                                    { id: 2, image: "IMG_9609.png", title: "BMW Série 2 : Reprogrammation et FAP OFF", description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité." },
+                                    { id: 3, image: "IMG_9607.png", title: "VW Golf GTI : Boost de Performance Ultime", description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !" },
+                                    { id: 4, image: "IMG_9608.png", title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini." },
+                                    { id: 5, image: "IMG_9610.png", title: "VW Golf 5 GTI : Mise à Jour Cartographie", description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !" },
+                                    { id: 6, image: "Photopeugeot.png", title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation", description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led)." },
+                                    { id: 7, image: "Seat1.png", title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm." },
+                                    { id: 8, image: "anciennevoiture.png", title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité." },
+                                    { id: 9, image: "audi1.png", title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité." },
+                                    { id: 10, image: "gx.png", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité." },
+                                    { id: 11, image: "mercedes2021.png", title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
+                                ]
+                            },
+                            aboutUs: {
+                                mainTitle: "Qui sommes-nous ?",
+                                description: "BRMOTORSPORT est votre partenaire de confiance pour l'optimisation automobile. Fondée sur la passion de la performance et de la mécanique, notre entreprise s'engage à offrir des services de reprogrammation moteur, de préparation de véhicules et de diagnostics électroniques de pointe.",
+                                historyTitle: "Notre Histoire",
+                                historyParagraph1: "Notre aventure a débuté il y a plusieurs années, animée par une vision : celle de repousser les limites de la performance automobile tout en garantissant une fiabilité et une sécurité optimales. Forts d'une expertise technique approfondie et d'une passion inébranlable pour les voitures, nous avons bâti BRMOTORSPORT sur des valeurs de précision, d'innovation et de dévouement. Chaque véhicule qui passe entre nos mains est traité avec le plus grand soin, comme si c'était le nôtre.",
+                                historyParagraph2: "Au fil des ans, nous avons développé des compétences uniques en reprogrammation sur mesure, en travaillant avec les technologies les plus avancées pour extraire le potentiel caché de chaque moteur. Notre histoire est marquée par des milliers de clients satisfaits, des voitures transformées et une réputation bâtie sur l'excellence. Nous sommes fiers de notre parcours et de l'impact que nous avons sur la performance et le plaisir de conduite de nos clients.",
+                                valuesTitle: "Nos Valeurs",
+                                value1Title: "Expertise Technique",
+                                value1Description: "Une connaissance approfondie des systèmes moteurs et des technologies d'optimisation."
+                            },
+                            contact: {
+                                mainTitle: "Contactez-nous",
+                                description: "Nous sommes là pour répondre à toutes vos questions et vous accompagner dans vos projets d'optimisation automobile.",
+                                emailTitle: "Email",
+                                email: "contact@brmotorsport.com",
+                                phoneTitle: "Téléphone",
+                                phoneNumber: "06.12.34.56.78",
+                                instagramTitle: "Instagram",
+                                instagramHandle: "@brmotorsport_official"
+                            },
+                            legalMentions: {
+                                mainTitle: "Mentions Légales",
+                                sectionTitle: "Informations Générales",
+                                paragraph1: "Ce site web est édité par BRMOTORSPORT.",
+                                paragraph2: "Adresse : [Votre Adresse Complète]",
+                                list1Item1: "Numéro de téléphone : [Votre Numéro de Téléphone]",
+                                list1Item2: "Adresse e-mail : [Votre E-mail]",
+                                list1Item3: "Numéro d'immatriculation : [Votre Numéro SIRET/RCS]",
+                                paragraph3: "Directeur de la publication : Monsieur [Votre Nom]",
+                                list2Item1: "Hébergeur : GitHub Pages",
+                                list2Item2: "Adresse : [Adresse de GitHub]",
+                                list2Item3: "Site web : https://github.com",
+                                paragraph4: "Propriété intellectuelle : L'ensemble des éléments de ce site (textes, images, graphismes, logos, icônes, etc.) est la propriété exclusive de BRMOTORSPORT, sauf mention contraire. Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de BRMOTORSPORT."
+                            },
+                            privacyPolicy: {
+                                mainTitle: "Politique de Confidentialité",
+                                introTitle: "Introduction",
+                                introText: "La présente politique de confidentialité décrit comment BRMOTORSPORT collecte, utilise et protège vos informations personnelles lorsque vous utilisez notre site web.",
+                                collectionTitle: "Collecte des Informations Personnelles",
+                                collectionText: "Nous collectons des informations lorsque vous nous contactez via le formulaire de contact, lorsque vous naviguez sur notre site, ou lorsque vous interagissez avec nos services. Les informations collectées peuvent inclure votre nom, adresse e-mail, numéro de téléphone, et toute autre information que vous choisissez de nous fournir.",
+                                usageTitle: "Utilisation des Informations",
+                                usageListItem1: "Pour répondre à vos demandes et vous fournir les services que vous avez sollicités.",
+                                usageListItem2: "Pour améliorer notre site web et nos offres de services.",
+                                usageListItem3: "Pour vous envoyer des communications marketing (avec votre consentement).",
+                                protectionTitle: "Protection des Informations",
+                                protectionText: "Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Seuls les employés qui ont besoin d'effectuer un travail spécifique (par exemple, la facturation ou le service client) ont accès aux informations personnelles identifiables.",
+                                rightsTitle: "Vos Droits",
+                                rightsText: "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition au traitement de vos données personnelles. Pour exercer ces droits, veuillez nous contacter à [Votre Adresse E-mail].",
+                                disclaimerText: "Cette politique de confidentialité peut être mise à jour occasionnellement. Nous vous invitons à la consulter régulièrement."
+                            },
+                            showcaseCar: {
+                                mainTitle: "Notre Voiture Vitrine",
+                                description: "Découvrez notre dernière préparation exceptionnelle : une Volkswagen Scirocco R avec une optimisation Stage 3 poussée, développant plus de 500 chevaux.",
+                                preparationTitle: "Détails de la Préparation Stage 3",
+                                preparationDescription: "Ce véhicule a subi une transformation complète pour atteindre des niveaux de performance extrêmes, tout en conservant une fiabilité optimale.",
+                                piston: "Pistons forgés",
+                                bielles: "Bielles forgées",
+                                soupapes: "Soupapes renforcées",
+                                adm: "Admission gros volume",
+                                ressort: "Ressorts de soupapes renforcés",
+                                viserie: "Vis de bielles, vilebrequin et culasse renforcées",
+                                pompeHuile: "Pompe à huile gros débit",
+                                turbo: "Turbo hybride sur mesure",
+                                wastegate: "Wastegate externe",
+                                injecteurs: "Injecteurs gros débit",
+                                pipAdmission: "Pipe d'admission gros volume",
+                                wmi: "Système WMI (Water-Methanol Injection)",
+                                embrayage: "Embrayage renforcé",
+                                finalDescription: "Chaque composant a été soigneusement sélectionné et installé pour garantir une synergie parfaite et une expérience de conduite inégalée sur route comme sur circuit."
+                            }
                         });
                     } finally {
                         setLoadingContent(false);
@@ -1765,17 +1897,8 @@
             // Fonction pour mettre à jour une partie spécifique du contenu
             const updateContent = (keyPath, newValue) => {
                 setContent(prevContent => {
-                    const newContent = { ...prevContent };
-                    let current = newContent;
-                    const path = keyPath.split('.');
-                    for (let i = 0; i < path.length - 1; i++) {
-                        // Si le chemin n'existe pas, le créer pour éviter les erreurs
-                        if (!current[path[i]]) {
-                            current[path[i]] = {};
-                        }
-                        current = current[path[i]];
-                    }
-                    current[path[path.length - 1]] = newValue;
+                    const newContent = JSON.parse(JSON.stringify(prevContent)); // Deep copy
+                    setNestedProperty(newContent, keyPath, newValue);
                     console.log(`App: Global content updated via updateContent for ${keyPath}. New content state:`, newContent);
                     return newContent;
                 });
