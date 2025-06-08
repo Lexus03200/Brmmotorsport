@@ -66,18 +66,13 @@
                 opacity: 1;
             }
         }
-        /* Nouvelle animation pour l'effet de vibration (ralentie et plus subtile) */
+        /* Nouvelle animation pour l'effet de vibration (plus rapide et plus perceptible) */
         @keyframes vibrate {
             0% { transform: translate(0px, 0px); }
-            25% { transform: translate(-0.5px, 0.5px); } /* Mouvement légèrement plus perceptible */
-            50% { transform: translate(0.5px, -0.5px); }
-            75% { transform: translate(-0.5px, -0.5px); }
+            25% { transform: translate(-1px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, -1px); }
             100% { transform: translate(0px, 0px); }
-        }
-        /* Nouvelle animation pour un effet de fumée subtile passant sur le texte */
-        @keyframes text-mist-flow {
-            0% { background-position-x: 0, -200%; } /* Anime la position X du second arrière-plan */
-            100% { background-position-x: 0, 200%; }
         }
 
         .animate-fade-in-down { animation: fadeInDown 0.8s ease-out forwards; }
@@ -85,7 +80,7 @@
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
         .animate-bounce-in { animation: bounceIn 1s; }
         .animate-blob { animation: blob 7s infinite; }
-        .animate-vibrate { animation: vibrate 0.2s ease-in-out infinite; } /* Vitesse ajustée à 0.2s */
+        .animate-vibrate { animation: vibrate 0.1s ease-in-out infinite; } /* Vitesse ajustée à 0.1s */
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
         /* Style pour l'animation de défilement */
@@ -110,34 +105,6 @@
         /* Utilitaire pour décalage d'animation */
         .delay-animation {
             animation-delay: var(--delay-factor);
-        }
-
-        .text-smoke-effect {
-            position: relative;
-            overflow: hidden; /* Important pour cacher le défilement du gradient */
-            display: inline-block; /* Pour que le div prenne la taille du contenu */
-            /* Ajout de style pour le gradient et l'animation */
-            background-image:
-                linear-gradient(90deg, #ffffff, #ff0000, #0000ff), /* Couleurs du texte (blanc, rouge, bleu) */
-                linear-gradient(90deg,
-                                transparent 0%,
-                                rgba(255, 255, 255, 0.3) 20%, /* Brouillard blanc légèrement plus visible */
-                                transparent 40%,
-                                transparent 60%,
-                                rgba(255, 255, 255, 0.3) 80%,
-                                transparent 100%
-                              );
-            /* La première taille est pour le dégradé de couleur du texte, la seconde pour l'effet de fumée */
-            background-size: 100% 100%, 200% 100%;
-            /* Position initiale des deux arrière-plans. La fumée sera animée. */
-            background-position: 0 0, 0 0;
-            /* Le dégradé de couleur ne se répète pas, l'effet de fumée se répète horizontalement */
-            background-repeat: no-repeat, repeat-x;
-            -webkit-background-clip: text; /* Clips le fond pour qu'il n'apparaisse qu'à travers le texte */
-            -webkit-text-fill-color: transparent; /* Rend le texte transparent pour que le fond soit visible */
-            color: #fff; /* Couleur de secours pour les navigateurs non compatibles */
-            text-shadow: none; /* Supprime l'ombre de texte existante si elle interfère */
-            /* La vibration est appliquée directement via animate-vibrate */
         }
 
         /* Styles spécifiques pour la Lightbox (modale) */
@@ -420,9 +387,9 @@
             <div className="container mx-auto px-6 relative z-10">
               {/* Section Hero */}
               <section className="text-center mb-20">
-                {/* Conteneur pour le titre avec effet de fumée et vibration */}
-                <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate text-smoke-effect">
-                  Libérez la Puissance. Redéfinissez la Performance.
+                {/* Titre avec couleurs de base et vibration accentuée */}
+                <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate">
+                  Libérez la <span className="text-red-500">Puissance</span>. Redéfinissez la <span className="text-blue-500">Performance</span>.
                 </h1>
 
                 <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mt-10 animate-fade-in-up">
