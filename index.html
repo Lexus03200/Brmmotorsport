@@ -66,11 +66,27 @@
                 opacity: 1;
             }
         }
+        /* Nouvelle animation pour l'effet de vibration */
+        @keyframes vibrate {
+            0% { transform: translate(1px, 1px); }
+            10% { transform: translate(-1px, -2px); }
+            20% { transform: translate(-3px, 0px); }
+            30% { transform: translate(3px, 2px); }
+            40% { transform: translate(1px, -1px); }
+            50% { transform: translate(-1px, 2px); }
+            60% { transform: translate(-3px, 1px); }
+            70% { transform: translate(3px, 1px); }
+            80% { transform: translate(-1px, -1px); }
+            90% { transform: translate(1px, 2px); }
+            100% { transform: translate(1px, -2px); }
+        }
+
         .animate-fade-in-down { animation: fadeInDown 0.8s ease-out forwards; }
         .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
         .animate-bounce-in { animation: bounceIn 1s; }
         .animate-blob { animation: blob 7s infinite; }
+        .animate-vibrate { animation: vibrate 0.2s linear infinite; } /* Animation de vibration continue */
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
         /* Style pour l'animation de défilement */
@@ -377,7 +393,7 @@
             <div className="container mx-auto px-6 relative z-10">
               {/* Section Hero */}
               <section className="text-center mb-20">
-                <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down">
+                <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate"> {/* Ajout de la classe animate-vibrate */}
                   Libérez la <span className="text-red-500">Puissance</span>. Redéfinissez la <span className="text-blue-500">Performance</span>.
                 </h1>
                 <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
@@ -537,7 +553,7 @@
               id: 4,
               image: "IMG_9608.png", // Chemin relatif
               title: "Seat Ibiza : Amélioration de la Réactivité Moteur",
-              description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garanti.",
+              description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini.",
               originalImage: "IMG_9608.png"
             },
             {
@@ -911,7 +927,7 @@
                                 <img
                                     src={images[currentImageIndex]}
                                     alt={`Volkswagen Scirocco R - Image ${currentImageIndex + 1}`}
-                                    className="w-full h-full object-cover object-center animate-fade-in transition-opacity duration-700"
+                                    className="w-full h-full object-contain object-center animate-fade-in transition-opacity duration-700" /* Changed object-cover to object-contain */
                                     onError={(e) => {
                                         console.error(
                                             `ERREUR DE CHARGEMENT D'IMAGE dans le diaporama:
