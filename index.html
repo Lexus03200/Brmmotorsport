@@ -177,7 +177,7 @@
 
     <div id="root"></div>
 
-    <!-- Le type du script a été changé en "text/babel" pour que Babel puisse le transpiler -->
+    <!-- Le type du script a été changé en "text/babel" pour le transpiler -->
     <script type="text/babel">
         // Récupère les hooks React depuis l'objet global React
         const { useState, useEffect, useRef } = React;
@@ -901,7 +901,7 @@
                                 {images.map((imageSrc, index) => (
                                     <div
                                         key={index}
-                                        className="relative w-full h-48 rounded-lg overflow-hidden cursor-pointer group transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl animate-fade-in-up delay-animation"
+                                        className="relative w-full h-48 rounded-lg overflow-hidden cursor-pointer group transform transition duration-300 ease-in-out hover:scale-105 shadow-md hover:shadow-red-500/50 border-2 border-gray-700 hover:border-red-500 animate-fade-in-up delay-animation"
                                         onClick={() => openLightbox(index)}
                                         style={{ '--delay-factor': `${index * 100}ms` }}
                                     >
