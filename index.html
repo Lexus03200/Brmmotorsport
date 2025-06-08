@@ -6,12 +6,6 @@
     <title>BRMOTORSPORT - Performance Automobile</title>
     <!-- Intégration de Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Intégration de React et ReactDOM CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
         body {
@@ -156,7 +150,7 @@
     <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, signOut, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -174,9 +168,7 @@
             db: db,
             signInAnonymously: signInAnonymously,
             signInWithCustomToken: signInWithCustomToken,
-            signOut: signOut,
             onAuthStateChanged: onAuthStateChanged,
-            signInWithEmailAndPassword: signInWithEmailAndPassword, // New: for email/password login
             collection: collection,
             addDoc: addDoc,
             getDocs: getDocs,
@@ -222,6 +214,11 @@
         });
     </script>
 
+    <!-- Intégration de React et ReactDOM CDN (déplacé ici pour garantir qu'ils sont disponibles avant le script Babel) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur (déplacé ici) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <!-- Le type du script a été changé en "text/babel" pour que Babel puisse le transpiler -->
     <script type="text/babel">
@@ -544,7 +541,7 @@
         );
 
         // Composant Carte de Blog
-        const BlogPostCard = ({ post, isAdmin, onEdit, onDelete }) => (
+        const BlogPostCard = ({ post }) => (
           <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400 relative">
             <img
               src={post.image}
@@ -558,22 +555,12 @@
               <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold py-2 px-6 rounded-full hover:from-green-600 hover:to-teal-600 transition duration-300 ease-in-out shadow-md">
                 Lire la suite
               </button>
-              {isAdmin && (
-                <div className="absolute top-2 right-2 flex space-x-2">
-                  <button onClick={() => onEdit(post)} className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-full text-sm">
-                    Modifier
-                  </button>
-                  <button onClick={() => onDelete(post.id)} className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm">
-                    Supprimer
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         );
 
         // Composant Page Blog
-        const BlogPage = ({ isAdmin, onEditBlogPost, onDeleteBlogPost, firebaseDb, firebaseServices, isAuthReady }) => { // Added isAuthReady
+        const BlogPage = ({ firebaseDb, firebaseServices, isAuthReady }) => { // Added isAuthReady
           const [blogPosts, setBlogPosts] = useState([]);
           const [loading, setLoading] = useState(true);
           const [error, setError] = useState(null);
@@ -623,9 +610,6 @@
                     <BlogPostCard
                       key={post.id}
                       post={post}
-                      isAdmin={isAdmin}
-                      onEdit={onEditBlogPost}
-                      onDelete={onDeleteBlogPost}
                     />
                   ))}
                 </div>
@@ -671,463 +655,6 @@
             ></textarea>
           </div>
         );
-
-        // Composant pour la page de connexion
-        const LoginPage = ({ setCurrentUser, setIsAdmin, firebaseAuth, signInWithEmailAndPassword }) => {
-            const [email, setEmail] = useState('');
-            const [password, setPassword] = useState('');
-            const [loginError, setLoginError] = useState('');
-            const [loading, setLoading] = useState(false);
-
-            const handleLogin = async (e) => {
-                e.preventDefault();
-                setLoading(true);
-                setLoginError('');
-                if (firebaseAuth && signInWithEmailAndPassword) { // Use props
-                    try {
-                        const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
-                        setCurrentUser(userCredential.user);
-                        if (userCredential.user.email === 'admin@brmotorsport.com') { // Hardcoded admin check
-                            setIsAdmin(true);
-                        } else {
-                            setIsAdmin(false);
-                        }
-                        console.log("Connexion réussie !");
-                        // Rediriger ou faire quelque chose après la connexion
-                    } catch (error) {
-                        console.error("Erreur de connexion:", error);
-                        setLoginError("Erreur de connexion : " + error.message);
-                        setIsAdmin(false);
-                    } finally {
-                        setLoading(false);
-                    }
-                } else {
-                    setLoginError("Firebase services non disponibles. Veuillez recharger la page.");
-                    setLoading(false);
-                }
-            };
-
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
-                    <div className="container mx-auto px-6 max-w-md">
-                        <h1 className="text-5xl font-extrabold text-center mb-12 text-orange-400 animate-fade-in-down">
-                            Connexion Administrateur
-                        </h1>
-                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-6">
-                            <form onSubmit={handleLogin} className="space-y-6">
-                                <InputField
-                                    label="Email"
-                                    type="email"
-                                    name="email"
-                                    placeholder="admin@brmotorsport.com"
-                                    required={true}
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                                <InputField
-                                    label="Mot de passe"
-                                    type="password"
-                                    name="password"
-                                    placeholder="Votre mot de passe"
-                                    required={true}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                                {loginError && <p className="text-red-400 text-sm mt-2">{loginError}</p>}
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {loading ? "Connexion en cours..." : "Se connecter"}
-                                </button>
-                            </form>
-                            <p className="text-sm text-gray-400 text-center mt-4">
-                                Utilisez l'email `admin@brmotorsport.com` et le mot de passe `SecureAdminPass123`.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // Composant pour l'interface d'administration
-        const AdminDashboardPage = ({ firebaseServices }) => { // Receive firebaseServices as prop
-            const [activeTab, setActiveTab] = useState('blog'); // 'blog' or 'showcase'
-            const [editingBlogPost, setEditingBlogPost] = useState(null); // null or { id: ..., title: ..., ... }
-            const [editingShowcaseImage, setEditingShowcaseImage] = useState(null); // null or { id: ..., url: ..., ... }
-            const [blogPosts, setBlogPosts] = useState([]);
-            const [showcaseImages, setShowcaseImages] = useState([]);
-            const [dataLoading, setDataLoading] = useState(true);
-            const [dataError, setDataError] = useState(null);
-
-            // Fetch data from Firestore
-            useEffect(() => {
-                if (firebaseServices && firebaseServices.db && firebaseServices.appId) { // Ensure appId is available
-                    const db = firebaseServices.db; // Use prop
-                    const blogColRef = firebaseServices.collection(db, `artifacts/${firebaseServices.appId}/public/data/blogPosts`); // Updated path
-                    const showcaseColRef = firebaseServices.collection(db, `artifacts/${firebaseServices.appId}/public/data/showcaseImages`); // Updated path
-
-                    const unsubscribeBlog = firebaseServices.onSnapshot(blogColRef, (snapshot) => {
-                        const postsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                        setBlogPosts(postsData);
-                        setDataLoading(false);
-                    }, (err) => {
-                        console.error("Erreur lors du chargement des articles de blog pour admin:", err);
-                        setDataError("Impossible de charger les articles de blog.");
-                        setDataLoading(false);
-                    });
-
-                    const unsubscribeShowcase = firebaseServices.onSnapshot(showcaseColRef, (snapshot) => {
-                        const imagesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                        setShowcaseImages(imagesData);
-                        setDataLoading(false);
-                    }, (err) => {
-                        console.error("Erreur lors du chargement des images de la voiture vitrine pour admin:", err);
-                        setDataError("Impossible de charger les images de la voiture vitrine.");
-                        setDataLoading(false);
-                    });
-
-                    return () => {
-                        unsubscribeBlog();
-                        unsubscribeShowcase();
-                    };
-                } else {
-                    setDataError("Firebase services non disponibles pour le tableau de bord admin.");
-                    setDataLoading(false);
-                }
-            }, [firebaseServices]); // Add firebaseServices to dependency array
-
-            // Initial Data Population for Firestore (Run only once manually or via external script)
-            // This code block is for initial population and should ideally be run once.
-            // For this demonstration, I'll let it run on component mount if collections are empty.
-            useEffect(() => {
-                const populateInitialData = async () => {
-                    if (firebaseServices && firebaseServices.db && firebaseServices.appId) { // Ensure appId is available
-                        const db = firebaseServices.db; // Use prop
-                        const blogColRef = firebaseServices.collection(db, `artifacts/${firebaseServices.appId}/public/data/blogPosts`); // Updated path
-                        const showcaseColRef = firebaseServices.collection(db, `artifacts/${firebaseServices.appId}/public/data/showcaseImages`); // Updated path
-
-                        // Check if blogPosts collection is empty
-                        const blogSnapshot = await firebaseServices.getDocs(blogColRef);
-                        if (blogSnapshot.empty) {
-                            console.log("Initialisation des articles de blog dans Firestore...");
-                            const initialBlogPosts = [
-                                { title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur", description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime.", image: "https://lexus03200.github.io/Brmotorsport/IMG_9611.png", originalImage: "IMG_9611.png" },
-                                { title: "BMW Série 2 : Reprogrammation et FAP OFF", description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité.", image: "https://lexus03200.github.io/Brmotorsport/IMG_9609.png", originalImage: "IMG_9609.png" },
-                                { title: "VW Golf GTI : Boost de Performance Ultime", description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !", image: "https://lexus03200.github.io/Brmotorsport/IMG_9607.png", originalImage: "IMG_9607.png" },
-                                { title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garanti.", image: "https://lexus03200.github.io/Brmotorsport/IMG_9608.png", originalImage: "IMG_9608.png" },
-                                { title: "VW Golf 5 GTI : Mise à Jour Cartographie", description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !", image: "https://lexus03200.github.io/Brmotorsport/IMG_9610.png", originalImage: "IMG_9610.png" },
-                                { title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation", description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led).", image: "https://lexus03200.github.io/Brmotorsport/Photopeugeot.png", originalImage: "Photopeugeot.png" },
-                                { title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm.", image: "https://lexus03200.github.io/Brmotorsport/Seat1.png", originalImage: "Seat1.png" },
-                                { title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité.", image: "https://lexus03200.github.io/Brmotorsport/anciennevoiture.png", originalImage: "anciennevoiture.png" },
-                                { title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité.", image: "https://lexus03200.github.io/Brmotorsport/audi1.png", originalImage: "audi1.png" },
-                                { title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité.", image: "https://lexus03200.github.io/Brmotorsport/gx.png", originalImage: "gx.png" },
-                                { title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système.", image: "https://lexus03200.github.io/Brmotorsport/mercedes2021.png", originalImage: "mercedes2021.png" }
-                            ];
-                            for (const post of initialBlogPosts) {
-                                await firebaseServices.addDoc(blogColRef, post);
-                            }
-                            console.log("Articles de blog initialisés.");
-                        }
-
-                        // Check if showcaseImages collection is empty
-                        const showcaseSnapshot = await firebaseServices.getDocs(showcaseColRef);
-                        if (showcaseSnapshot.empty) {
-                            console.log("Initialisation des images de la voiture vitrine dans Firestore...");
-                            const initialShowcaseImages = [
-                                { url: "https://lexus03200.github.io/Brmotorsport/Photo1.png", description: "Scirocco R Vue Avant" },
-                                { url: "https://lexus03200.github.io/Brmotorsport/photo2.png", description: "Scirocco R Vue Côté" },
-                                { url: "https://lexus03200.github.io/Brmotorsport/photo3.png", description: "Scirocco R Moteur" },
-                                { url: "https://lexus03200.github.io/Brmotorsport/photo4.png", description: "Scirocco R Intérieur" },
-                                { url: "https://lexus03200.github.io/Brmotorsport/photo5.png", description: "Scirocco R Freins" },
-                                { url: "https://lexus03200.github.io/Brmotorsport/photo6.png", description: "Scirocco R Jantes" },
-                                { url: "https://lexus03200.github.io/Brmotorsport/photo7.png", description: "Scirocco R Échappement" },
-                                { url: "https://lexus03200.github.io/Brmotorsport/photo8.png", description: "Scirocco R Arrière" },
-                                { url: "https://lexus03200.github.io/Brmotorsport/photo9.png", description: "Scirocco R Détail Moteur" },
-                                { url: "https://lexus03200.github.io/Brmotorsport/photo10.png", description: "Scirocco R Phares" }
-                            ];
-                            for (const img of initialShowcaseImages) {
-                                await firebaseServices.addDoc(showcaseColRef, img);
-                            }
-                            console.log("Images de la voiture vitrine initialisées.");
-                        }
-                    }
-                };
-                // Only run if firebaseServices is available
-                if (firebaseServices) {
-                   populateInitialData();
-                }
-            }, [firebaseServices]); // Run when firebaseServices becomes available
-
-
-            // Blog Post Management Functions
-            const handleAddOrUpdateBlogPost = async (postData) => {
-                if (!firebaseServices || !firebaseServices.db || !firebaseServices.appId) {
-                    console.error("Firebase services non disponibles.");
-                    return;
-                }
-                const db = firebaseServices.db;
-                const colPath = `artifacts/${firebaseServices.appId}/public/data/blogPosts`; // Updated path
-                const colRef = firebaseServices.collection(db, colPath);
-                try {
-                    if (postData.id) {
-                        // Update existing post
-                        const docRef = firebaseServices.doc(db, colPath, postData.id); // Updated path
-                        await firebaseServices.updateDoc(docRef, {
-                            title: postData.title,
-                            description: postData.description,
-                            image: postData.image,
-                            originalImage: postData.originalImage || postData.image.split('/').pop() // Keep original filename
-                        });
-                        console.log("Article de blog mis à jour avec l'ID:", postData.id);
-                    } else {
-                        // Add new post
-                        await firebaseServices.addDoc(colRef, {
-                            title: postData.title,
-                            description: postData.description,
-                            image: postData.image,
-                            originalImage: postData.image.split('/').pop(), // Store original filename for reference
-                            createdAt: new Date()
-                        });
-                        console.log("Nouvel article de blog ajouté.");
-                    }
-                    setEditingBlogPost(null); // Exit editing mode
-                } catch (e) {
-                    console.error("Erreur lors de l'ajout/mise à jour de l'article de blog:", e);
-                }
-            };
-
-            const handleDeleteBlogPost = async (id) => {
-                if (!firebaseServices || !firebaseServices.db || !firebaseServices.appId) {
-                    console.error("Firebase services non disponibles.");
-                    return;
-                }
-                const db = firebaseServices.db;
-                const colPath = `artifacts/${firebaseServices.appId}/public/data/blogPosts`; // Updated path
-                try {
-                    await firebaseServices.deleteDoc(firebaseServices.doc(db, colPath, id)); // Updated path
-                    console.log("Article de blog supprimé avec l'ID:", id);
-                } catch (e) {
-                    console.error("Erreur lors de la suppression de l'article de blog:", e);
-                }
-            };
-
-            // Showcase Image Management Functions
-            const handleAddOrUpdateShowcaseImage = async (imageData) => {
-                if (!firebaseServices || !firebaseServices.db || !firebaseServices.appId) {
-                    console.error("Firebase services non disponibles.");
-                    return;
-                }
-                const db = firebaseServices.db;
-                const colPath = `artifacts/${firebaseServices.appId}/public/data/showcaseImages`; // Updated path
-                const colRef = firebaseServices.collection(db, colPath);
-                try {
-                    if (imageData.id) {
-                        // Update existing image
-                        const docRef = firebaseServices.doc(db, colPath, imageData.id); // Updated path
-                        await firebaseServices.updateDoc(docRef, {
-                            url: imageData.url,
-                            description: imageData.description
-                        });
-                        console.log("Image de la voiture vitrine mise à jour avec l'ID:", imageData.id);
-                    } else {
-                        // Add new image
-                        await firebaseServices.addDoc(colRef, {
-                            url: imageData.url,
-                            description: imageData.description,
-                            createdAt: new Date()
-                        });
-                        console.log("Nouvelle image de la voiture vitrine ajoutée.");
-                    }
-                    setEditingShowcaseImage(null); // Exit editing mode
-                } catch (e) {
-                    console.error("Erreur lors de l'ajout/mise à jour de l'image de la voiture vitrine:", e);
-                }
-            };
-
-            const handleDeleteShowcaseImage = async (id) => {
-                if (!firebaseServices || !firebaseServices.db || !firebaseServices.appId) {
-                    console.error("Firebase services non disponibles.");
-                    return;
-                }
-                const db = firebaseServices.db;
-                const colPath = `artifacts/${firebaseServices.appId}/public/data/showcaseImages`; // Updated path
-                try {
-                    await firebaseServices.deleteDoc(firebaseServices.doc(db, colPath, id)); // Updated path
-                    console.log("Image de la voiture vitrine supprimée avec l'ID:", id);
-                } catch (e) {
-                    console.error("Erreur lors de la suppression de l'image de la voiture vitrine:", e);
-                }
-            };
-
-            if (dataLoading) return <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter flex items-center justify-center"><p className="text-2xl animate-pulse">Chargement des données...</p></div>;
-            if (dataError) return <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter flex items-center justify-center"><p className="text-2xl text-red-500">{dataError}</p></div>;
-
-
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
-                    <div className="container mx-auto px-6 max-w-6xl">
-                        <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down">
-                            Tableau de Bord Administrateur
-                        </h1>
-                        <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
-                            Gérez le contenu de votre site web.
-                        </p>
-
-                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700">
-                            <div className="flex justify-center mb-8 space-x-4">
-                                <button
-                                    onClick={() => { setActiveTab('blog'); setEditingBlogPost(null); }}
-                                    className={`py-3 px-6 rounded-full text-lg font-semibold transition-all duration-300 ${activeTab === 'blog' ? 'bg-green-600 text-white shadow-md' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
-                                >
-                                    Gestion Blog
-                                </button>
-                                <button
-                                    onClick={() => { setActiveTab('showcase'); setEditingShowcaseImage(null); }}
-                                    className={`py-3 px-6 rounded-full text-lg font-semibold transition-all duration-300 ${activeTab === 'showcase' ? 'bg-green-600 text-white shadow-md' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
-                                >
-                                    Gestion Voiture Vitrine
-                                </button>
-                            </div>
-
-                            {activeTab === 'blog' && (
-                                <div className="space-y-8">
-                                    <h2 className="text-3xl font-bold text-white mb-6 text-center">Articles de Blog</h2>
-                                    <button
-                                        onClick={() => setEditingBlogPost({ title: '', description: '', image: '' })}
-                                        className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full shadow-md mb-6 transition duration-300 ease-in-out"
-                                    >
-                                        Ajouter un nouvel article
-                                    </button>
-
-                                    {editingBlogPost && (
-                                        <BlogPostForm
-                                            post={editingBlogPost}
-                                            onSubmit={handleAddOrUpdateBlogPost}
-                                            onCancel={() => setEditingBlogPost(null)}
-                                        />
-                                    )}
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {blogPosts.map(post => (
-                                            <BlogPostCard
-                                                key={post.id}
-                                                post={post}
-                                                isAdmin={true}
-                                                onEdit={setEditingBlogPost}
-                                                onDelete={handleDeleteBlogPost}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'showcase' && (
-                                <div className="space-y-8">
-                                    <h2 className="text-3xl font-bold text-white mb-6 text-center">Images Voiture Vitrine</h2>
-                                    <button
-                                        onClick={() => setEditingShowcaseImage({ url: '', description: '' })}
-                                        className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full shadow-md mb-6 transition duration-300 ease-in-out"
-                                    >
-                                        Ajouter une nouvelle image
-                                    </button>
-
-                                    {editingShowcaseImage && (
-                                        <ShowcaseImageForm
-                                            image={editingShowcaseImage}
-                                            onSubmit={handleAddOrUpdateShowcaseImage}
-                                            onCancel={() => setEditingShowcaseImage(null)}
-                                        />
-                                    )}
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                        {showcaseImages.map((img) => (
-                                            <div key={img.id} className="relative group rounded-lg overflow-hidden shadow-lg border border-gray-700">
-                                                <img
-                                                    src={img.url}
-                                                    alt={img.description}
-                                                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                                                    onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/400x300/000/FFF?text=Image+non+trouvée"; }}
-                                                />
-                                                <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col p-2">
-                                                    <p className="text-white text-center text-sm mb-2">{img.description}</p>
-                                                    <div className="flex space-x-2">
-                                                        <button onClick={() => setEditingShowcaseImage(img)} className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-full text-sm">
-                                                            Modifier
-                                                        </button>
-                                                        <button onClick={() => handleDeleteShowcaseImage(img.id)} className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm">
-                                                            Supprimer
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // Formulaire pour Ajouter/Modifier un Article de Blog
-        const BlogPostForm = ({ post, onSubmit, onCancel }) => {
-            const [title, setTitle] = useState(post.title || '');
-            const [description, setDescription] = useState(post.description || '');
-            const [image, setImage] = useState(post.image || '');
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                onSubmit({ ...post, title, description, image });
-            };
-
-            return (
-                <form id="blog-edit-form" onSubmit={handleSubmit} className="bg-gray-700 p-6 rounded-lg shadow-inner mb-8 space-y-4 border border-gray-600">
-                    <h3 className="text-2xl font-bold text-white mb-4">{post.id ? "Modifier l'article" : "Ajouter un nouvel article"}</h3>
-                    <InputField label="Titre" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required={true} />
-                    <TextAreaField label="Description" value={description} onChange={(e) => setDescription(e.target.value)} required={true} />
-                    <InputField label="URL de l'image" type="text" value={image} onChange={(e) => setImage(e.target.value)} required={true} />
-                    <div className="flex justify-end space-x-4">
-                        <button type="button" onClick={onCancel} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full transition duration-300">
-                            Annuler
-                        </button>
-                        <button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition duration-300">
-                            {post.id ? "Mettre à jour" : "Ajouter"}
-                        </button>
-                    </div>
-                </form>
-            );
-        };
-
-        // Formulaire pour Ajouter/Modifier une Image de Voiture Vitrine
-        const ShowcaseImageForm = ({ image, onSubmit, onCancel }) => {
-            const [url, setUrl] = useState(image.url || '');
-            const [description, setDescription] = useState(image.description || '');
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                onSubmit({ ...image, url, description });
-            };
-
-            return (
-                <form id="showcase-edit-form" onSubmit={handleSubmit} className="bg-gray-700 p-6 rounded-lg shadow-inner mb-8 space-y-4 border border-gray-600">
-                    <h3 className="text-2xl font-bold text-white mb-4">{image.id ? "Modifier l'image" : "Ajouter une nouvelle image"}</h3>
-                    <InputField label="URL de l'image" type="text" value={url} onChange={(e) => setUrl(e.target.value)} required={true} />
-                    <InputField label="Description" type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
-                    <div className="flex justify-end space-x-4">
-                        <button type="button" onClick={onCancel} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full transition duration-300">
-                            Annuler
-                        </button>
-                        <button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition duration-300">
-                            {image.id ? "Mettre à jour" : "Ajouter"}
-                        </button>
-                    </div>
-                </form>
-            );
-        };
-
 
         // Composant Page Qui Sommes-nous
         const AboutUsPage = () => (
@@ -1316,7 +843,7 @@
         );
 
         // Composant pour la page Voiture Vitrine
-        const ShowcaseCarPage = ({ isAdmin, firebaseDb, firebaseServices, isAuthReady }) => { // Added isAuthReady
+        const ShowcaseCarPage = ({ firebaseDb, firebaseServices, isAuthReady }) => { // isAuthReady passed
             const [showcaseImages, setShowcaseImages] = useState([]);
             const [loading, setLoading] = useState(true);
             const [error, setError] = useState(null);
@@ -1537,14 +1064,12 @@
         // Composant principal de l'application
         const App = () => {
             const [currentPage, setCurrentPage] = useState('accueil');
-            const [currentUser, setCurrentUser] = useState(null);
-            const [isAdmin, setIsAdmin] = useState(false);
-            const [appLoading, setAppLoading] = useState(true); // Renommé de authLoading
-            const [firebaseReadyServices, setFirebaseReadyServices] = useState(null); // État pour stocker l'objet firebaseServices
-            const [isAuthReady, setIsAuthReady] = useState(false); // Nouveau: État pour indiquer si l'authentification est prête
+            const [appLoading, setAppLoading] = useState(true);
+            const [firebaseReadyServices, setFirebaseReadyServices] = useState(null);
+            const [isAuthReady, setIsAuthReady] = useState(false); // État pour indiquer si l'authentification est prête
 
             useEffect(() => {
-                let unsubscribeAuth; // Pour stocker la fonction de désabonnement de l'écouteur d'auth
+                let unsubscribeAuth;
 
                 const checkAndSetFirebase = () => {
                     if (window.firebaseServices && window.firebaseServices.auth && window.firebaseServices.db) {
@@ -1552,35 +1077,34 @@
 
                         const auth = window.firebaseServices.auth;
                         unsubscribeAuth = window.firebaseServices.onAuthStateChanged(auth, async (user) => {
-                            setCurrentUser(user);
-                            setIsAdmin(user && user.email === 'admin@brmotorsport.com');
                             setIsAuthReady(true); // L'état d'authentification est maintenant résolu
                             setAppLoading(false); // L'application n'est plus en attente d'authentification
 
-                            // Appeler populateInitialData seulement si un utilisateur est authentifié (même anonymement)
-                            // et seulement une fois après que l'authentification est prête
-                            if (user) {
+                            // Appeler populateInitialData seulement après que l'authentification est prête et une seule fois
+                            // Utilisation d'un ref ou d'un état pour s'assurer que populateInitialData ne s'exécute qu'une fois
+                            if (user && !sessionStorage.getItem('initialDataPopulated')) { // Check if user exists and flag not set
                                 await populateInitialData(window.firebaseServices);
+                                sessionStorage.setItem('initialDataPopulated', 'true'); // Set flag after population
                             }
                         });
                     } else {
-                        // Continuer à vérifier jusqu'à ce que les services Firebase soient disponibles
-                        setTimeout(checkAndSetFirebase, 50); // Interrogation toutes les 50ms
+                        setTimeout(checkAndSetFirebase, 50);
                     }
                 };
 
-                checkAndSetFirebase(); // Démarre le processus de vérification
+                checkAndSetFirebase();
 
                 return () => {
-                    if (unsubscribeAuth) unsubscribeAuth(); // Nettoyer l'écouteur lors du démontage du composant
+                    if (unsubscribeAuth) unsubscribeAuth();
                 };
-            }, []); // S'exécute une seule fois au montage du composant App
+            }, []);
 
-            const populateInitialData = async (services) => { // Reçoit les services en argument
+            // Fonction pour peupler les données initiales
+            const populateInitialData = async (services) => {
                 const db = services.db;
                 const appId = services.appId;
-                const blogColRef = services.collection(db, `artifacts/${appId}/public/data/blogPosts`); // Chemin mis à jour
-                const showcaseColRef = services.collection(db, `artifacts/${appId}/public/data/showcaseImages`); // Chemin mis à jour
+                const blogColRef = services.collection(db, `artifacts/${appId}/public/data/blogPosts`);
+                const showcaseColRef = services.collection(db, `artifacts/${appId}/public/data/showcaseImages`);
 
                 try {
                     const blogSnapshot = await services.getDocs(blogColRef);
@@ -1600,12 +1124,12 @@
                             { title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système.", image: "https://lexus03200.github.io/Brmotorsport/mercedes2021.png", originalImage: "mercedes2021.png" }
                         ];
                         for (const post of initialBlogPosts) {
-                            await services.addDoc(blogColRef, post); // Utilise services.addDoc
+                            await services.addDoc(blogColRef, post);
                         }
                         console.log("Articles de blog initialisés.");
                     }
 
-                    const showcaseSnapshot = await services.getDocs(showcaseColRef); // Utilise services.getDocs
+                    const showcaseSnapshot = await services.getDocs(showcaseColRef);
                     if (showcaseSnapshot.empty) {
                         console.log("Initialisation des images de la voiture vitrine dans Firestore...");
                         const initialShowcaseImages = [
@@ -1621,7 +1145,7 @@
                             { url: "https://lexus03200.github.io/Brmotorsport/photo10.png", description: "Scirocco R Phares" }
                         ];
                         for (const img of initialShowcaseImages) {
-                            await services.addDoc(showcaseColRef, img); // Utilise services.addDoc
+                            await services.addDoc(showcaseColRef, img);
                         }
                         console.log("Images de la voiture vitrine initialisées.");
                     }
@@ -1649,89 +1173,43 @@
 
               switch (currentPage) {
                 case 'accueil':
-                  return <HomePage setCurrentPage={setCurrentPage} />; // Passer setCurrentPage à HomePage
+                  return <HomePage setCurrentPage={setCurrentPage} />;
                 case 'blog':
-                  // Pass the functions for editing and deleting blog posts
                   return <BlogPage
-                            isAdmin={isAdmin}
-                            onEditBlogPost={(post) => { setCurrentPage('admin-dashboard'); setTimeout(() => {
-                                // Delay scroll to ensure the element is rendered
-                                const formElement = document.getElementById('blog-edit-form');
-                                if (formElement) formElement.scrollIntoView({ behavior: 'smooth' });
-                                // Optionally set the post for editing in admin dashboard if it's a direct edit link
-                            }, 100); }}
-                            onDeleteBlogPost={null} // onDeleteBlogPost is handled in AdminDashboardPage
-                            firebaseDb={firebaseReadyServices.db} // Passer la base de données Firebase
-                            firebaseServices={firebaseReadyServices} // Passer firebaseServices
-                            isAuthReady={isAuthReady} // Passer isAuthReady
+                            firebaseDb={firebaseReadyServices.db}
+                            firebaseServices={firebaseReadyServices}
+                            isAuthReady={isAuthReady}
                          />;
                 case 'qui-sommes-nous':
                   return <AboutUsPage />;
                 case 'contact':
                   return <ContactPage />;
-                case 'mentions-legales': // Nouveau cas pour les mentions légales
+                case 'mentions-legales':
                   return <LegalMentionsPage />;
-                case 'confidentialite': // Nouveau cas pour la politique de confidentialité
+                case 'confidentialite':
                   return <PrivacyPolicyPage />;
-                case 'voiture-vitrine': // Réactivation du cas pour la voiture vitrine
-                  return <ShowcaseCarPage isAdmin={isAdmin} firebaseDb={firebaseReadyServices.db} firebaseServices={firebaseReadyServices} isAuthReady={isAuthReady} />; // Passer la base de données Firebase et firebaseServices et isAuthReady
-                case 'login': // Nouveau cas pour la page de connexion
-                    return <LoginPage
-                                setCurrentUser={setCurrentUser}
-                                setIsAdmin={setIsAdmin}
-                                firebaseAuth={firebaseReadyServices.auth} // Passer l'authentification Firebase
-                                signInWithEmailAndPassword={firebaseReadyServices.signInWithEmailAndPassword} // Passer la fonction de connexion
-                            />;
-                case 'admin-dashboard':
-                    if (isAdmin) {
-                        return <AdminDashboardPage firebaseServices={firebaseReadyServices} />; // Passer tous les services Firebase
-                    } else {
-                        // Rediriger vers la page d'accueil ou de connexion si non admin
-                        setCurrentPage('accueil');
-                        return <HomePage setCurrentPage={setCurrentPage} />;
-                    }
+                case 'voiture-vitrine':
+                  return <ShowcaseCarPage firebaseDb={firebaseReadyServices.db} firebaseServices={firebaseReadyServices} isAuthReady={isAuthReady} />;
                 default:
-                  return <HomePage setCurrentPage={setCurrentPage} />; // Passer setCurrentPage à HomePage par défaut
+                  return <HomePage setCurrentPage={setCurrentPage} />;
               }
             };
 
             return (
                 <div className="min-h-screen bg-black font-inter">
-                    <ScrollingBanner /> {/* Nouvelle bannière défilante */}
+                    <ScrollingBanner />
                     <Navbar setCurrentPage={setCurrentPage} />
                     <main className="flex-grow">
                         {renderPage()}
                     </main>
-                    <MusicControl /> {/* Ajout du contrôle de musique */}
+                    <MusicControl />
                     <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
                         <div className="container mx-auto px-4">
                             <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
-                            <div className="flex justify-center space-x-4 mt-3 text-sm"> {/* Ajout de text-sm pour le pied de page */}
+                            <div className="flex justify-center space-x-4 mt-3 text-sm">
                                 <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
                                 <span className="text-gray-600">|</span>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
-                                {currentUser ? ( // Afficher Déconnexion si connecté
-                                    <>
-                                        <span className="text-gray-600">|</span>
-                                        <button onClick={() => {
-                                            if (firebaseReadyServices && firebaseReadyServices.signOut) { // Utiliser firebaseReadyServices
-                                                firebaseReadyServices.signOut(firebaseReadyServices.auth);
-                                                setCurrentPage('accueil'); // Rediriger après déconnexion
-                                            }
-                                        }} className="hover:text-red-500 transition duration-300 focus:outline-none">Déconnexion</button>
-                                        {isAdmin && ( // Afficher Tableau de Bord Admin si admin
-                                            <>
-                                                <span className="text-gray-600">|</span>
-                                                <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin-dashboard'); }} className="hover:text-red-500 transition duration-300">Admin Dashboard</a>
-                                            </>
-                                        )}
-                                    </>
-                                ) : ( // Afficher Connexion si non connecté
-                                    <>
-                                        <span className="text-gray-600">|</span>
-                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('login'); }} className="hover:text-red-500 transition duration-300">Connexion Client</a>
-                                    </>
-                                )}
                             </div>
                             <p className="text-sm mt-2">Réalisé avec passion par Rémy Bruyant</p>
                         </div>
@@ -1741,16 +1219,14 @@
         };
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
-        // Utilisation de window.onload pour s'assurer que ReactDOM est chargé
-        window.onload = function() {
-            const container = document.getElementById('root');
-            if (container) {
-                const root = ReactDOM.createRoot(container);
-                root.render(<App />);
-            } else {
-                console.error("Élément racine 'root' introuvable.");
-            }
-        };
+        // Le code de rendu est exécuté directement après le chargement des scripts React et ReactDOM.
+        const container = document.getElementById('root');
+        if (container) {
+            const root = ReactDOM.createRoot(container);
+            root.render(<App />);
+        } else {
+            console.error("Élément racine 'root' introuvable.");
+        }
     </script>
 </body>
 </html>
