@@ -69,15 +69,15 @@
         /* Nouvelle animation pour l'effet de vibration (ralentie et plus subtile) */
         @keyframes vibrate {
             0% { transform: translate(0px, 0px); }
-            25% { transform: translate(-0.2px, 0.2px); } /* Mouvement plus petit */
-            50% { transform: translate(0.2px, -0.2px); }
-            75% { transform: translate(-0.2px, -0.2px); }
+            25% { transform: translate(-0.5px, 0.5px); } /* Mouvement légèrement plus perceptible */
+            50% { transform: translate(0.5px, -0.5px); }
+            75% { transform: translate(-0.5px, -0.5px); }
             100% { transform: translate(0px, 0px); }
         }
         /* Nouvelle animation pour un effet de fumée subtile passant sur le texte */
         @keyframes text-mist-flow {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% { background-position-x: 0, -200%; } /* Anime la position X du second arrière-plan */
+            100% { background-position-x: 0, 200%; }
         }
 
         .animate-fade-in-down { animation: fadeInDown 0.8s ease-out forwards; }
@@ -117,20 +117,27 @@
             overflow: hidden; /* Important pour cacher le défilement du gradient */
             display: inline-block; /* Pour que le div prenne la taille du contenu */
             /* Ajout de style pour le gradient et l'animation */
-            background: linear-gradient(90deg,
-                        transparent 0%,
-                        rgba(255, 255, 255, 0.1) 20%, /* Léger brouillard blanc */
-                        transparent 40%,
-                        transparent 60%,
-                        rgba(255, 255, 255, 0.1) 80%,
-                        transparent 100%
-                      );
-            background-size: 200% 100%; /* Plus large que le texte pour l'effet de défilement */
-            animation: text-mist-flow 10s linear infinite; /* Animation lente et continue */
-            -webkit-background-clip: text; /* Clip the background to the text shape */
-            -webkit-text-fill-color: transparent; /* Make text transparent so background shows */
-            color: #fff; /* Fallback for browsers not supporting background-clip: text */
-            text-shadow: none; /* Remove existing text shadow if it interferes */
+            background-image:
+                linear-gradient(90deg, #ffffff, #ff0000, #0000ff), /* Couleurs du texte (blanc, rouge, bleu) */
+                linear-gradient(90deg,
+                                transparent 0%,
+                                rgba(255, 255, 255, 0.3) 20%, /* Brouillard blanc légèrement plus visible */
+                                transparent 40%,
+                                transparent 60%,
+                                rgba(255, 255, 255, 0.3) 80%,
+                                transparent 100%
+                              );
+            /* La première taille est pour le dégradé de couleur du texte, la seconde pour l'effet de fumée */
+            background-size: 100% 100%, 200% 100%;
+            /* Position initiale des deux arrière-plans. La fumée sera animée. */
+            background-position: 0 0, 0 0;
+            /* Le dégradé de couleur ne se répète pas, l'effet de fumée se répète horizontalement */
+            background-repeat: no-repeat, repeat-x;
+            -webkit-background-clip: text; /* Clips le fond pour qu'il n'apparaisse qu'à travers le texte */
+            -webkit-text-fill-color: transparent; /* Rend le texte transparent pour que le fond soit visible */
+            color: #fff; /* Couleur de secours pour les navigateurs non compatibles */
+            text-shadow: none; /* Supprime l'ombre de texte existante si elle interfère */
+            /* La vibration est appliquée directement via animate-vibrate */
         }
 
         /* Styles spécifiques pour la Lightbox (modale) */
@@ -206,7 +213,7 @@
     <!-- 'loop' assure que la musique se répète. -->
     <!-- 'style="display:none;"' masque les contrôles de lecture par défaut. -->
     <!-- Ajout de l'attribut volume pour réduire le son (valeur de 0.0 à 1.0) -->
-    <audio id="background-music" autoplay loop volume="0.05" style="display:none;">
+    <audio id="background-music" autoplay loop volume="0.02" style="display:none;">
         <!-- L'URL est construite en utilisant votre domaine GitHub Pages et le nom de votre fichier MP3. -->
         <source src="musique.mp3" type="audio/mpeg"> <!-- Chemin mis à jour pour être relatif au dossier racine -->
         Votre navigateur ne supporte pas l'élément audio.
@@ -415,7 +422,7 @@
               <section className="text-center mb-20">
                 {/* Conteneur pour le titre avec effet de fumée et vibration */}
                 <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate text-smoke-effect">
-                  Libérez la <span className="text-red-500">Puissance</span>. Redéfinissez la <span className="text-blue-500">Performance</span>.
+                  Libérez la Puissance. Redéfinissez la Performance.
                 </h1>
 
                 <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mt-10 animate-fade-in-up">
