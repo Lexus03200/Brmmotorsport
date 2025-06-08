@@ -169,7 +169,8 @@
     <!-- 'autoplay' tente de lancer la lecture automatique, mais peut être bloqué par les navigateurs mobiles. -->
     <!-- 'loop' assure que la musique se répète. -->
     <!-- 'style="display:none;"' masque les contrôles de lecture par défaut. -->
-    <audio id="background-music" autoplay loop style="display:none;">
+    <!-- Ajout de l'attribut volume pour réduire le son (valeur de 0.0 à 1.0) -->
+    <audio id="background-music" autoplay loop volume="0.2" style="display:none;">
         <!-- L'URL est construite en utilisant votre domaine GitHub Pages et le nom de votre fichier MP3. -->
         <source src="musique.mp3" type="audio/mpeg"> <!-- Chemin mis à jour pour être relatif au dossier racine -->
         Votre navigateur ne supporte pas l'élément audio.
