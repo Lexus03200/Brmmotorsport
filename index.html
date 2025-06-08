@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Intégration de React et ReactDOM CDN -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
@@ -525,7 +525,7 @@
           </div>
         );
 
-        // Composant Carte de Service
+        // Composant Carte de Service (déclaré une seule fois ici)
         const ServiceCard = ({ icon, title, description }) => (
           <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-red-500">
             <div className="text-red-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-red-400">{icon}</div>
@@ -534,7 +534,7 @@
           </div>
         );
 
-        // Composant Carte de Confiance
+        // Composant Carte de Confiance (déclaré une seule fois ici)
         const TrustCard = ({ icon, title, description }) => (
           <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-blue-500">
             <div className="text-blue-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-blue-400">{icon}</div>
@@ -543,7 +543,7 @@
           </div>
         );
 
-        // Composant Carte de Blog
+        // Composant Carte de Blog (déclaré une seule fois ici)
         const BlogPostCard = ({ post, isAdmin, onEdit, onDelete }) => (
           <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400 relative">
             <img
@@ -553,7 +553,7 @@
               onError={(e) => { e.target.onerror = null; console.error(`ERREUR DE CHARGEMENT D'IMAGE pour l'article "${post.title}": Vérifiez le nom du fichier (${post.originalImage}) et son emplacement.`); e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }} // Fallback image with more specific error message
             />
             <div className="p-6">
-              <h3 className="text-2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
+              <h3 className="2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
               <p className="text-gray-300 mb-4">{post.description}</p>
               <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold py-2 px-6 rounded-full hover:from-green-600 hover:to-teal-600 transition duration-300 ease-in-out shadow-md">
                 Lire la suite
@@ -572,7 +572,7 @@
           </div>
         );
 
-        // Composant Page Blog
+        // Composant Page Blog (déclaré une seule fois ici)
         const BlogPage = ({ isAdmin, onEditBlogPost, onDeleteBlogPost }) => {
           const [blogPosts, setBlogPosts] = useState([]);
           const [loading, setLoading] = useState(true);
@@ -630,25 +630,7 @@
           );
         };
 
-        // Composant Carte de Service
-        const ServiceCard = ({ icon, title, description }) => (
-          <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-red-500">
-            <div className="text-red-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-red-400">{icon}</div>
-            <h3 className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-red-200">{title}</h3>
-            <p className="text-gray-300">{description}</p>
-          </div>
-        );
-
-        // Composant Carte de Confiance
-        const TrustCard = ({ icon, title, description }) => (
-          <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-blue-500">
-            <div className="text-blue-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-blue-400">{icon}</div>
-            <h3 className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-blue-200">{title}</h3>
-            <p className="text-gray-300">{description}</p>
-          </div>
-        );
-
-        // Composant Input Field (réutilisable)
+        // Composant Input Field (réutilisable, déclaré une seule fois ici)
         const InputField = ({ label, type, placeholder, required = false, value, onChange, name }) => (
           <div>
             <label htmlFor={name || label} className="block text-gray-300 text-sm font-bold mb-2"> {/* Utilise name comme id si fourni */}
@@ -667,7 +649,7 @@
           </div>
         );
 
-        // Composant TextArea Field (réutilisable)
+        // Composant TextArea Field (réutilisable, déclaré une seule fois ici)
         const TextAreaField = ({ label, placeholder, required = false, value, onChange, name }) => (
           <div>
             <label htmlFor={name || label} className="block text-gray-300 text-sm font-bold mb-2"> {/* Utilise name comme id si fourni */}
@@ -686,7 +668,7 @@
           </div>
         );
 
-        // Composant pour la page de connexion
+        // Composant pour la page de connexion (déclaré une seule fois ici)
         const LoginPage = ({ setCurrentUser, setIsAdmin }) => {
             const [email, setEmail] = useState('');
             const [password, setPassword] = useState('');
@@ -767,7 +749,7 @@
             );
         };
 
-        // NEW: Composant pour l'interface d'administration
+        // Composant pour l'interface d'administration (déclaré une seule fois ici)
         const AdminDashboardPage = () => {
             const [activeTab, setActiveTab] = useState('blog'); // 'blog' or 'showcase'
             const [editingBlogPost, setEditingBlogPost] = useState(null); // null or { id: ..., title: ..., ... }
@@ -857,7 +839,7 @@
                                 { url: "https://lexus03200.github.io/Brmotorsport/photo3.png", description: "Scirocco R Moteur" },
                                 { url: "https://lexus03200.github.io/Brmotorsport/photo4.png", description: "Scirocco R Intérieur" },
                                 { url: "https://lexus03200.github.io/Brmotorsport/photo5.png", description: "Scirocco R Freins" },
-                                { url: "https://lexus03200.github.0/Brmotorsport/photo6.png", description: "Scirocco R Jantes" },
+                                { url: "https://lexus03200.github.io/Brmotorsport/photo6.png", description: "Scirocco R Jantes" },
                                 { url: "https://lexus03200.github.io/Brmotorsport/photo7.png", description: "Scirocco R Échappement" },
                                 { url: "https://lexus03200.github.io/Brmotorsport/photo8.png", description: "Scirocco R Arrière" },
                                 { url: "https://lexus03200.github.io/Brmotorsport/photo9.png", description: "Scirocco R Détail Moteur" },
@@ -1083,7 +1065,7 @@
             );
         };
 
-        // NEW: Formulaire pour Ajouter/Modifier un Article de Blog
+        // Formulaire pour Ajouter/Modifier un Article de Blog (déclaré une seule fois ici)
         const BlogPostForm = ({ post, onSubmit, onCancel }) => {
             const [title, setTitle] = useState(post.title || '');
             const [description, setDescription] = useState(post.description || '');
@@ -1095,7 +1077,7 @@
             };
 
             return (
-                <form onSubmit={handleSubmit} className="bg-gray-700 p-6 rounded-lg shadow-inner mb-8 space-y-4 border border-gray-600">
+                <form id="blog-edit-form" onSubmit={handleSubmit} className="bg-gray-700 p-6 rounded-lg shadow-inner mb-8 space-y-4 border border-gray-600">
                     <h3 className="text-2xl font-bold text-white mb-4">{post.id ? "Modifier l'article" : "Ajouter un nouvel article"}</h3>
                     <InputField label="Titre" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required={true} />
                     <TextAreaField label="Description" value={description} onChange={(e) => setDescription(e.target.value)} required={true} />
@@ -1112,7 +1094,7 @@
             );
         };
 
-        // NEW: Formulaire pour Ajouter/Modifier une Image de Voiture Vitrine
+        // Formulaire pour Ajouter/Modifier une Image de Voiture Vitrine (déclaré une seule fois ici)
         const ShowcaseImageForm = ({ image, onSubmit, onCancel }) => {
             const [url, setUrl] = useState(image.url || '');
             const [description, setDescription] = useState(image.description || '');
@@ -1123,7 +1105,7 @@
             };
 
             return (
-                <form onSubmit={handleSubmit} className="bg-gray-700 p-6 rounded-lg shadow-inner mb-8 space-y-4 border border-gray-600">
+                <form id="showcase-edit-form" onSubmit={handleSubmit} className="bg-gray-700 p-6 rounded-lg shadow-inner mb-8 space-y-4 border border-gray-600">
                     <h3 className="text-2xl font-bold text-white mb-4">{image.id ? "Modifier l'image" : "Ajouter une nouvelle image"}</h3>
                     <InputField label="URL de l'image" type="text" value={url} onChange={(e) => setUrl(e.target.value)} required={true} />
                     <InputField label="Description" type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -1140,7 +1122,7 @@
         };
 
 
-        // Composant Page Qui Sommes-nous
+        // Composant Page Qui Sommes-nous (déclaré une seule fois ici)
         const AboutUsPage = () => (
           <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
             <div className="container mx-auto px-6 max-w-4xl">
@@ -1190,7 +1172,7 @@
           </div>
         );
 
-        // Composant Carte de Valeur
+        // Composant Carte de Valeur (déclaré une seule fois ici)
         const ValueCard = ({ icon, title, description }) => (
           <div className="group bg-gray-700 p-6 rounded-lg shadow-md flex items-start space-x-4 transition duration-300 ease-in-out transform hover:scale-105 border border-gray-600 hover:border-yellow-400">
             <div className="text-yellow-400 mb-4 text-4xl transition-colors duration-300 group-hover:text-yellow-300">{icon}</div>
@@ -1201,7 +1183,7 @@
           </div>
         );
 
-        // Composant Page Contact
+        // Composant Page Contact (déclaré une seule fois ici)
         const ContactPage = () => (
             <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
                 <div className="container mx-auto px-6 max-w-2xl">
@@ -1241,7 +1223,7 @@
             </div>
         );
 
-        // Composant pour la page des mentions légales
+        // Composant pour la page des mentions légales (déclaré une seule fois ici)
         const LegalMentionsPage = () => (
           <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
             <div className="container mx-auto px-6 max-w-4xl">
@@ -1280,7 +1262,7 @@
           </div>
         );
 
-        // Composant pour la page de politique de confidentialité
+        // Composant pour la page de politique de confidentialité (déclaré une seule fois ici)
         const PrivacyPolicyPage = () => (
           <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
             <div className="container mx-auto px-6 max-w-4xl">
@@ -1326,7 +1308,7 @@
           </div>
         );
 
-        // Composant pour la page Voiture Vitrine
+        // Composant pour la page Voiture Vitrine (déclaré une seule fois ici)
         const ShowcaseCarPage = ({ isAdmin }) => {
             const [showcaseImages, setShowcaseImages] = useState([]);
             const [loading, setLoading] = useState(true);
@@ -1481,7 +1463,7 @@
         };
 
 
-        // Nouveau composant pour le contrôle de la musique
+        // Nouveau composant pour le contrôle de la musique (déclaré une seule fois ici)
         const MusicControl = () => {
             const audioRef = useRef(null);
             const [isPlaying, setIsPlaying] = useState(false);
@@ -1587,7 +1569,17 @@
                 case 'accueil':
                   return <HomePage setCurrentPage={setCurrentPage} />; // Passer setCurrentPage à HomePage
                 case 'blog':
-                  return <BlogPage isAdmin={isAdmin} onEditBlogPost={(post) => { setCurrentPage('admin-dashboard'); setTimeout(() => { document.querySelector('#blog-edit-form').scrollIntoView({ behavior: 'smooth' }); }, 100); }} onDeleteBlogPost={null} />; // onEditBlogPost et onDeleteBlogPost sont gérés dans l'AdminDashboardPage
+                  // Pass the functions for editing and deleting blog posts
+                  return <BlogPage
+                            isAdmin={isAdmin}
+                            onEditBlogPost={(post) => { setCurrentPage('admin-dashboard'); setTimeout(() => {
+                                // Delay scroll to ensure the element is rendered
+                                const formElement = document.getElementById('blog-edit-form');
+                                if (formElement) formElement.scrollIntoView({ behavior: 'smooth' });
+                                // Optionally set the post for editing in admin dashboard if it's a direct edit link
+                            }, 100); }}
+                            onDeleteBlogPost={null} // onDeleteBlogPost is handled in AdminDashboardPage
+                         />;
                 case 'qui-sommes-nous':
                   return <AboutUsPage />;
                 case 'contact':
@@ -1659,9 +1651,16 @@
         };
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
-        const container = document.getElementById('root');
-        const root = ReactDOM.createRoot(container);
-        root.render(<App />);
+        // Utilisation de window.onload pour s'assurer que ReactDOM est chargé
+        window.onload = function() {
+            const container = document.getElementById('root');
+            if (container) {
+                const root = ReactDOM.createRoot(container);
+                root.render(<App />);
+            } else {
+                console.error("Élément racine 'root' introuvable.");
+            }
+        };
     </script>
 </body>
 </html>
