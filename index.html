@@ -868,7 +868,7 @@
                         setCurrentImageIndex((prevIndex) =>
                             (prevIndex + 1) % images.length
                         );
-                    }, 5000); // Change l'image toutes les 5 secondes
+                    }, 3000); // Change l'image toutes les 3 secondes
                 }
                 return () => clearInterval(interval); // Nettoyage de l'intervalle
             }, [isPlaying, images.length]); // Dépendances: isPlaying et la longueur du tableau d'images
@@ -906,7 +906,7 @@
 
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
                             {/* Conteneur du carrousel */}
-                            <div className="relative w-full h-96 md:h-[500px] overflow-hidden rounded-lg shadow-2xl border-4 border-red-700 group">
+                            <div className="relative w-full h-96 md:h-[500px] overflow-hidden rounded-lg shadow-2xl border-4 border-red-700 group flex items-center justify-center"> {/* Ajout de flex et centrage */}
                                 {/* Image actuelle du diaporama */}
                                 <img
                                     src={images[currentImageIndex]}
