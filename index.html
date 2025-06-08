@@ -414,7 +414,7 @@
         };
 
         // Composant de la barre de navigation
-        const Navbar = ({ setCurrentPage }) => {
+        const Navbar = ({ setCurrentPage, isAdminAuthenticated, handleLogout }) => {
           const [isOpen, setIsOpen] = useState(false); // État pour la visibilité du menu mobile
 
           const toggleMenu = () => {
@@ -448,7 +448,12 @@
                   <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} />
                   <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} />
                   <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} />
-                  {/* Le lien Admin a été déplacé dans le footer */}
+                  {/* Lien Admin/Déconnexion conditionnel */}
+                  {isAdminAuthenticated ? (
+                      <NavItem text="Déconnexion" page="accueil" setCurrentPage={setCurrentPage} onClick={handleLogout} />
+                  ) : (
+                      <NavItem text="Admin" page="admin-login" setCurrentPage={setCurrentPage} />
+                  )}
                 </div>
               </div>
 
@@ -461,7 +466,12 @@
                   <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
                   <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
                   <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
-                  {/* Le lien Admin a été déplacé dans le footer */}
+                  {/* Lien Admin/Déconnexion conditionnel pour mobile */}
+                  {isAdminAuthenticated ? (
+                      <NavItem text="Déconnexion" page="accueil" setCurrentPage={setCurrentPage} onClick={() => { handleLogout(); setIsOpen(false); }} />
+                  ) : (
+                      <NavItem text="Admin" page="admin-login" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
+                  )}
                 </div>
               </div>
             </nav>
@@ -478,7 +488,7 @@
             className="flex items-center text-gray-300 hover:text-red-500 transition duration-300 ease-in-out transform hover:scale-105
                        px-3 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
           >
-            <span className="mr-2 text-xl">{icon}</span>
+            {icon && <span className="mr-2 text-xl">{icon}</span>}
             {text}
           </button>
         );
@@ -1419,6 +1429,7 @@
                 e.preventDefault();
                 if (password === ADMIN_PASSWORD_FRONTEND) {
                     setIsAdminAuthenticated(true);
+                    localStorage.setItem('isAdminAuthenticated', 'true'); // Stocke l'état d'authentification
                     setCurrentPage('admin-panel'); // Redirige vers le panneau admin
                 } else {
                     setError('Mot de passe incorrect.');
@@ -1555,6 +1566,7 @@
 
             const handleLogout = () => {
                 setIsAdminAuthenticated(false);
+                localStorage.removeItem('isAdminAuthenticated'); // Supprime l'état d'authentification
                 setCurrentPage('accueil'); // Redirige vers l'accueil après déconnexion
             };
 
@@ -1790,8 +1802,11 @@
 
         // Composant principal de l'application
         const App = () => {
+            // Initialise isAdminAuthenticated en lisant depuis localStorage
+            const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(
+                localStorage.getItem('isAdminAuthenticated') === 'true'
+            );
             const [currentPage, setCurrentPage] = useState('accueil');
-            const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
             const [content, setContent] = useState(null); // Initialiser à null, sera chargé depuis le JSON
             const [loadingContent, setLoadingContent] = useState(true); // État de chargement du contenu
             const [errorContent, setErrorContent] = useState(null); // État d'erreur de chargement du contenu
@@ -1924,6 +1939,13 @@
                 });
             };
 
+            // Fonction de déconnexion de l'administrateur
+            const handleLogout = () => {
+                setIsAdminAuthenticated(false);
+                localStorage.removeItem('isAdminAuthenticated'); // Supprime l'état d'authentification de localStorage
+                setCurrentPage('accueil'); // Redirige vers l'accueil après déconnexion
+            };
+
             // Ajout d'un effet pour faire défiler la page vers le haut à chaque changement de page
             useEffect(() => {
                 window.scrollTo(0, 0); // Fait défiler la fenêtre à la position 0, 0 (en haut à gauche)
@@ -1980,7 +2002,8 @@
                 <ContentContext.Provider value={{ content, updateContent }}>
                     <div className="min-h-screen bg-black font-inter">
                         <ScrollingBanner /> {/* Nouvelle bannière défilante */}
-                        <Navbar setCurrentPage={setCurrentPage} />
+                        {/* Passe isAdminAuthenticated et handleLogout à Navbar */}
+                        <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} />
                         <main className="flex-grow">
                             {renderPage()}
                         </main>
@@ -1993,8 +2016,12 @@
                                     <span className="text-gray-600">|</span>
                                     <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
                                     <span className="text-gray-600">|</span>
-                                    {/* Lien Admin déplacé ici */}
-                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin-login'); }} className="hover:text-red-500 transition duration-300">Admin</a>
+                                    {/* Lien Admin/Déconnexion conditionnel dans le footer */}
+                                    {isAdminAuthenticated ? (
+                                        <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="hover:text-red-500 transition duration-300">Déconnexion</a>
+                                    ) : (
+                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin-login'); }} className="hover:text-red-500 transition duration-300">Admin</a>
+                                    )}
                                 </div>
                                 <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
                             </div>
