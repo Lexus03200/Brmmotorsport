@@ -1155,6 +1155,7 @@
                                 isAdminAuthenticated={isAdminAuthenticated}
                                 className="text-lg text-gray-300 leading-relaxed"
                             />
+                            {/* Assurez-vous que ce champ existe et est une chaîne de caractères dans content.json */}
                             <EditableText
                                 tag="p"
                                 contentKey="privacyPolicy.disclaimerText"
@@ -1479,23 +1480,29 @@
         // Composant du panneau administrateur (contenu protégé)
         const AdminPanelPage = ({ setIsAdminAuthenticated, setCurrentPage }) => {
             const { content, updateContent } = useContext(ContentContext);
-            const [localContent, setLocalContent] = useState(content); // État local pour les modifications en direct dans le formulaire
+            // Initialiser localContent avec une copie profonde pour éviter les références directes
+            // et s'assurer que même si content est null au début, localContent est un objet vide
+            const [localContent, setLocalContent] = useState(() => JSON.parse(JSON.stringify(content || {})));
             const [saveMessage, setSaveMessage] = useState(''); // Message pour la sauvegarde
             const [isSaving, setIsSaving] = useState(false); // État pour le chargement de la sauvegarde
 
             // Met à jour l'état local quand le contenu global change (par exemple, après un rafraîchissement)
             useEffect(() => {
-                setLocalContent(content);
+                setLocalContent(JSON.parse(JSON.stringify(content || {})));
             }, [content]);
 
             const handleLocalChange = (pageKey, fieldKey, newValue) => {
-                setLocalContent(prevContent => ({
-                    ...prevContent,
-                    [pageKey]: {
-                        ...prevContent[pageKey],
-                        [fieldKey]: newValue
+                setLocalContent(prevContent => {
+                    const newContent = { ...prevContent };
+                    if (!newContent[pageKey]) { // S'assurer que la page existe
+                        newContent[pageKey] = {};
                     }
-                }));
+                    newContent[pageKey] = {
+                        ...newContent[pageKey],
+                        [fieldKey]: newValue
+                    };
+                    return newContent;
+                });
             };
 
             const handleSaveChanges = async () => {
@@ -1560,32 +1567,41 @@
                                 <div key={pageKey} className="mb-8 p-6 bg-gray-700 rounded-lg shadow-inner">
                                     <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize">{pageKey.replace(/([A-Z])/g, ' $1')}</h2> {/* Formatage du nom de la page */}
                                     <div className="space-y-4">
-                                        {Object.keys(localContent[pageKey]).map(fieldKey => (
-                                            <div key={`${pageKey}-${fieldKey}`}>
-                                                <label className="block text-gray-300 text-sm font-bold mb-2">
-                                                    {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}: {/* Formatage de la clé */}
-                                                </label>
-                                                { localContent[pageKey][fieldKey] && typeof localContent[pageKey][fieldKey] === 'string' ? (
-                                                    fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') ? (
+                                        {Object.keys(localContent[pageKey]).map(fieldKey => {
+                                            const fieldValue = localContent[pageKey][fieldKey];
+                                            const contentPath = `${pageKey}.${fieldKey}`; // Chemin complet pour la clé de contenu
+
+                                            // Gérer les champs manquants ou non-string en initialisant une chaîne vide
+                                            const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
+
+                                            return (
+                                                <div key={contentPath}>
+                                                    <label className="block text-gray-300 text-sm font-bold mb-2">
+                                                        {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}:
+                                                    </label>
+                                                    { (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('description')) ? (
                                                         <input
                                                             type="text"
-                                                            value={localContent[pageKey][fieldKey]}
+                                                            value={valueToDisplay}
                                                             onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
                                                             className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
                                                         />
                                                     ) : (
                                                         <textarea
-                                                            value={localContent[pageKey][fieldKey]}
+                                                            value={valueToDisplay}
                                                             onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
-                                                            rows={Math.max(3, localContent[pageKey][fieldKey].split('\n').length)}
+                                                            rows={Math.max(3, valueToDisplay.split('\n').length)}
                                                             className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
                                                         />
-                                                    )
-                                                ) : (
-                                                    <p className="text-red-400">Type de champ non supporté pour l'édition ou contenu manquant.</p>
-                                                )}
-                                            </div>
-                                        ))}
+                                                    )}
+                                                    {typeof fieldValue !== 'string' && (
+                                                        <p className="text-red-400 text-sm mt-1">
+                                                            Ce champ ({contentPath}) n'est pas une chaîne de caractères ou est manquant dans content.json. Il sera enregistré comme une chaîne vide si vous le modifiez.
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             ))}
@@ -1728,7 +1744,7 @@
                             aboutUs: { mainTitle: "Erreur", description: "Contenu non disponible." },
                             contact: { mainTitle: "Erreur", description: "Contenu non disponible." },
                             legalMentions: { mainTitle: "Erreur", sectionTitle: "", paragraph1: "Contenu non disponible." },
-                            privacyPolicy: { mainTitle: "Erreur", introTitle: "", introText: "Contenu non disponible." },
+                            privacyPolicy: { mainTitle: "Erreur", introTitle: "", introText: "Contenu non disponible.", disclaimerText: "Contenu non disponible." }, // Ajout de disclaimerText ici
                             showcaseCar: { mainTitle: "Erreur", description: "Contenu non disponible." }
                         });
                     } finally {
