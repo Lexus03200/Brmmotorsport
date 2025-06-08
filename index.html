@@ -55,6 +55,17 @@
             0% { transform: translateX(0%); }
             100% { transform: translateX(-100%); }
         }
+        /* Nouvelle animation pour le titre - Coulissement depuis la gauche */
+        @keyframes slideInFromLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
         .animate-fade-in-down { animation: fadeInDown 0.8s ease-out forwards; }
         .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
@@ -72,6 +83,11 @@
         .scrolling-banner-container {
             overflow: hidden;
         }
+        /* Application de l'animation de coulissement pour le titre */
+        .animate-slide-in-left {
+            animation: slideInFromLeft 1s ease-out forwards; /* Durée et type d'animation */
+        }
+
 
         /* Styles spécifiques pour la Lightbox (modale) */
         .lightbox-overlay {
@@ -282,8 +298,8 @@
           return (
             <nav className="bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg mt-12"> {/* Ajout de mt-12 pour décaler la navbar sous le bandeau */}
               <div className="container mx-auto flex justify-between items-center px-4">
-                {/* Titre BRMOTORSPORT avec un style amélioré et des couleurs */}
-                <div className="text-3xl md:text-4xl font-extrabold tracking-widest animate-pulse drop-shadow-lg">
+                {/* Titre BRMOTORSPORT avec un style amélioré et des couleurs et l'animation de coulissement */}
+                <div className="text-3xl md:text-4xl font-extrabold tracking-widest drop-shadow-lg opacity-0 animate-slide-in-left">
                   <span className="text-red-500">BR</span>
                   <span className="text-white">MOTOR</span>
                   {/* Titre classique sans icône pour SPORT */}
