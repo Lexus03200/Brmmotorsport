@@ -66,12 +66,12 @@
                 opacity: 1;
             }
         }
-        /* Nouvelle animation pour l'effet de vibration (plus rapide et plus perceptible) */
+        /* Nouvelle animation pour l'effet de vibration (plus douce) */
         @keyframes vibrate {
             0% { transform: translate(0px, 0px); }
-            25% { transform: translate(-1px, 1px); }
-            50% { transform: translate(1px, -1px); }
-            75% { transform: translate(-1px, -1px); }
+            25% { transform: translate(-0.5px, 0.5px); } /* Mouvement réduit */
+            50% { transform: translate(0.5px, -0.5px); }
+            75% { transform: translate(-0.5px, -0.5px); }
             100% { transform: translate(0px, 0px); }
         }
 
@@ -80,7 +80,7 @@
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
         .animate-bounce-in { animation: bounceIn 1s; }
         .animate-blob { animation: blob 7s infinite; }
-        .animate-vibrate { animation: vibrate 0.1s ease-in-out infinite; } /* Vitesse ajustée à 0.1s */
+        .animate-vibrate { animation: vibrate 0.15s ease-in-out infinite; } /* Vitesse ajustée à 0.15s */
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
         /* Style pour l'animation de défilement */
@@ -180,7 +180,7 @@
     <!-- 'loop' assure que la musique se répète. -->
     <!-- 'style="display:none;"' masque les contrôles de lecture par défaut. -->
     <!-- Ajout de l'attribut volume pour réduire le son (valeur de 0.0 à 1.0) -->
-    <audio id="background-music" autoplay loop volume="0.02" style="display:none;">
+    <audio id="background-music" autoplay loop volume="0.01" style="display:none;">
         <!-- L'URL est construite en utilisant votre domaine GitHub Pages et le nom de votre fichier MP3. -->
         <source src="musique.mp3" type="audio/mpeg"> <!-- Chemin mis à jour pour être relatif au dossier racine -->
         Votre navigateur ne supporte pas l'élément audio.
