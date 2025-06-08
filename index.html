@@ -74,16 +74,10 @@
             75% { transform: translate(-0.2px, -0.2px); }
             100% { transform: translate(0px, 0px); }
         }
-        /* Animation pour la fumée d'échappement */
-        @keyframes smoke-puff {
-            0% {
-                opacity: 0.7; /* Commence légèrement visible */
-                transform: translate(-50%, 0) scale(0.2); /* Petite taille, centré horizontalement au départ */
-            }
-            100% {
-                opacity: 0; /* Devient complètement transparent */
-                transform: translate(calc(-50% + var(--smoke-drift-x, 0px)), var(--smoke-rise-y, -50px)) scale(1.5); /* Dérive horizontalement, monte, et s'agrandit */
-            }
+        /* Nouvelle animation pour un effet de fumée subtile passant sur le texte */
+        @keyframes text-mist-flow {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
 
         .animate-fade-in-down { animation: fadeInDown 0.8s ease-out forwards; }
@@ -91,7 +85,7 @@
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
         .animate-bounce-in { animation: bounceIn 1s; }
         .animate-blob { animation: blob 7s infinite; }
-        .animate-vibrate { animation: vibrate 1s ease-in-out infinite; } /* Vitesse réduite de 0.15s à 1s */
+        .animate-vibrate { animation: vibrate 0.2s ease-in-out infinite; } /* Vitesse ajustée à 0.2s */
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
         /* Style pour l'animation de défilement */
@@ -116,6 +110,27 @@
         /* Utilitaire pour décalage d'animation */
         .delay-animation {
             animation-delay: var(--delay-factor);
+        }
+
+        .text-smoke-effect {
+            position: relative;
+            overflow: hidden; /* Important pour cacher le défilement du gradient */
+            display: inline-block; /* Pour que le div prenne la taille du contenu */
+            /* Ajout de style pour le gradient et l'animation */
+            background: linear-gradient(90deg,
+                        transparent 0%,
+                        rgba(255, 255, 255, 0.1) 20%, /* Léger brouillard blanc */
+                        transparent 40%,
+                        transparent 60%,
+                        rgba(255, 255, 255, 0.1) 80%,
+                        transparent 100%
+                      );
+            background-size: 200% 100%; /* Plus large que le texte pour l'effet de défilement */
+            animation: text-mist-flow 10s linear infinite; /* Animation lente et continue */
+            -webkit-background-clip: text; /* Clip the background to the text shape */
+            -webkit-text-fill-color: transparent; /* Make text transparent so background shows */
+            color: #fff; /* Fallback for browsers not supporting background-clip: text */
+            text-shadow: none; /* Remove existing text shadow if it interferes */
         }
 
         /* Styles spécifiques pour la Lightbox (modale) */
@@ -191,7 +206,7 @@
     <!-- 'loop' assure que la musique se répète. -->
     <!-- 'style="display:none;"' masque les contrôles de lecture par défaut. -->
     <!-- Ajout de l'attribut volume pour réduire le son (valeur de 0.0 à 1.0) -->
-    <audio id="background-music" autoplay loop volume="0.2" style="display:none;">
+    <audio id="background-music" autoplay loop volume="0.05" style="display:none;">
         <!-- L'URL est construite en utilisant votre domaine GitHub Pages et le nom de votre fichier MP3. -->
         <source src="musique.mp3" type="audio/mpeg"> <!-- Chemin mis à jour pour être relatif au dossier racine -->
         Votre navigateur ne supporte pas l'élément audio.
@@ -398,41 +413,29 @@
             <div className="container mx-auto px-6 relative z-10">
               {/* Section Hero */}
               <section className="text-center mb-20">
-                {/* Conteneur pour le titre et l'échappement afin de les grouper et de les centrer */}
-                <div className="relative inline-block mx-auto">
-                    <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate">
-                      Libérez la <span className="text-red-500">Puissance</span>. Redéfinissez la <span className="text-blue-500">Performance</span>.
-                    </h1>
+                {/* Conteneur pour le titre avec effet de fumée et vibration */}
+                <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate text-smoke-effect">
+                  Libérez la <span className="text-red-500">Puissance</span>. Redéfinissez la <span className="text-blue-500">Performance</span>.
+                </h1>
 
-                    {/* Échappement et fumée */}
-                    <div className="absolute left-1/2 transform -translate-x-1/2 z-10" style={{ bottom: '-30px', width: 'fit-content' }}>
-                        {/* Corps de l'échappement */}
-                        <div className="w-24 h-10 bg-gray-700 rounded-b-full relative overflow-hidden mx-auto">
-                            <div className="w-full h-full bg-gradient-to-t from-gray-900 to-gray-700 opacity-75 rounded-b-full"></div>
-                            {/* Effet de lueur rouge de l'échappement */}
-                            <div className="absolute w-16 h-6 bg-red-800 rounded-b-full opacity-70 blur-sm left-1/2 -translate-x-1/2" style={{ bottom: '-5px' }}></div>
-                        </div>
-
-                        {/* Particules de fumée */}
-                        <div className="absolute w-10 h-10 bg-gray-500 rounded-full opacity-0 animate-smoke-puff"
-                             style={{ animationDelay: '0s', animationDuration: '2.5s', top: '0px', left: '50%', '--smoke-drift-x': '10px', '--smoke-rise-y': '-60px' }}></div>
-                        <div className="absolute w-12 h-12 bg-gray-600 rounded-full opacity-0 animate-smoke-puff"
-                             style={{ animationDelay: '0.8s', animationDuration: '2.8s', top: '5px', left: '50%', '--smoke-drift-x': '-15px', '--smoke-rise-y': '-70px' }}></div>
-                        <div className="absolute w-14 h-14 bg-gray-500 rounded-full opacity-0 animate-smoke-puff"
-                             style={{ animationDelay: '1.6s', animationDuration: '3s', top: '0px', left: '50%', '--smoke-drift-x': '5px', '--smoke-rise-y': '-80px' }}></div>
-                    </div>
-                </div>
-
-                <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mt-10 animate-fade-in-up"> {/* Ajusté le mt pour espacer le texte de l'échappement */}
+                <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mt-10 animate-fade-in-up">
                   Chez BRMOTORSPORT, nous transformons votre passion pour l'automobile en une expérience de conduite inégalée.
                 </p>
-                {/* Bouton "Découvrez notre blog" qui redirige vers la page blog */}
-                <button
-                  onClick={() => setCurrentPage('blog')}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in"
-                >
-                  Découvrez notre blog
-                </button>
+                {/* Boutons de navigation */}
+                <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mt-8">
+                    <button
+                        onClick={() => setCurrentPage('blog')}
+                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in"
+                    >
+                        Découvrez notre blog
+                    </button>
+                    <button
+                        onClick={() => setCurrentPage('voiture-vitrine')}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in"
+                    >
+                        Découvrez également notre voiture vitrine
+                    </button>
+                </div>
               </section>
 
               {/* Message pour la prise de rendez-vous - Modifié pour être un lien complet et souligné */}
@@ -623,7 +626,7 @@
               image: "gx.png", // Chemin relatif de l'image
               title: "Triumph TR3 : Check-up Complet et Optimisation",
               description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité.",
-              originalImage: "gx.png"
+              originalImage: "gx.1png"
             },
             {
               id: 11, // Nouvel ID pour la Mercedes
@@ -954,7 +957,7 @@
                                 <img
                                     src={images[currentImageIndex]}
                                     alt={`Volkswagen Scirocco R - Image ${currentImageIndex + 1}`}
-                                    className="w-full h-full object-contain object-center animate-fade-in transition-opacity duration-700" /* Changé object-cover en object-contain */
+                                    className="w-full h-full object-contain object-center animate-fade-in transition-opacity duration-700"
                                     onError={(e) => {
                                         console.error(
                                             `ERREUR DE CHARGEMENT D'IMAGE dans le diaporama:
