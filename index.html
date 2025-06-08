@@ -191,7 +191,7 @@
     <!-- Le type du script a été changé en "text/babel" pour le transpiler -->
     <script type="text/babel">
         // Récupère les hooks React depuis l'objet global React
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect, useRef, createContext, useContext } = React;
 
         // --- Icônes Lucide React ---
         const CarIcon = () => (
@@ -287,6 +287,172 @@
             </svg>
         );
 
+        // --- Context pour la gestion du contenu éditable ---
+        const ContentContext = createContext();
+
+        // Contenu par défaut (initial) du site, qui sera éditable via l'admin
+        const defaultSiteContent = {
+            home: {
+                mainTitle: "Libérez la Puissance. Redéfinissez la Performance.",
+                description: "Chez BRMOTORSPORT, nous transformons votre passion pour l'automobile en une expérience de conduite inégalée.",
+                contactMessage: "Pour toute prise de rendez-vous ou demande de devis, nous vous invitons à nous contacter directement via les informations disponibles dans la section 'Contact'.",
+                offerTitle: "Ce que nous vous proposons",
+                offer1Title: "Diagnostic et entretien mécanique complet",
+                offer1Description: "Précision et fiabilité pour la longévité de votre véhicule.",
+                offer2Title: "Reprogrammation moteur (Stage 1, 2, 3, etc.)",
+                offer2Description: "Libérez le plein potentiel de votre moteur en toute sécurité.",
+                offer3Title: "Optimisation des performances moteur",
+                offer3Description: "Une puissance sur mesure, adaptée à nos exigences et votre style.",
+                offer4Title: "Solutions personnalisées",
+                offer4Description: "Chaque voiture est unique, chaque solution l'est aussi. Sur mesure pour vous.",
+                trustTitle: "Pourquoi nous faire confiance ?",
+                trust1Title: "Plus de 10 ans d’expérience terrain",
+                trust1Description: "Un savoir-faire éprouvé, bâti sur des années de pratique et de passion.",
+                trust2Title: "Une approche personnalisée et professionnelle",
+                trust2Description: "Votre satisfaction est notre priorité, avec un service à votre écoute.",
+                trust3Title: "Une expertise reconnue en performance moteur",
+                trust3Description: "Le moteur n'a plus de secret pour nous. Maîtrise et innovation au service de votre véhicule.",
+                trust4Title: "Un service de proximité, fiable et à l’écoute",
+                trust4Description: "Votre partenaire automobile de confiance, toujours disponible pour vos besoins.",
+                teamTitle: "Faites confiance à une équipe de passionnés qui maîtrisent leur art",
+                teamDescription: "Rémy Bruyant, notre expert automobile dédié à la performance et à la qualité. Chez BRMOTORSPORT, la passion du moteur est notre moteur, assurant des résultats qui dépassent vos attentes."
+            },
+            blog: {
+                mainTitle: "Nos Réalisations et Actus",
+                description: "Découvrez nos dernières interventions, nos projets d'optimisation et les coulisses de BRMOTORSPORT."
+            },
+            aboutUs: {
+                mainTitle: "Qui Sommes-nous",
+                description: "Découvrez la passion, l'histoire et les valeurs qui animent BRMOTORSPORT.",
+                historyTitle: "Notre Histoire",
+                historyParagraph1: "BRMOTORSPORT est né de la passion inébranlable de Rémy Bruyant pour l'automobile et la performance. Fort de plus de 10 ans d'expérience sur le terrain, Rémy a concrétisé notre vision en créant un atelier dédié à l'optimisation des véhicules et à l'excellence mécanique. Ce qui a commencé comme une fascination pour les moteurs et leur potentiel est devenu une entreprise florissante, réputée pour notre expertise et notre approche personnalisée.",
+                historyParagraph2: "Notre parcours est jalonné de défis relevés et de succès partagés avec nos clients, qui nous font confiance pour libérer la pleine puissance de leur véhicule, qu'il s'agisse d'une voiture de sport, d'un utilitaire ou d'un véhicule de tous les jours. Chaque projet est traité avec le même engagement : la qualité, la fiabilité et la performance.",
+                valuesTitle: "Nos Valeurs",
+                value1Title: "Expertise",
+                value1Description: "Une connaissance approfondie et constamment mise à jour des technologies automobiles.",
+                value2Title: "Qualité",
+                value2Description: "Nous utilisons uniquement des outils et des méthodes de pointe pour des résultats durables.",
+                value3Title: "Transparence",
+                value3Description: "Une communication claire et honnête à chaque étape de nos interventions.",
+                value4Title: "Passion",
+                value4Description: "Notre amour de l'automobile est le moteur de notre engagement et de notre précision."
+            },
+            contact: {
+                mainTitle: "Contactez-nous",
+                description: "N'hésitez pas à nous contacter pour toute question, demande de devis ou prise de rendez-vous.",
+                emailTitle: "Adresse E-mail",
+                email: "brmotosport003@gmail.com",
+                phoneTitle: "Numéro de Téléphone",
+                phoneNumber: "06.68.27.88.01",
+                instagramTitle: "Suivez-nous sur Instagram",
+                instagramHandle: "@brmotorsport003"
+            },
+            legalMentions: {
+                mainTitle: "Mentions Légales & Clause de Non-responsabilité",
+                sectionTitle: "Mention légale – Clause de non-responsabilité sur la reprogrammation moteur",
+                paragraph1: "La société Brmotorsport, dirigée par Rémy Bruyant, spécialisée dans la reprogrammation moteur et l’optimisation de performances automobiles, informe notre clientèle que toutes les interventions réalisées sur les calculateurs électroniques (ECU) sont exclusivement destinées à un usage sur circuit fermé ou terrain privé, sauf mention contraire spécifiant une conformité avec la réglementation en vigueur.",
+                paragraph2: "Brmotorsport décline toute responsabilité en cas d’utilisation d’un véhicule reprogrammé sur la voie publique lorsque cette modification entraîne une non-conformité :",
+                list1Item1: "au Code de la route,",
+                list1Item2: "aux normes environnementales (notamment les normes EURO antipollution),",
+                list1Item3: "aux exigences des assureurs ou du contrôle technique.",
+                paragraph3: "Il appartient au propriétaire du véhicule de s’assurer de :",
+                list2Item1: "La conformité légale du véhicule après reprogrammation,",
+                list2Item2: "La déclaration des modifications à son assureur,",
+                list2Item3: "La connaissance des risques juridiques et mécaniques encourus en cas d’usage inadapté du véhicule.",
+                paragraph4: "Brmotorsport ne saurait être tenue responsable des conséquences légales, techniques ou financières résultant d’un usage non autorisé d’un véhicule reprogrammé sur la voie publique."
+            },
+            privacyPolicy: {
+                mainTitle: "Politique de Confidentialité",
+                introTitle: "Introduction",
+                introText: "Bienvenue sur le site de BRMOTORSPORT. Nous nous engageons à protéger vos données personnelles. Cette politique de confidentialité vous informe sur la manière dont nous collectons, utilisons et protégeons vos informations.",
+                collectionTitle: "Collecte des Informations",
+                collectionText: "Nous collectons des informations lorsque vous utilisez notre formulaire de contact, notamment votre nom, adresse e-mail et numéro de téléphone. Nous pouvons également collecter des données techniques telles que votre adresse IP et le type de navigateur.",
+                usageTitle: "Utilisation des Informations",
+                usageListItem1: "Traiter vos demandes de contact et de devis.",
+                usageListItem2: "Améliorer l'expérience utilisateur de notre site.",
+                usageListItem3: "Répondre à vos questions et vous fournir un support client.",
+                protectionTitle: "Protection des Données",
+                protectionText: "Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Vos données sont stockées sur des serveurs sécurisés et accessibles uniquement par un personnel autorisé.",
+                rightsTitle: "Vos Droits",
+                rightsText: "Conformément à la réglementation sur la protection des données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression, de limitation et d'opposition concernant vos données personnelles. Pour exercer ces droits, veuillez nous contacter à brmotosport003@gmail.com.",
+                disclaimerText: "**Ce texte est un exemple. Veuillez le remplacer par votre propre politique de confidentialité, complète et conforme à la législation en vigueur.**"
+            },
+            showcaseCar: {
+                mainTitle: "Notre Voiture Vitrine : Le Projet Scirocco R",
+                description: "Découvrez en détail la préparation ultime de notre Volkswagen Scirocco R, un chef-d'œuvre de performance et d'ingénierie.",
+                preparationTitle: "Préparation Moteur et Optimisations",
+                preparationDescription: "Ce projet sur le Volkswagen Scirocco R a été une démonstration de notre expertise en performance automobile. Chaque composant a été soigneusement sélectionné et optimisé pour atteindre un niveau de puissance et de fiabilité exceptionnel. Voici les détails de la préparation :",
+                listTitle: "Détails de la préparation :", // Ajouté pour structurer le panneau admin
+                piston: "**Piston ITG :** Installation de pistons forgés pour une résistance accrue et une meilleure gestion des contraintes.",
+                bielles: "**Bielles Carillo :** Remplacement par des bielles Carillo, offrant légèreté et robustesse pour les hautes performances.",
+                soupapes: "**Soupapes inconel :** Utilisation de soupapes en Inconel, un alliage résistant aux températures extrêmes et à la corrosion.",
+                adm: "**ADM (Admission Directe Moteur) :** Optimisation de l'admission d'air pour un flux plus direct et un gain de puissance.",
+                ressort: "**Ressort bar teck :** Mise en place de ressorts de soupapes renforcés pour éviter le flottement à haut régime.",
+                viserie: "**Viserie ARP 2000 :** Boulonnerie de haute résistance pour une fixation sécurisée des éléments critiques du moteur.",
+                pompeHuile: "**Pompe à huile :** Amélioration du système d'huile avec une pompe à huile plus performante.",
+                turbo: "**Turbo GTX :** Installation d'un turbocompresseur Garrett GTX pour une augmentation significative de la puissance.",
+                wastegate: "**Wastegate Tial 44 mm :** Contrôle précis de la pression du turbo avec une wastegate externe de haute qualité.",
+                injecteurs: "**Injecteurs Porsche :** Mise à niveau des injecteurs pour fournir le carburant nécessaire à la puissance accrue.",
+                pipAdmission: "**Pip admission :** Optimisation du conduit d'admission pour un flux d'air maximal.",
+                wmi: "**WMI (Water Methanol Injection) :** Système d'injection eau-méthanol pour refroidir l'admission et augmenter la puissance.",
+                embrayage: "**Embrayage 880 nm :** Installation d'un embrayage renforcé capable de supporter un couple moteur de 880 Nm.",
+                finalDescription: "Cette préparation complète garantit non seulement une performance époustouflante sur piste, mais aussi une fiabilité à toute épreuve pour un usage sportif."
+            }
+        };
+
+
+        // Composant pour l'édition de texte in-situ
+        const EditableText = ({ tag: Tag, contentKey, isAdminAuthenticated, className }) => {
+            const { content, updateContent } = useContext(ContentContext);
+            const path = contentKey.split('.'); // Ex: "home.mainTitle" -> ["home", "mainTitle"]
+
+            // Fonction récursive pour accéder à la valeur imbriquée
+            const getValue = (obj, p) => {
+                let current = obj;
+                for (let i = 0; i < p.length; i++) {
+                    if (current && typeof current === 'object' && current.hasOwnProperty(p[i])) {
+                        current = current[p[i]];
+                    } else {
+                        return `[Contenu manquant: ${contentKey}]`; // Message d'erreur si la clé est introuvable
+                    }
+                }
+                return current;
+            };
+
+            const textValue = getValue(content, path);
+
+            // Gérer le changement du texte
+            const handleChange = (e) => {
+                const newValue = e.target.value;
+                updateContent(contentKey, newValue); // Appelle la fonction de mise à jour du contexte
+            };
+
+            if (isAdminAuthenticated) {
+                // Si c'est un h1 ou h2, utiliser un input, sinon un textarea
+                if (Tag === 'h1' || Tag === 'h2') {
+                    return (
+                        <input
+                            type="text"
+                            value={textValue}
+                            onChange={handleChange}
+                            className={`${className} bg-gray-700 text-white rounded p-2 focus:ring-2 focus:ring-blue-500 w-full`}
+                        />
+                    );
+                }
+                return (
+                    <textarea
+                        value={textValue}
+                        onChange={handleChange}
+                        className={`${className} bg-gray-700 text-white rounded p-2 focus:ring-2 focus:ring-blue-500 w-full min-h-[50px]`}
+                        rows={textValue.split('\n').length} // Ajuste le nombre de lignes
+                    />
+                );
+            }
+
+            // Rendu normal pour les clients
+            return <Tag className={className}>{textValue}</Tag>;
+        };
+
         // Composant de la bannière défilante
         const ScrollingBanner = () => {
             const bannerText = "BRMOTORSPORT • VOTRE SATISFACTION EST NOTRE PRIORITÉ • "; // Texte à répéter
@@ -341,6 +507,7 @@
                   <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} />
                   <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} />
                   <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} />
+                  {/* Le lien Admin a été déplacé dans le footer */}
                 </div>
               </div>
 
@@ -353,6 +520,7 @@
                   <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
                   <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
                   <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
+                  {/* Le lien Admin a été déplacé dans le footer */}
                 </div>
               </div>
             </nav>
@@ -375,138 +543,175 @@
         );
 
         // Composant Page d'Accueil
-        const HomePage = ({ setCurrentPage }) => (
-          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
-            {/* Effet de fond avec des formes abstraites pour un look dynamique */}
-            <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-              <div className="absolute w-64 h-64 bg-red-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob top-10 left-1/4"></div>
-              <div className="absolute w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 top-1/2 right-1/4"></div>
-              <div className="absolute w-80 h-80 bg-green-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 bottom-10 left-1/2"></div>
-            </div>
+        const HomePage = ({ setCurrentPage, isAdminAuthenticated }) => {
+            const { content } = useContext(ContentContext);
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
+                    <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                        <div className="absolute w-64 h-64 bg-red-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob top-10 left-1/4"></div>
+                        <div className="absolute w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 top-1/2 right-1/4"></div>
+                        <div className="absolute w-80 h-80 bg-green-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 bottom-10 left-1/2"></div>
+                    </div>
 
-            <div className="container mx-auto px-6 relative z-10">
-              {/* Section Hero */}
-              <section className="text-center mb-20">
-                {/* Titre avec couleurs de base et vibration accentuée */}
-                <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate">
-                  Libérez la <span className="text-red-500">Puissance</span>. Redéfinissez la <span className="text-blue-500">Performance</span>.
-                </h1>
+                    <div className="container mx-auto px-6 relative z-10">
+                        <section className="text-center mb-20">
+                            <EditableText
+                                tag="h1"
+                                contentKey="home.mainTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="home.description"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mt-10 animate-fade-in-up"
+                            />
+                            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mt-8">
+                                <button
+                                    onClick={() => setCurrentPage('blog')}
+                                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in"
+                                >
+                                    Découvrez notre blog
+                                </button>
+                                <button
+                                    onClick={() => setCurrentPage('voiture-vitrine')}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in"
+                                >
+                                    Découvrez également notre voiture vitrine
+                                </button>
+                            </div>
+                        </section>
 
-                <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mt-10 animate-fade-in-up">
-                  Chez BRMOTORSPORT, nous transformons votre passion pour l'automobile en une expérience de conduite inégalée.
-                </p>
-                {/* Boutons de navigation */}
-                <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mt-8">
-                    <button
-                        onClick={() => setCurrentPage('blog')}
-                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in"
-                    >
-                        Découvrez notre blog
-                    </button>
-                    <button
-                        onClick={() => setCurrentPage('voiture-vitrine')}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-bounce-in"
-                    >
-                        Découvrez également notre voiture vitrine
-                    </button>
+                        <section className="text-center bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-20 animate-fade-in-up">
+                            <a
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); setCurrentPage('contact'); }}
+                                className="block text-xl text-gray-200 leading-relaxed max-w-3xl mx-auto font-semibold text-red-400 hover:underline cursor-pointer"
+                            >
+                                <EditableText
+                                    tag="span"
+                                    contentKey="home.contactMessage"
+                                    isAdminAuthenticated={isAdminAuthenticated}
+                                    className="font-semibold text-red-400"
+                                />
+                            </a>
+                        </section>
+
+                        <section className="mb-20">
+                            <EditableText
+                                tag="h2"
+                                contentKey="home.offerTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-5xl font-bold text-center mb-12 text-red-400 animate-fade-in"
+                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                {[
+                                    { icon: <CarIcon />, titleKey: "home.offer1Title", descriptionKey: "home.offer1Description" },
+                                    { icon: <span className="text-3xl">🚀</span>, titleKey: "home.offer2Title", descriptionKey: "home.offer2Description" },
+                                    { icon: <span className="text-3xl">📈</span>, titleKey: "home.offer3Title", descriptionKey: "home.offer3Description" },
+                                    { icon: <span className="text-3xl">💡</span>, titleKey: "home.offer4Title", descriptionKey: "home.offer4Description" }
+                                ].map((service, index) => (
+                                    <ServiceCard
+                                        key={index}
+                                        icon={service.icon}
+                                        titleKey={service.titleKey}
+                                        descriptionKey={service.descriptionKey}
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        style={{ '--delay-factor': `${index * 200}ms` }}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+
+                        <section className="mb-20">
+                            <EditableText
+                                tag="h2"
+                                contentKey="home.trustTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-5xl font-bold text-center mb-12 text-blue-400 animate-fade-in"
+                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {[
+                                    { icon: <span className="text-3xl">⏱️</span>, titleKey: "home.trust1Title", descriptionKey: "home.trust1Description" },
+                                    { icon: <HandshakeIcon />, titleKey: "home.trust2Title", descriptionKey: "home.trust2Description" },
+                                    { icon: <span className="text-3xl">🏆</span>, titleKey: "home.trust3Title", descriptionKey: "home.trust3Description" },
+                                    { icon: <span className="text-3xl">⭐</span>, titleKey: "home.trust4Title", descriptionKey: "home.trust4Description" }
+                                ].map((trust, index) => (
+                                    <TrustCard
+                                        key={index}
+                                        icon={trust.icon}
+                                        titleKey={trust.titleKey}
+                                        descriptionKey={trust.descriptionKey}
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        style={{ '--delay-factor': `${index * 200}ms` }}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+
+                        <section className="text-center mb-20 bg-gray-800 p-12 rounded-2xl shadow-xl transform transition duration-500 hover:scale-[1.02] hover:shadow-2xl">
+                            <EditableText
+                                tag="h2"
+                                contentKey="home.teamTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-4xl font-bold mb-6 text-orange-400 animate-fade-in"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="home.teamDescription"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto"
+                            />
+                            <div className="mt-8">
+                                <img
+                                    src="https://placehold.co/150x150/000/FFF?text=Remy" // Placeholder pour l'image de Rémy Bruyant
+                                    alt="Portrait de Rémy Bruyant"
+                                    className="mx-auto rounded-full border-4 border-red-500 shadow-lg w-32 h-32 object-cover"
+                                    onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/150x150/000/FFF?text=Rémy+Bruyant"; }}
+                                />
+                            </div>
+                        </section>
+                    </div>
                 </div>
-              </section>
-
-              {/* Message pour la prise de rendez-vous - Modifié pour être un lien complet et souligné */}
-              <section className="text-center bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-20 animate-fade-in-up">
-                <a
-                  href="#"
-                  onClick={(e) => { e.preventDefault(); setCurrentPage('contact'); }}
-                  className="block text-xl text-gray-200 leading-relaxed max-w-3xl mx-auto font-semibold text-red-400 hover:underline cursor-pointer"
-                >
-                  Pour toute prise de rendez-vous ou demande de devis, nous vous invitons à nous contacter directement via les informations disponibles dans la section 'Contact'.
-                </a>
-              </section>
-
-              {/* Section "Ce que nous vous proposons" */}
-              <section className="mb-20">
-                <h2 className="text-5xl font-bold text-center mb-12 text-red-400 animate-fade-in">
-                  Ce que nous vous proposons
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                  {[
-                    { icon: <CarIcon />, title: "Diagnostic et entretien mécanique complet", description: "Précision et fiabilité pour la longévité de votre véhicule." },
-                    { icon: <span className="text-3xl">🚀</span>, title: "Reprogrammation moteur (Stage 1, 2, 3, etc.)", description: "Libérez le plein potentiel de votre moteur en toute sécurité." },
-                    { icon: <span className="text-3xl">📈</span>, title: "Optimisation des performances moteur", description: "Une puissance sur mesure, adaptée à nos exigences et votre style." },
-                    { icon: <span className="text-3xl">💡</span>, title: "Solutions personnalisées", description: "Chaque voiture est unique, chaque solution l'est aussi. Sur mesure pour vous." }
-                  ].map((service, index) => (
-                    <ServiceCard
-                      key={index}
-                      icon={service.icon}
-                      title={service.title}
-                      description={service.description}
-                      style={{ '--delay-factor': `${index * 200}ms` }}
-                    />
-                  ))}
-                </div>
-              </section>
-
-              {/* Section "Pourquoi nous faire confiance ?" */}
-              <section className="mb-20">
-                <h2 className="text-5xl font-bold text-center mb-12 text-blue-400 animate-fade-in">
-                  Pourquoi nous faire confiance ?
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {[
-                    { icon: <span className="text-3xl">⏱️</span>, title: "Plus de 10 ans d’expérience terrain", description: "Un savoir-faire éprouvé, bâti sur des années de pratique et de passion." },
-                    { icon: <HandshakeIcon />, title: "Une approche personnalisée et professionnelle", description: "Votre satisfaction est notre priorité, avec un service à votre écoute." },
-                    { icon: <span className="text-3xl">🏆</span>, title: "Une expertise reconnue en performance moteur", description: "Le moteur n'a plus de secret pour nous. Maîtrise et innovation au service de votre véhicule." },
-                    { icon: <span className="text-3xl">⭐</span>, title: "Un service de proximité, fiable et à l’écoute", description: "Votre partenaire automobile de confiance, toujours disponible pour vos besoins." }
-                  ].map((trust, index) => (
-                    <TrustCard
-                      key={index}
-                      icon={trust.icon}
-                      title={trust.title}
-                      description={trust.description}
-                      style={{ '--delay-factor': `${index * 200}ms` }}
-                    />
-                  ))}
-                </div>
-              </section>
-
-              {/* Section "Faites confiance à une équipe de passionnés" */}
-              <section className="text-center mb-20 bg-gray-800 p-12 rounded-2xl shadow-xl transform transition duration-500 hover:scale-[1.02] hover:shadow-2xl">
-                <h2 className="text-4xl font-bold mb-6 text-orange-400 animate-fade-in">
-                  Faites confiance à une équipe de passionnés qui maîtrisent leur art
-                </h2>
-                <p className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
-                  <span className="font-semibold text-white">Rémy Bruyant</span>, notre expert automobile dédié à la performance et à la qualité.
-                  Chez BRMOTORSPORT, la passion du moteur est notre moteur, assurant des résultats qui dépassent vos attentes.
-                </p>
-                <div className="mt-8">
-                   {/* Vous pouvez ajouter une image de Rémy ici si disponible */}
-                   <img
-                      src="https://placehold.co/150x150/000/FFF?text=Remy" // Placeholder pour l'image de Rémy Bruyant
-                      alt="Portrait de Rémy Bruyant"
-                      className="mx-auto rounded-full border-4 border-red-500 shadow-lg w-32 h-32 object-cover"
-                      onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/150x150/000/FFF?text=Rémy+Bruyant"; }}
-                   />
-                </div>
-              </section>
-            </div>
-          </div>
-        );
+            );
+        };
 
         // Composant Carte de Service
-        const ServiceCard = ({ icon, title, description, style }) => (
+        const ServiceCard = ({ icon, titleKey, descriptionKey, style, isAdminAuthenticated }) => (
           <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-red-500 animate-fade-in-up delay-animation" style={style}>
             <div className="text-red-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-red-400">{icon}</div>
-            <h3 className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-red-200">{title}</h3>
-            <p className="text-gray-300">{description}</p>
+            <EditableText
+                tag="h3"
+                contentKey={titleKey}
+                isAdminAuthenticated={isAdminAuthenticated}
+                className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-red-200"
+            />
+            <EditableText
+                tag="p"
+                contentKey={descriptionKey}
+                isAdminAuthenticated={isAdminAuthenticated}
+                className="text-gray-300"
+            />
           </div>
         );
 
         // Composant Carte de Confiance
-        const TrustCard = ({ icon, title, description, style }) => (
+        const TrustCard = ({ icon, titleKey, descriptionKey, style, isAdminAuthenticated }) => (
           <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-blue-500 animate-fade-in-up delay-animation" style={style}>
             <div className="text-blue-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-blue-400">{icon}</div>
-            <h3 className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-blue-200">{title}</h3>
-            <p className="text-gray-300">{description}</p>
+            <EditableText
+                tag="h3"
+                contentKey={titleKey}
+                isAdminAuthenticated={isAdminAuthenticated}
+                className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-blue-200"
+            />
+            <EditableText
+                tag="p"
+                contentKey={descriptionKey}
+                isAdminAuthenticated={isAdminAuthenticated}
+                className="text-gray-300"
+            />
           </div>
         );
 
@@ -530,7 +735,8 @@
         );
 
         // Composant Page Blog
-        const BlogPage = () => {
+        const BlogPage = ({ isAdminAuthenticated }) => {
+          const { content } = useContext(ContentContext);
           const blogPosts = [
             {
               id: 1,
@@ -614,12 +820,18 @@
           return (
             <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
               <div className="container mx-auto px-6">
-                <h1 className="text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
-                  Nos Réalisations et Actus
-                </h1>
-                <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
-                  Découvrez nos dernières interventions, nos projets d'optimisation et les coulisses de BRMOTORSPORT.
-                </p>
+                <EditableText
+                    tag="h1"
+                    contentKey="blog.mainTitle"
+                    isAdminAuthenticated={isAdminAuthenticated}
+                    className="text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down animate-vibrate"
+                />
+                <EditableText
+                    tag="p"
+                    contentKey="blog.description"
+                    isAdminAuthenticated={isAdminAuthenticated}
+                    className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up"
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                   {blogPosts.map((post, index) => (
@@ -635,7 +847,6 @@
           );
         };
 
-        // Le composant AppointmentPage a été supprimé
 
         // Composant Input Field (réutilisable)
         const InputField = ({ label, type, placeholder, required = false, value, onChange, name }) => (
@@ -677,193 +888,395 @@
 
 
         // Composant Page Qui Sommes-nous
-        const AboutUsPage = () => (
-          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
-            <div className="container mx-auto px-6 max-w-4xl">
-              <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
-                Qui Sommes-nous
-              </h1>
-              <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
-                Découvrez la passion, l'histoire et les valeurs qui animent BRMOTORSPORT.
-              </p>
+        const AboutUsPage = ({ isAdminAuthenticated }) => {
+            const { content } = useContext(ContentContext);
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
+                    <div className="container mx-auto px-6 max-w-4xl">
+                        <EditableText
+                            tag="h1"
+                            contentKey="aboutUs.mainTitle"
+                            isAdminAuthenticated={isAdminAuthenticated}
+                            className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down animate-vibrate"
+                        />
+                        <EditableText
+                            tag="p"
+                            contentKey="aboutUs.description"
+                            isAdminAuthenticated={isAdminAuthenticated}
+                            className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up"
+                        />
 
-              <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-12 animate-fade-in-up">
-                <h2 className="text-4xl font-bold mb-6 text-yellow-300 text-center">Notre Histoire</h2>
-                <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                  BRMOTORSPORT est né de la passion inébranlable de Rémy Bruyant pour l'automobile et la performance. Fort de plus de 10 ans d'expérience sur le terrain, Rémy a concrétisé notre vision en créant un atelier dédié à l'optimisation des véhicules et à l'excellence mécanique. Ce qui a commencé comme une fascination pour les moteurs et leur potentiel est devenu une entreprise florissante, réputée pour notre expertise et notre approche personnalisée.
-                </p>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Notre parcours est jalonné de défis relevés et de succès partagés avec nos clients, qui nous font confiance pour libérer la pleine puissance de leur véhicule, qu'il s'agisse d'une voiture de sport, d'un utilitaire ou d'un véhicule de tous les jours. Chaque projet est traité avec le même engagement : la qualité, la fiabilité et la performance.
-                </p>
-              </section>
+                        <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-12 animate-fade-in-up">
+                            <EditableText
+                                tag="h2"
+                                contentKey="aboutUs.historyTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-4xl font-bold mb-6 text-yellow-300 text-center"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="aboutUs.historyParagraph1"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed mb-6"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="aboutUs.historyParagraph2"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
+                        </section>
 
-              <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up">
-                <h2 className="text-4xl font-bold mb-6 text-yellow-300 text-center">Nos Valeurs</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <ValueCard
-                    title="Expertise"
-                    description="Une connaissance approfondie et constamment mise à jour des technologies automobiles."
-                    icon={<WrenchIcon />}
-                  />
-                  <ValueCard
-                    title="Qualité"
-                    description="Nous utilisons uniquement des outils et des méthodes de pointe pour des résultats durables."
-                    icon={<span className="text-3xl">✨</span>}
-                  />
-                  <ValueCard
-                    title="Transparence"
-                    description="Une communication claire et honnête à chaque étape de nos interventions."
-                    icon={<span className="text-3xl">✅</span>}
-                  />
-                  <ValueCard
-                    title="Passion"
-                    description="Notre amour de l'automobile est le moteur de notre engagement et de notre précision."
-                    icon={<span className="text-3xl">❤️</span>}
-                  />
+                        <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up">
+                            <EditableText
+                                tag="h2"
+                                contentKey="aboutUs.valuesTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-4xl font-bold mb-6 text-yellow-300 text-center"
+                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <ValueCard
+                                    titleKey="aboutUs.value1Title"
+                                    descriptionKey="aboutUs.value1Description"
+                                    icon={<WrenchIcon />}
+                                    isAdminAuthenticated={isAdminAuthenticated}
+                                />
+                                <ValueCard
+                                    titleKey="aboutUs.value2Title"
+                                    descriptionKey="aboutUs.value2Description"
+                                    icon={<span className="text-3xl">✨</span>}
+                                    isAdminAuthenticated={isAdminAuthenticated}
+                                />
+                                <ValueCard
+                                    titleKey="aboutUs.value3Title"
+                                    descriptionKey="aboutUs.value3Description"
+                                    icon={<span className="text-3xl">✅</span>}
+                                    isAdminAuthenticated={isAdminAuthenticated}
+                                />
+                                <ValueCard
+                                    titleKey="aboutUs.value4Title"
+                                    descriptionKey="aboutUs.value4Description"
+                                    icon={<span className="text-3xl">❤️</span>}
+                                    isAdminAuthenticated={isAdminAuthenticated}
+                                />
+                            </div>
+                        </section>
+                    </div>
                 </div>
-              </section>
-            </div>
-          </div>
-        );
+            );
+        };
 
         // Composant Carte de Valeur
-        const ValueCard = ({ icon, title, description }) => (
+        const ValueCard = ({ icon, titleKey, descriptionKey, isAdminAuthenticated }) => (
           <div className="group bg-gray-700 p-6 rounded-lg shadow-md flex items-start space-x-4 transition duration-300 ease-in-out transform hover:scale-105 border border-gray-600 hover:border-yellow-400">
             <div className="text-yellow-400 mb-4 text-4xl transition-colors duration-300 group-hover:text-yellow-300">{icon}</div>
             <div>
-              <h3 className="text-2xl font-semibold mb-2 text-white transition-colors duration-300 group-hover:text-yellow-100">{title}</h3>
-              <p className="text-gray-300">{description}</p>
+              <EditableText
+                tag="h3"
+                contentKey={titleKey}
+                isAdminAuthenticated={isAdminAuthenticated}
+                className="text-2xl font-semibold mb-2 text-white transition-colors duration-300 group-hover:text-yellow-100"
+              />
+              <EditableText
+                tag="p"
+                contentKey={descriptionKey}
+                isAdminAuthenticated={isAdminAuthenticated}
+                className="text-gray-300"
+              />
             </div>
           </div>
         );
 
         // Composant Page Contact
-        const ContactPage = () => (
-            <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
-                <div className="container mx-auto px-6 max-w-2xl">
-                    <h1 className="text-5xl font-extrabold text-center mb-12 text-pink-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
-                        Contactez-nous
-                    </h1>
-                    <p className="text-xl text-center text-gray-300 max-w-xl mx-auto mb-10 animate-fade-in-up">
-                        N'hésitez pas à nous contacter pour toute question, demande de devis ou prise de rendez-vous.
-                    </p>
+        const ContactPage = ({ isAdminAuthenticated }) => {
+            const { content } = useContext(ContentContext);
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
+                    <div className="container mx-auto px-6 max-w-2xl">
+                        <EditableText
+                            tag="h1"
+                            contentKey="contact.mainTitle"
+                            isAdminAuthenticated={isAdminAuthenticated}
+                            className="text-5xl font-extrabold text-center mb-12 text-pink-400 animate-fade-in-down animate-vibrate"
+                        />
+                        <EditableText
+                            tag="p"
+                            contentKey="contact.description"
+                            isAdminAuthenticated={isAdminAuthenticated}
+                            className="text-xl text-center text-gray-300 max-w-xl mx-auto mb-10 animate-fade-in-up"
+                        />
 
-                    <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                        <div className="flex flex-col items-center text-center">
-                            <MailIcon className="text-pink-500 w-12 h-12 mb-4" />
-                            <h3 className="text-2xl font-semibold mb-2 text-white">Adresse E-mail</h3>
-                            <a href="mailto:brmotosport003@gmail.com" className="text-blue-400 hover:underline text-lg transition duration-300">
-                                brmotosport003@gmail.com
-                            </a>
-                        </div>
+                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
+                            <div className="flex flex-col items-center text-center">
+                                <MailIcon className="text-pink-500 w-12 h-12 mb-4" />
+                                <EditableText
+                                    tag="h3"
+                                    contentKey="contact.emailTitle"
+                                    isAdminAuthenticated={isAdminAuthenticated}
+                                    className="text-2xl font-semibold mb-2 text-white"
+                                />
+                                <a href={`mailto:${content.contact.email}`} className="text-blue-400 hover:underline text-lg transition duration-300">
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="contact.email"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-blue-400 hover:underline text-lg"
+                                    />
+                                </a>
+                            </div>
 
-                        <div className="flex flex-col items-center text-center">
-                            <PhoneIcon className="text-pink-500 w-12 h-12 mb-4" />
-                            <h3 className="text-2xl font-semibold mb-2 text-white">Numéro de Téléphone</h3>
-                            <a href="tel:+33668278801" className="text-blue-400 hover:underline text-lg transition duration-300">
-                                06.68.27.88.01
-                            </a>
-                        </div>
+                            <div className="flex flex-col items-center text-center">
+                                <PhoneIcon className="text-pink-500 w-12 h-12 mb-4" />
+                                <EditableText
+                                    tag="h3"
+                                    contentKey="contact.phoneTitle"
+                                    isAdminAuthenticated={isAdminAuthenticated}
+                                    className="text-2xl font-semibold mb-2 text-white"
+                                />
+                                <a href={`tel:${content.contact.phoneNumber.replace(/\./g, '')}`} className="text-blue-400 hover:underline text-lg transition duration-300">
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="contact.phoneNumber"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-blue-400 hover:underline text-lg"
+                                    />
+                                </a>
+                            </div>
 
-                        <div className="flex flex-col items-center text-center">
-                            <InstagramIcon className="text-pink-500 w-12 h-12 mb-4" />
-                            <h3 className="text-2xl font-semibold mb-2 text-white">Suivez-nous sur Instagram</h3>
-                            <a href="https://www.instagram.com/brmotorsport003?igsh=bnB0ZmdjMzF1dnd3" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline text-lg transition duration-300">
-                                @brmotorsport003
-                            </a>
+                            <div className="flex flex-col items-center text-center">
+                                <InstagramIcon className="text-pink-500 w-12 h-12 mb-4" />
+                                <EditableText
+                                    tag="h3"
+                                    contentKey="contact.instagramTitle"
+                                    isAdminAuthenticated={isAdminAuthenticated}
+                                    className="text-2xl font-semibold mb-2 text-white"
+                                />
+                                <a href={`https://www.instagram.com/${content.contact.instagramHandle.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline text-lg transition duration-300">
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="contact.instagramHandle"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-blue-400 hover:underline text-lg"
+                                    />
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+        };
 
         // Composant pour la page des mentions légales
-        const LegalMentionsPage = () => (
-          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
-            <div className="container mx-auto px-6 max-w-4xl">
-              <h1 className="text-5xl font-extrabold text-center mb-12 text-teal-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
-                Mentions Légales & Clause de Non-responsabilité
-              </h1>
-              <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-6">
-                <h2 className="text-3xl font-bold mb-4 text-white">Mention légale – Clause de non-responsabilité sur la reprogrammation moteur</h2>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  **Responsabilité sur l’usage des véhicules reprogrammés**
-                </p>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  La société Brmotorsport, dirigée par Rémy Bruyant, spécialisée dans la reprogrammation moteur et l’optimisation de performances automobiles, informe notre clientèle que toutes les interventions réalisées sur les calculateurs électroniques (ECU) sont exclusivement destinées à un usage sur circuit fermé ou terrain privé, sauf mention contraire spécifiant une conformité avec la réglementation en vigueur.
-                </p>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Brmotorsport décline toute responsabilité en cas d’utilisation d’un véhicule reprogrammé sur la voie publique lorsque cette modification entraîne une non-conformité :
-                </p>
-                <ul className="list-disc list-inside text-lg text-gray-300 pl-4 space-y-2">
-                  <li>au Code de la route,</li>
-                  <li>aux normes environnementales (notamment les normes EURO antipollution),</li>
-                  <li>aux exigences des assureurs ou du contrôle technique.</li>
-                </ul>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Il appartient au propriétaire du véhicule de s’assurer de :
-                </p>
-                <ul className="list-disc list-inside text-lg text-gray-300 pl-4 space-y-2">
-                  <li>La conformité légale du véhicule après reprogrammation,</li>
-                  <li>La déclaration des modifications à son assureur,</li>
-                  <li>La connaissance des risques juridiques et mécaniques encourus en cas d’usage inadapté du véhicule.</li>
-                </ul>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Brmotorsport ne saurait être tenue responsable des conséquences légales, techniques ou financières résultant d’un usage non autorisé d’un véhicule reprogrammé sur la voie publique.
-                </p>
-              </div>
-            </div>
-          </div>
-        );
+        const LegalMentionsPage = ({ isAdminAuthenticated }) => {
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
+                    <div className="container mx-auto px-6 max-w-4xl">
+                        <EditableText
+                            tag="h1"
+                            contentKey="legalMentions.mainTitle"
+                            isAdminAuthenticated={isAdminAuthenticated}
+                            className="text-5xl font-extrabold text-center mb-12 text-teal-400 animate-fade-in-down animate-vibrate"
+                        />
+                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-6">
+                            <EditableText
+                                tag="h2"
+                                contentKey="legalMentions.sectionTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-3xl font-bold mb-4 text-white"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="legalMentions.paragraph1"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="legalMentions.paragraph2"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
+                            <ul className="list-disc list-inside text-lg text-gray-300 pl-4 space-y-2">
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="legalMentions.list1Item1"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="legalMentions.list1Item2"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="legalMentions.list1Item3"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                            </ul>
+                            <EditableText
+                                tag="p"
+                                contentKey="legalMentions.paragraph3"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
+                            <ul className="list-disc list-inside text-lg text-gray-300 pl-4 space-y-2">
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="legalMentions.list2Item1"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="legalMentions.list2Item2"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="legalMentions.list2Item3"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                            </ul>
+                            <EditableText
+                                tag="p"
+                                contentKey="legalMentions.paragraph4"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
         // Composant pour la page de politique de confidentialité
-        const PrivacyPolicyPage = () => (
-          <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter"> {/* Modifié de pt-32 à pt-40 */}
-            <div className="container mx-auto px-6 max-w-4xl">
-              <h1 className="text-5xl font-extrabold text-center mb-12 text-purple-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
-                Politique de Confidentialité
-              </h1>
-              <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-6">
-                <h2 className="text-3xl font-bold mb-4 text-white">Introduction</h2>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Bienvenue sur le site de BRMOTORSPORT. Nous nous engageons à protéger vos données personnelles. Cette politique de confidentialité vous informe sur la manière dont nous collectons, utilisons et protégeons vos informations.
-                </p>
+        const PrivacyPolicyPage = ({ isAdminAuthenticated }) => {
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
+                    <div className="container mx-auto px-6 max-w-4xl">
+                        <EditableText
+                            tag="h1"
+                            contentKey="privacyPolicy.mainTitle"
+                            isAdminAuthenticated={isAdminAuthenticated}
+                            className="text-5xl font-extrabold text-center mb-12 text-purple-400 animate-fade-in-down animate-vibrate"
+                        />
+                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-6">
+                            <EditableText
+                                tag="h2"
+                                contentKey="privacyPolicy.introTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-3xl font-bold mb-4 text-white"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="privacyPolicy.introText"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
 
-                <h2 className="text-3xl font-bold mb-4 text-white">Collecte des Informations</h2>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Nous collectons des informations lorsque vous utilisez notre formulaire de contact, notamment votre nom, adresse e-mail et numéro de téléphone. Nous pouvons également collecter des données techniques telles que votre adresse IP et le type de navigateur.
-                </p>
+                            <EditableText
+                                tag="h2"
+                                contentKey="privacyPolicy.collectionTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-3xl font-bold mb-4 text-white"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="privacyPolicy.collectionText"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
 
-                <h2 className="text-3xl font-bold mb-4 text-white">Utilisation des Informations</h2>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Les informations que nous collectons sont utilisées pour :
-                </p>
-                <ul className="list-disc list-inside text-lg text-gray-300 pl-4 space-y-2">
-                  <li>Traiter vos demandes de contact et de devis.</li>
-                  <li>Améliorer l'expérience utilisateur de notre site.</li>
-                  <li>Répondre à vos questions et vous fournir un support client.</li>
-                </ul>
+                            <EditableText
+                                tag="h2"
+                                contentKey="privacyPolicy.usageTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-3xl font-bold mb-4 text-white"
+                            />
+                            <ul className="list-disc list-inside text-lg text-gray-300 pl-4 space-y-2">
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="privacyPolicy.usageListItem1"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="privacyPolicy.usageListItem2"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="privacyPolicy.usageListItem3"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                            </ul>
 
-                <h2 className="text-3xl font-bold mb-4 text-white">Protection des Données</h2>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Vos données sont stockées sur des serveurs sécurisés et accessibles uniquement par un personnel autorisé.
-                </p>
+                            <EditableText
+                                tag="h2"
+                                contentKey="privacyPolicy.protectionTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-3xl font-bold mb-4 text-white"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="privacyPolicy.protectionText"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
 
-                <h2 className="text-3xl font-bold mb-4 text-white">Vos Droits</h2>
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Conformément à la réglementation sur la protection des données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression, de limitation et d'opposition concernant vos données personnelles. Pour exercer ces droits, veuillez nous contacter à <a href="mailto:brmotosport003@gmail.com" className="text-blue-400 hover:underline">brmotosport003@gmail.com</a>.
-                </p>
-
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  **Ce texte est un exemple. Veuillez le remplacer par votre propre politique de confidentialité, complète et conforme à la législation en vigueur.**
-                </p>
-              </div>
-            </div>
-          </div>
-        );
+                            <EditableText
+                                tag="h2"
+                                contentKey="privacyPolicy.rightsTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-3xl font-bold mb-4 text-white"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="privacyPolicy.rightsText"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="privacyPolicy.disclaimerText"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
         // Composant pour la page Voiture Vitrine
-        const ShowcaseCarPage = () => {
+        const ShowcaseCarPage = ({ isAdminAuthenticated }) => {
+            const { content } = useContext(ContentContext);
             const images = [
                 `Photo1.png`,
                 `photo2.png`,
@@ -917,12 +1330,18 @@
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
                     <div className="container mx-auto px-6 max-w-5xl">
-                        <h1 className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down animate-vibrate"> {/* Ajout de animate-vibrate */}
-                            Notre Voiture Vitrine : Le Projet Scirocco R
-                        </h1>
-                        <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
-                            Découvrez en détail la préparation ultime de notre Volkswagen Scirocco R, un chef-d'œuvre de performance et d'ingénierie.
-                        </p>
+                        <EditableText
+                            tag="h1"
+                            contentKey="showcaseCar.mainTitle"
+                            isAdminAuthenticated={isAdminAuthenticated}
+                            className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down animate-vibrate"
+                        />
+                        <EditableText
+                            tag="p"
+                            contentKey="showcaseCar.description"
+                            isAdminAuthenticated={isAdminAuthenticated}
+                            className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up"
+                        />
 
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
                             {/* Conteneur du carrousel avec centrage flexbox */}
@@ -985,30 +1404,278 @@
                                 </div>
                             </div>
 
-                            <h2 className="text-3xl font-bold mb-4 text-white">Préparation Moteur et Optimisations</h2>
-                            <p className="text-lg text-gray-300 leading-relaxed">
-                                Ce projet sur le Volkswagen Scirocco R a été une démonstration de notre expertise en performance automobile. Chaque composant a été soigneusement sélectionné et optimisé pour atteindre un niveau de puissance et de fiabilité exceptionnel. Voici les détails de la préparation :
-                            </p>
+                            <EditableText
+                                tag="h2"
+                                contentKey="showcaseCar.preparationTitle"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-3xl font-bold mb-4 text-white"
+                            />
+                            <EditableText
+                                tag="p"
+                                contentKey="showcaseCar.preparationDescription"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
 
                             <ul className="list-disc list-inside text-lg text-gray-300 pl-6 space-y-2">
-                                <li>**Piston ITG :** Installation de pistons forgés pour une résistance accrue et une meilleure gestion des contraintes.</li>
-                                <li>**Bielles Carillo :** Remplacement par des bielles Carillo, offrant légèreté et robustesse pour les hautes performances.</li>
-                                <li>**Soupapes inconel :** Utilisation de soupapes en Inconel, un alliage résistant aux températures extrêmes et à la corrosion.</li>
-                                <li>**ADM (Admission Directe Moteur) :** Optimisation de l'admission d'air pour un flux plus direct et un gain de puissance.</li>
-                                <li>**Ressort bar teck :** Mise en place de ressorts de soupapes renforcés pour éviter le flottement à haut régime.</li>
-                                <li>**Viserie ARP 2000 :** Boulonnerie de haute résistance pour une fixation sécurisée des éléments critiques du moteur.</li>
-                                <li>**Pompe à huile :** Amélioration du système d'huile avec une pompe à huile plus performante.</li>
-                                <li>**Turbo GTX :** Installation d'un turbocompresseur Garrett GTX pour une augmentation significative de la puissance.</li>
-                                <li>**Wastegate Tial 44 mm :** Contrôle précis de la pression du turbo avec une wastegate externe de haute qualité.</li>
-                                <li>**Injecteurs Porsche :** Mise à niveau des injecteurs pour fournir le carburant nécessaire à la puissance accrue.</li>
-                                <li>**Pip admission :** Optimisation du conduit d'admission pour un flux d'air maximal.</li>
-                                <li>**WMI (Water Methanol Injection) :** Système d'injection eau-méthanol pour refroidir l'admission et augmenter la puissance.</li>
-                                <li>**Embrayage 880 nm :** Installation d'un embrayage renforcé capable de supporter un couple moteur de 880 Nm.</li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.piston"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.bielles"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.soupapes"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.adm"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.ressort"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.viserie"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.pompeHuile"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.turbo"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.wastegate"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.injecteurs"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.pipAdmission"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.wmi"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
+                                <li>
+                                    <EditableText
+                                        tag="span"
+                                        contentKey="showcaseCar.embrayage"
+                                        isAdminAuthenticated={isAdminAuthenticated}
+                                        className="text-lg text-gray-300"
+                                    />
+                                </li>
                             </ul>
 
-                            <p className="text-lg text-gray-300 leading-relaxed">
-                                Cette préparation complète garantit non seulement une performance époustouflante sur piste, mais aussi une fiabilité à toute épreuve pour un usage sportif.
-                            </p>
+                            <EditableText
+                                tag="p"
+                                contentKey="showcaseCar.finalDescription"
+                                isAdminAuthenticated={isAdminAuthenticated}
+                                className="text-lg text-gray-300 leading-relaxed"
+                            />
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Composant de la page de connexion administrateur
+        const AdminLoginPage = ({ setIsAdminAuthenticated, setCurrentPage }) => {
+            const [password, setPassword] = useState('');
+            const [error, setError] = useState('');
+
+            // Mot de passe pour l'administrateur. ATTENTION: Ce n'est PAS sécurisé pour une production !
+            // Un vrai système d'authentification nécessiterait un backend.
+            const ADMIN_PASSWORD = 'Remy03200!';
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (password === ADMIN_PASSWORD) {
+                    setIsAdminAuthenticated(true);
+                    setCurrentPage('admin-panel'); // Redirige vers le panneau admin
+                } else {
+                    setError('Mot de passe incorrect.');
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-40 pb-12 font-inter flex items-center justify-center">
+                    <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 w-full max-w-md animate-fade-in-up">
+                        <h1 className="text-4xl font-extrabold text-center mb-8 text-orange-400">Accès Administrateur</h1>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <InputField
+                                label="Mot de passe"
+                                type="password"
+                                placeholder="Entrez votre mot de passe"
+                                required={true}
+                                value={password}
+                                onChange={(e) => { setPassword(e.target.value); setError(''); }}
+                                name="adminPassword"
+                            />
+                            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+                            <button
+                                type="submit"
+                                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                            >
+                                Se connecter
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        // Composant du panneau administrateur (contenu protégé)
+        const AdminPanelPage = ({ setIsAdminAuthenticated, setCurrentPage }) => {
+            const { content, updateContent } = useContext(ContentContext);
+            const [localContent, setLocalContent] = useState(content); // État local pour les modifications en direct dans le formulaire
+
+            // Met à jour l'état local quand le contenu global change (par exemple, après un rafraîchissement)
+            useEffect(() => {
+                setLocalContent(content);
+            }, [content]);
+
+            const handleLocalChange = (pageKey, fieldKey, newValue) => {
+                setLocalContent(prevContent => ({
+                    ...prevContent,
+                    [pageKey]: {
+                        ...prevContent[pageKey],
+                        [fieldKey]: newValue
+                    }
+                }));
+            };
+
+            const handleSaveChanges = () => {
+                // Ici, vous enverriez normalement les `localContent` à votre backend.
+                // Pour cette démo, nous mettons simplement à jour le contexte global.
+                Object.keys(localContent).forEach(pageKey => {
+                    Object.keys(localContent[pageKey]).forEach(fieldKey => {
+                        updateContent(`${pageKey}.${fieldKey}`, localContent[pageKey][fieldKey]);
+                    });
+                });
+                alert('Modifications enregistrées localement !'); // Utilisation de alert() ici pour la démo, à remplacer par une modal personnalisée
+            };
+
+            const handleLogout = () => {
+                setIsAdminAuthenticated(false);
+                setCurrentPage('accueil'); // Redirige vers l'accueil après déconnexion
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-40 pb-12 font-inter">
+                    <div className="container mx-auto px-6 max-w-6xl">
+                        <h1 className="text-5xl font-extrabold text-center mb-12 text-orange-400 animate-fade-in-down animate-vibrate">
+                            Panneau d'Administration
+                        </h1>
+                        <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
+                            Bienvenue, administrateur. Ici, vous pouvez gérer le contenu du site.
+                        </p>
+
+                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
+                            {Object.keys(localContent).map(pageKey => (
+                                <div key={pageKey} className="mb-8 p-6 bg-gray-700 rounded-lg shadow-inner">
+                                    <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize">{pageKey.replace(/([A-Z])/g, ' $1')}</h2> {/* Formatage du nom de la page */}
+                                    <div className="space-y-4">
+                                        {Object.keys(localContent[pageKey]).map(fieldKey => (
+                                            <div key={`${pageKey}-${fieldKey}`}>
+                                                <label className="block text-gray-300 text-sm font-bold mb-2">
+                                                    {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}: {/* Formatage de la clé */}
+                                                </label>
+                                                { localContent[pageKey][fieldKey] && typeof localContent[pageKey][fieldKey] === 'string' ? (
+                                                    fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') ? (
+                                                        <input
+                                                            type="text"
+                                                            value={localContent[pageKey][fieldKey]}
+                                                            onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                                            className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
+                                                        />
+                                                    ) : (
+                                                        <textarea
+                                                            value={localContent[pageKey][fieldKey]}
+                                                            onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                                            rows={Math.max(3, localContent[pageKey][fieldKey].split('\n').length)}
+                                                            className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
+                                                        />
+                                                    )
+                                                ) : (
+                                                    <p className="text-red-400">Type de champ non supporté pour l'édition ou contenu manquant.</p>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                            <div className="flex justify-center space-x-4 mt-8">
+                                <button
+                                    onClick={handleSaveChanges}
+                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                                >
+                                    Enregistrer les modifications
+                                </button>
+                                <button
+                                    onClick={handleLogout}
+                                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                                >
+                                    Déconnexion
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1103,7 +1770,22 @@
         // Composant principal de l'application
         const App = () => {
             const [currentPage, setCurrentPage] = useState('accueil');
-            // Les états et effets liés à Firebase ont été supprimés car Firebase n'est plus utilisé.
+            const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false); // Nouvel état pour l'authentification admin
+            const [content, setContent] = useState(defaultSiteContent); // État pour le contenu éditable du site
+
+            // Fonction pour mettre à jour une partie spécifique du contenu
+            const updateContent = (keyPath, newValue) => {
+                const path = keyPath.split('.');
+                setContent(prevContent => {
+                    const newContent = { ...prevContent };
+                    let current = newContent;
+                    for (let i = 0; i < path.length - 1; i++) {
+                        current = current[path[i]];
+                    }
+                    current[path[path.length - 1]] = newValue;
+                    return newContent;
+                });
+            };
 
             // Ajout d'un effet pour faire défiler la page vers le haut à chaque changement de page
             useEffect(() => {
@@ -1115,44 +1797,58 @@
             const renderPage = () => {
               switch (currentPage) {
                 case 'accueil':
-                  return <HomePage setCurrentPage={setCurrentPage} />; // Passer setCurrentPage à HomePage
+                  return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
                 case 'blog':
-                  return <BlogPage />;
+                  return <BlogPage isAdminAuthenticated={isAdminAuthenticated} />;
                 case 'qui-sommes-nous':
-                  return <AboutUsPage />;
+                  return <AboutUsPage isAdminAuthenticated={isAdminAuthenticated} />;
                 case 'contact':
-                  return <ContactPage />;
-                case 'mentions-legales': // Nouveau cas pour les mentions légales
-                  return <LegalMentionsPage />;
-                case 'confidentialite': // Nouveau cas pour la politique de confidentialité
-                  return <PrivacyPolicyPage />;
-                case 'voiture-vitrine': // Réactivation du cas pour la voiture vitrine
-                  return <ShowcaseCarPage />;
+                  return <ContactPage isAdminAuthenticated={isAdminAuthenticated} />;
+                case 'mentions-legales':
+                  return <LegalMentionsPage isAdminAuthenticated={isAdminAuthenticated} />;
+                case 'confidentialite':
+                  return <PrivacyPolicyPage isAdminAuthenticated={isAdminAuthenticated} />;
+                case 'voiture-vitrine':
+                  return <ShowcaseCarPage isAdminAuthenticated={isAdminAuthenticated} />;
+                case 'admin-login':
+                  return <AdminLoginPage setIsAdminAuthenticated={setIsAdminAuthenticated} setCurrentPage={setCurrentPage} />;
+                case 'admin-panel':
+                  // Si l'utilisateur n'est pas authentifié, le rediriger vers la page de connexion admin
+                  if (!isAdminAuthenticated) {
+                    setCurrentPage('admin-login');
+                    return null; // ou un composant de chargement/redirection
+                  }
+                  return <AdminPanelPage setIsAdminAuthenticated={setIsAdminAuthenticated} setCurrentPage={setCurrentPage} />;
                 default:
-                  return <HomePage setCurrentPage={setCurrentPage} />; // Passer setCurrentPage à HomePage par défaut
+                  return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
               }
             };
 
             return (
-                <div className="min-h-screen bg-black font-inter">
-                    <ScrollingBanner /> {/* Nouvelle bannière défilante */}
-                    <Navbar setCurrentPage={setCurrentPage} />
-                    <main className="flex-grow">
-                        {renderPage()}
-                    </main>
-                    <MusicControl /> {/* Ajout du contrôle de musique */}
-                    <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
-                        <div className="container mx-auto px-4">
-                            <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
-                            <div className="flex justify-center space-x-4 mt-3">
-                                <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
-                                <span className="text-gray-600">|</span>
-                                <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
+                <ContentContext.Provider value={{ content, updateContent }}>
+                    <div className="min-h-screen bg-black font-inter">
+                        <ScrollingBanner /> {/* Nouvelle bannière défilante */}
+                        <Navbar setCurrentPage={setCurrentPage} />
+                        <main className="flex-grow">
+                            {renderPage()}
+                        </main>
+                        <MusicControl /> {/* Ajout du contrôle de musique */}
+                        <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
+                            <div className="container mx-auto px-4">
+                                <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
+                                <div className="flex justify-center space-x-4 mt-3">
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
+                                    <span className="text-gray-600">|</span>
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
+                                    <span className="text-gray-600">|</span>
+                                    {/* Lien Admin déplacé ici */}
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin-login'); }} className="hover:text-red-500 transition duration-300">Admin</a>
+                                </div>
+                                <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
                             </div>
-                            <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
-                        </div>
-                    </footer>
-                </div>
+                        </footer>
+                    </div>
+                </ContentContext.Provider>
             );
         };
 
