@@ -88,6 +88,14 @@
             animation: slideInFromLeft 1s ease-out forwards; /* Durée et type d'animation */
         }
 
+        /* Styles supplémentaires pour des effets visuels */
+        h1, h2 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Ombre subtile pour la profondeur */
+        }
+        /* Utilitaire pour décalage d'animation */
+        .delay-animation {
+            animation-delay: var(--delay-factor);
+        }
 
         /* Styles spécifiques pour la Lightbox (modale) */
         .lightbox-overlay {
@@ -400,26 +408,20 @@
                   Ce que nous vous proposons
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                  <ServiceCard
-                    icon={<CarIcon />}
-                    title="Diagnostic et entretien mécanique complet"
-                    description="Précision et fiabilité pour la longévité de votre véhicule."
-                  />
-                  <ServiceCard
-                    icon={<span className="text-3xl">🚀</span>} // Utilisation d'un emoji pour variété
-                    title="Reprogrammation moteur (Stage 1, 2, 3, etc.)"
-                    description="Libérez le plein potentiel de votre moteur en toute sécurité."
-                  />
-                  <ServiceCard
-                    icon={<span className="text-3xl">📈</span>} // Utilisation d'un emoji pour variété
-                    title="Optimisation des performances moteur"
-                    description="Une puissance sur mesure, adaptée à nos exigences et votre style."
-                  />
-                  <ServiceCard
-                    icon={<span className="text-3xl">💡</span>} // Utilisation d'un emoji pour variété
-                    title="Solutions personnalisées"
-                    description="Chaque voiture est unique, chaque solution l'est aussi. Sur mesure pour vous."
-                  />
+                  {[
+                    { icon: <CarIcon />, title: "Diagnostic et entretien mécanique complet", description: "Précision et fiabilité pour la longévité de votre véhicule." },
+                    { icon: <span className="text-3xl">🚀</span>, title: "Reprogrammation moteur (Stage 1, 2, 3, etc.)", description: "Libérez le plein potentiel de votre moteur en toute sécurité." },
+                    { icon: <span className="text-3xl">📈</span>, title: "Optimisation des performances moteur", description: "Une puissance sur mesure, adaptée à nos exigences et votre style." },
+                    { icon: <span className="text-3xl">💡</span>, title: "Solutions personnalisées", description: "Chaque voiture est unique, chaque solution l'est aussi. Sur mesure pour vous." }
+                  ].map((service, index) => (
+                    <ServiceCard
+                      key={index}
+                      icon={service.icon}
+                      title={service.title}
+                      description={service.description}
+                      style={{ '--delay-factor': `${index * 200}ms` }}
+                    />
+                  ))}
                 </div>
               </section>
 
@@ -429,26 +431,20 @@
                   Pourquoi nous faire confiance ?
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <TrustCard
-                    icon={<span className="text-3xl">⏱️</span>}
-                    title="Plus de 10 ans d’expérience terrain"
-                    description="Un savoir-faire éprouvé, bâti sur des années de pratique et de passion."
-                  />
-                  <TrustCard
-                    icon={<HandshakeIcon />}
-                    title="Une approche personnalisée et professionnelle"
-                    description="Votre satisfaction est notre priorité, avec un service à votre écoute."
-                  />
-                  <TrustCard
-                    icon={<span className="text-3xl">🏆</span>}
-                    title="Une expertise reconnue en performance moteur"
-                    description="Le moteur n'a plus de secret pour nous. Maîtrise et innovation au service de votre véhicule."
-                  />
-                  <TrustCard
-                    icon={<span className="text-3xl">⭐</span>}
-                    title="Un service de proximité, fiable et à l’écoute"
-                    description="Votre partenaire automobile de confiance, toujours disponible pour vos besoins."
-                  />
+                  {[
+                    { icon: <span className="text-3xl">⏱️</span>, title: "Plus de 10 ans d’expérience terrain", description: "Un savoir-faire éprouvé, bâti sur des années de pratique et de passion." },
+                    { icon: <HandshakeIcon />, title: "Une approche personnalisée et professionnelle", description: "Votre satisfaction est notre priorité, avec un service à votre écoute." },
+                    { icon: <span className="text-3xl">🏆</span>, title: "Une expertise reconnue en performance moteur", description: "Le moteur n'a plus de secret pour nous. Maîtrise et innovation au service de votre véhicule." },
+                    { icon: <span className="text-3xl">⭐</span>, title: "Un service de proximité, fiable et à l’écoute", description: "Votre partenaire automobile de confiance, toujours disponible pour vos besoins." }
+                  ].map((trust, index) => (
+                    <TrustCard
+                      key={index}
+                      icon={trust.icon}
+                      title={trust.title}
+                      description={trust.description}
+                      style={{ '--delay-factor': `${index * 200}ms` }}
+                    />
+                  ))}
                 </div>
               </section>
 
@@ -476,8 +472,8 @@
         );
 
         // Composant Carte de Service
-        const ServiceCard = ({ icon, title, description }) => (
-          <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-red-500">
+        const ServiceCard = ({ icon, title, description, style }) => (
+          <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-red-500 animate-fade-in-up delay-animation" style={style}>
             <div className="text-red-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-red-400">{icon}</div>
             <h3 className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-red-200">{title}</h3>
             <p className="text-gray-300">{description}</p>
@@ -485,8 +481,8 @@
         );
 
         // Composant Carte de Confiance
-        const TrustCard = ({ icon, title, description }) => (
-          <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-blue-500">
+        const TrustCard = ({ icon, title, description, style }) => (
+          <div className="group bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-blue-500 animate-fade-in-up delay-animation" style={style}>
             <div className="text-blue-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-blue-400">{icon}</div>
             <h3 className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-blue-200">{title}</h3>
             <p className="text-gray-300">{description}</p>
@@ -494,8 +490,8 @@
         );
 
         // Composant Carte de Blog - DÉPLACÉ AVANT BlogPage
-        const BlogPostCard = ({ post }) => (
-          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400">
+        const BlogPostCard = ({ post, style }) => (
+          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400 animate-fade-in-up delay-animation" style={style}>
             <img
               src={post.image}
               alt={post.title}
@@ -605,8 +601,12 @@
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                  {blogPosts.map(post => (
-                    <BlogPostCard key={post.id} post={post} />
+                  {blogPosts.map((post, index) => (
+                    <BlogPostCard
+                      key={post.id}
+                      post={post}
+                      style={{ '--delay-factor': `${index * 150}ms` }}
+                    />
                   ))}
                 </div>
               </div>
@@ -901,8 +901,9 @@
                                 {images.map((imageSrc, index) => (
                                     <div
                                         key={index}
-                                        className="relative w-full h-48 rounded-lg overflow-hidden cursor-pointer group transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl"
+                                        className="relative w-full h-48 rounded-lg overflow-hidden cursor-pointer group transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl animate-fade-in-up delay-animation"
                                         onClick={() => openLightbox(index)}
+                                        style={{ '--delay-factor': `${index * 100}ms` }}
                                     >
                                         <img
                                             src={imageSrc}
