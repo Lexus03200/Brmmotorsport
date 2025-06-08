@@ -290,116 +290,9 @@
         // --- Context pour la gestion du contenu éditable ---
         const ContentContext = createContext();
 
-        // Contenu par défaut (initial) du site, qui sera éditable via l'admin
-        const defaultSiteContent = {
-            home: {
-                mainTitle: "Libérez la Puissance. Redéfinissez la Performance.",
-                description: "Chez BRMOTORSPORT, nous transformons votre passion pour l'automobile en une expérience de conduite inégalée.",
-                contactMessage: "Pour toute prise de rendez-vous ou demande de devis, nous vous invitons à nous contacter directement via les informations disponibles dans la section 'Contact'.",
-                offerTitle: "Ce que nous vous proposons",
-                offer1Title: "Diagnostic et entretien mécanique complet",
-                offer1Description: "Précision et fiabilité pour la longévité de votre véhicule.",
-                offer2Title: "Reprogrammation moteur (Stage 1, 2, 3, etc.)",
-                offer2Description: "Libérez le plein potentiel de votre moteur en toute sécurité.",
-                offer3Title: "Optimisation des performances moteur",
-                offer3Description: "Une puissance sur mesure, adaptée à nos exigences et votre style.",
-                offer4Title: "Solutions personnalisées",
-                offer4Description: "Chaque voiture est unique, chaque solution l'est aussi. Sur mesure pour vous.",
-                trustTitle: "Pourquoi nous faire confiance ?",
-                trust1Title: "Plus de 10 ans d’expérience terrain",
-                trust1Description: "Un savoir-faire éprouvé, bâti sur des années de pratique et de passion.",
-                trust2Title: "Une approche personnalisée et professionnelle",
-                trust2Description: "Votre satisfaction est notre priorité, avec un service à votre écoute.",
-                trust3Title: "Une expertise reconnue en performance moteur",
-                trust3Description: "Le moteur n'a plus de secret pour nous. Maîtrise et innovation au service de votre véhicule.",
-                trust4Title: "Un service de proximité, fiable et à l’écoute",
-                trust4Description: "Votre partenaire automobile de confiance, toujours disponible pour vos besoins.",
-                teamTitle: "Faites confiance à une équipe de passionnés qui maîtrisent leur art",
-                teamDescription: "Rémy Bruyant, notre expert automobile dédié à la performance et à la qualité. Chez BRMOTORSPORT, la passion du moteur est notre moteur, assurant des résultats qui dépassent vos attentes."
-            },
-            blog: {
-                mainTitle: "Nos Réalisations et Actus",
-                description: "Découvrez nos dernières interventions, nos projets d'optimisation et les coulisses de BRMOTORSPORT."
-            },
-            aboutUs: {
-                mainTitle: "Qui Sommes-nous",
-                description: "Découvrez la passion, l'histoire et les valeurs qui animent BRMOTORSPORT.",
-                historyTitle: "Notre Histoire",
-                historyParagraph1: "BRMOTORSPORT est né de la passion inébranlable de Rémy Bruyant pour l'automobile et la performance. Fort de plus de 10 ans d'expérience sur le terrain, Rémy a concrétisé notre vision en créant un atelier dédié à l'optimisation des véhicules et à l'excellence mécanique. Ce qui a commencé comme une fascination pour les moteurs et leur potentiel est devenu une entreprise florissante, réputée pour notre expertise et notre approche personnalisée.",
-                historyParagraph2: "Notre parcours est jalonné de défis relevés et de succès partagés avec nos clients, qui nous font confiance pour libérer la pleine puissance de leur véhicule, qu'il s'agisse d'une voiture de sport, d'un utilitaire ou d'un véhicule de tous les jours. Chaque projet est traité avec le même engagement : la qualité, la fiabilité et la performance.",
-                valuesTitle: "Nos Valeurs",
-                value1Title: "Expertise",
-                value1Description: "Une connaissance approfondie et constamment mise à jour des technologies automobiles.",
-                value2Title: "Qualité",
-                value2Description: "Nous utilisons uniquement des outils et des méthodes de pointe pour des résultats durables.",
-                value3Title: "Transparence",
-                value3Description: "Une communication claire et honnête à chaque étape de nos interventions.",
-                value4Title: "Passion",
-                value4Description: "Notre amour de l'automobile est le moteur de notre engagement et de notre précision."
-            },
-            contact: {
-                mainTitle: "Contactez-nous",
-                description: "N'hésitez pas à nous contacter pour toute question, demande de devis ou prise de rendez-vous.",
-                emailTitle: "Adresse E-mail",
-                email: "brmotosport003@gmail.com",
-                phoneTitle: "Numéro de Téléphone",
-                phoneNumber: "06.68.27.88.01",
-                instagramTitle: "Suivez-nous sur Instagram",
-                instagramHandle: "@brmotorsport003"
-            },
-            legalMentions: {
-                mainTitle: "Mentions Légales & Clause de Non-responsabilité",
-                sectionTitle: "Mention légale – Clause de non-responsabilité sur la reprogrammation moteur",
-                paragraph1: "La société Brmotorsport, dirigée par Rémy Bruyant, spécialisée dans la reprogrammation moteur et l’optimisation de performances automobiles, informe notre clientèle que toutes les interventions réalisées sur les calculateurs électroniques (ECU) sont exclusivement destinées à un usage sur circuit fermé ou terrain privé, sauf mention contraire spécifiant une conformité avec la réglementation en vigueur.",
-                paragraph2: "Brmotorsport décline toute responsabilité en cas d’utilisation d’un véhicule reprogrammé sur la voie publique lorsque cette modification entraîne une non-conformité :",
-                list1Item1: "au Code de la route,",
-                list1Item2: "aux normes environnementales (notamment les normes EURO antipollution),",
-                list1Item3: "aux exigences des assureurs ou du contrôle technique.",
-                paragraph3: "Il appartient au propriétaire du véhicule de s’assurer de :",
-                list2Item1: "La conformité légale du véhicule après reprogrammation,",
-                list2Item2: "La déclaration des modifications à son assureur,",
-                list2Item3: "La connaissance des risques juridiques et mécaniques encourus en cas d’usage inadapté du véhicule.",
-                paragraph4: "Brmotorsport ne saurait être tenue responsable des conséquences légales, techniques ou financières résultant d’un usage non autorisé d’un véhicule reprogrammé sur la voie publique."
-            },
-            privacyPolicy: {
-                mainTitle: "Politique de Confidentialité",
-                introTitle: "Introduction",
-                introText: "Bienvenue sur le site de BRMOTORSPORT. Nous nous engageons à protéger vos données personnelles. Cette politique de confidentialité vous informe sur la manière dont nous collectons, utilisons et protégeons vos informations.",
-                collectionTitle: "Collecte des Informations",
-                collectionText: "Nous collectons des informations lorsque vous utilisez notre formulaire de contact, notamment votre nom, adresse e-mail et numéro de téléphone. Nous pouvons également collecter des données techniques telles que votre adresse IP et le type de navigateur.",
-                usageTitle: "Utilisation des Informations",
-                usageListItem1: "Traiter vos demandes de contact et de devis.",
-                usageListItem2: "Améliorer l'expérience utilisateur de notre site.",
-                usageListItem3: "Répondre à vos questions et vous fournir un support client.",
-                protectionTitle: "Protection des Données",
-                protectionText: "Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Vos données sont stockées sur des serveurs sécurisés et accessibles uniquement par un personnel autorisé.",
-                rightsTitle: "Vos Droits",
-                rightsText: "Conformément à la réglementation sur la protection des données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression, de limitation et d'opposition concernant vos données personnelles. Pour exercer ces droits, veuillez nous contacter à brmotosport003@gmail.com.",
-                disclaimerText: "**Ce texte est un exemple. Veuillez le remplacer par votre propre politique de confidentialité, complète et conforme à la législation en vigueur.**"
-            },
-            showcaseCar: {
-                mainTitle: "Notre Voiture Vitrine : Le Projet Scirocco R",
-                description: "Découvrez en détail la préparation ultime de notre Volkswagen Scirocco R, un chef-d'œuvre de performance et d'ingénierie.",
-                preparationTitle: "Préparation Moteur et Optimisations",
-                preparationDescription: "Ce projet sur le Volkswagen Scirocco R a été une démonstration de notre expertise en performance automobile. Chaque composant a été soigneusement sélectionné et optimisé pour atteindre un niveau de puissance et de fiabilité exceptionnel. Voici les détails de la préparation :",
-                listTitle: "Détails de la préparation :", // Ajouté pour structurer le panneau admin
-                piston: "**Piston ITG :** Installation de pistons forgés pour une résistance accrue et une meilleure gestion des contraintes.",
-                bielles: "**Bielles Carillo :** Remplacement par des bielles Carillo, offrant légèreté et robustesse pour les hautes performances.",
-                soupapes: "**Soupapes inconel :** Utilisation de soupapes en Inconel, un alliage résistant aux températures extrêmes et à la corrosion.",
-                adm: "**ADM (Admission Directe Moteur) :** Optimisation de l'admission d'air pour un flux plus direct et un gain de puissance.",
-                ressort: "**Ressort bar teck :** Mise en place de ressorts de soupapes renforcés pour éviter le flottement à haut régime.",
-                viserie: "**Viserie ARP 2000 :** Boulonnerie de haute résistance pour une fixation sécurisée des éléments critiques du moteur.",
-                pompeHuile: "**Pompe à huile :** Amélioration du système d'huile avec une pompe à huile plus performante.",
-                turbo: "**Turbo GTX :** Installation d'un turbocompresseur Garrett GTX pour une augmentation significative de la puissance.",
-                wastegate: "**Wastegate Tial 44 mm :** Contrôle précis de la pression du turbo avec une wastegate externe de haute qualité.",
-                injecteurs: "**Injecteurs Porsche :** Mise à niveau des injecteurs pour fournir le carburant nécessaire à la puissance accrue.",
-                pipAdmission: "**Pip admission :** Optimisation du conduit d'admission pour un flux d'air maximal.",
-                wmi: "**WMI (Water Methanol Injection) :** Système d'injection eau-méthanol pour refroidir l'admission et augmenter la puissance.",
-                embrayage: "**Embrayage 880 nm :** Installation d'un embrayage renforcé capable de supporter un couple moteur de 880 Nm.",
-                finalDescription: "Cette préparation complète garantit non seulement une performance époustouflante sur piste, mais aussi une fiabilité à toute épreuve pour un usage sportif."
-            }
-        };
-
+        // Le contenu par défaut ne sera plus codé en dur ici,
+        // mais chargé depuis content.json
+        // const defaultSiteContent = {...}; // C'est supprimé
 
         // Composant pour l'édition de texte in-situ
         const EditableText = ({ tag: Tag, contentKey, isAdminAuthenticated, className }) => {
@@ -413,13 +306,15 @@
                     if (current && typeof current === 'object' && current.hasOwnProperty(p[i])) {
                         current = current[p[i]];
                     } else {
-                        return `[Contenu manquant: ${contentKey}]`; // Message d'erreur si la clé est introuvable
+                        // Fournit un fallback ou un message d'erreur clair si la clé n'existe pas
+                        return `[Contenu manquant: ${contentKey}]`;
                     }
                 }
                 return current;
             };
 
-            const textValue = getValue(content, path);
+            const textValue = content ? getValue(content, path) : `Chargement...`;
+
 
             // Gérer le changement du texte
             const handleChange = (e) => {
@@ -544,7 +439,6 @@
 
         // Composant Page d'Accueil
         const HomePage = ({ setCurrentPage, isAdminAuthenticated }) => {
-            const { content } = useContext(ContentContext);
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
                     <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
@@ -889,7 +783,6 @@
 
         // Composant Page Qui Sommes-nous
         const AboutUsPage = ({ isAdminAuthenticated }) => {
-            const { content } = useContext(ContentContext);
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
                     <div className="container mx-auto px-6 max-w-4xl">
@@ -1542,12 +1435,13 @@
             const [error, setError] = useState('');
 
             // Mot de passe pour l'administrateur. ATTENTION: Ce n'est PAS sécurisé pour une production !
-            // Un vrai système d'authentification nécessiterait un backend.
-            const ADMIN_PASSWORD = 'Remy03200!';
+            // Pour une production, ce mot de passe ne devrait pas être dans le code client.
+            // Il serait envoyé à un backend pour vérification.
+            const ADMIN_PASSWORD_FRONTEND = 'Remy03200!';
 
             const handleSubmit = (e) => {
                 e.preventDefault();
-                if (password === ADMIN_PASSWORD) {
+                if (password === ADMIN_PASSWORD_FRONTEND) {
                     setIsAdminAuthenticated(true);
                     setCurrentPage('admin-panel'); // Redirige vers le panneau admin
                 } else {
@@ -1586,6 +1480,8 @@
         const AdminPanelPage = ({ setIsAdminAuthenticated, setCurrentPage }) => {
             const { content, updateContent } = useContext(ContentContext);
             const [localContent, setLocalContent] = useState(content); // État local pour les modifications en direct dans le formulaire
+            const [saveMessage, setSaveMessage] = useState(''); // Message pour la sauvegarde
+            const [isSaving, setIsSaving] = useState(false); // État pour le chargement de la sauvegarde
 
             // Met à jour l'état local quand le contenu global change (par exemple, après un rafraîchissement)
             useEffect(() => {
@@ -1602,15 +1498,46 @@
                 }));
             };
 
-            const handleSaveChanges = () => {
-                // Ici, vous enverriez normalement les `localContent` à votre backend.
-                // Pour cette démo, nous mettons simplement à jour le contexte global.
-                Object.keys(localContent).forEach(pageKey => {
-                    Object.keys(localContent[pageKey]).forEach(fieldKey => {
-                        updateContent(`${pageKey}.${fieldKey}`, localContent[pageKey][fieldKey]);
+            const handleSaveChanges = async () => {
+                setIsSaving(true);
+                setSaveMessage('Sauvegarde en cours...');
+
+                try {
+                    // C'est ici que le frontend envoie les données au backend.
+                    // Remplacez 'http://localhost:3001/api/save-content' par l'URL réelle de votre backend déployé.
+                    const response = await fetch('http://localhost:3001/api/save-content', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // IMPORTANT: Pour la démonstration, nous passons le mot de passe admin ici.
+                            // En production, vous utiliseriez un système d'authentification basé sur des sessions ou des JWT
+                            // après un processus de connexion sécurisé pour obtenir un token.
+                            'Authorization': `Bearer Remy03200!` // Doit correspondre à ADMIN_PASSWORD_BACKEND dans le .env du backend
+                        },
+                        body: JSON.stringify(localContent) // Envoyer le contenu modifié
                     });
-                });
-                alert('Modifications enregistrées localement !'); // Utilisation de alert() ici pour la démo, à remplacer par une modal personnalisée
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        setSaveMessage(`Modifications sauvegardées avec succès sur GitHub ! ${data.commitUrl ? `Voir le commit: ${data.commitUrl}` : ''}`);
+                        // Mettre à jour le contenu global avec le contenu local sauvegardé
+                        // Cela est essentiel pour que l'application React reflète les changements après une sauvegarde réelle
+                        Object.keys(localContent).forEach(pageKey => {
+                            Object.keys(localContent[pageKey]).forEach(fieldKey => {
+                                updateContent(`${pageKey}.${fieldKey}`, localContent[pageKey][fieldKey]);
+                            });
+                        });
+                    } else {
+                        setSaveMessage(`Erreur de sauvegarde : ${data.message || 'Problème serveur'}`);
+                        console.error('Erreur backend:', data);
+                    }
+                } catch (error) {
+                    console.error('Erreur réseau lors de la sauvegarde:', error);
+                    setSaveMessage(`Erreur réseau. Impossible de contacter le serveur backend. Assurez-vous qu'il est en ligne et accessible (${error.message}).`);
+                } finally {
+                    setIsSaving(false);
+                    setTimeout(() => setSaveMessage(''), 10000); // Masquer le message après 10 secondes
+                }
             };
 
             const handleLogout = () => {
@@ -1665,9 +1592,10 @@
                             <div className="flex justify-center space-x-4 mt-8">
                                 <button
                                     onClick={handleSaveChanges}
-                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    disabled={isSaving} // Désactiver le bouton pendant la sauvegarde
                                 >
-                                    Enregistrer les modifications
+                                    {isSaving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
                                 </button>
                                 <button
                                     onClick={handleLogout}
@@ -1676,6 +1604,11 @@
                                     Déconnexion
                                 </button>
                             </div>
+                            {saveMessage && (
+                                <p className="text-center text-yellow-400 mt-4 text-md animate-fade-in">
+                                    {saveMessage}
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -1770,16 +1703,53 @@
         // Composant principal de l'application
         const App = () => {
             const [currentPage, setCurrentPage] = useState('accueil');
-            const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false); // Nouvel état pour l'authentification admin
-            const [content, setContent] = useState(defaultSiteContent); // État pour le contenu éditable du site
+            const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+            const [content, setContent] = useState(null); // Initialiser à null, sera chargé depuis le JSON
+            const [loadingContent, setLoadingContent] = useState(true); // État de chargement du contenu
+            const [errorContent, setErrorContent] = useState(null); // État d'erreur de chargement du contenu
+
+            // Fonction pour charger le contenu depuis content.json
+            useEffect(() => {
+                const fetchContent = async () => {
+                    try {
+                        const response = await fetch('content.json'); // Assurez-vous que content.json est à la racine de votre dépôt
+                        if (!response.ok) {
+                            throw new Error(`Erreur HTTP: ${response.status}`);
+                        }
+                        const data = await response.json();
+                        setContent(data);
+                    } catch (error) {
+                        console.error("Erreur lors du chargement de content.json:", error);
+                        setErrorContent("Impossible de charger le contenu du site. Veuillez réessayer plus tard.");
+                        // Fallback vers un contenu par défaut si le chargement échoue
+                        setContent({
+                            home: { mainTitle: "Erreur de Chargement", description: "Le contenu n'a pas pu être chargé.", contactMessage: "Veuillez vérifier votre connexion." },
+                            blog: { mainTitle: "Erreur", description: "Contenu non disponible." },
+                            aboutUs: { mainTitle: "Erreur", description: "Contenu non disponible." },
+                            contact: { mainTitle: "Erreur", description: "Contenu non disponible." },
+                            legalMentions: { mainTitle: "Erreur", sectionTitle: "", paragraph1: "Contenu non disponible." },
+                            privacyPolicy: { mainTitle: "Erreur", introTitle: "", introText: "Contenu non disponible." },
+                            showcaseCar: { mainTitle: "Erreur", description: "Contenu non disponible." }
+                        });
+                    } finally {
+                        setLoadingContent(false);
+                    }
+                };
+
+                fetchContent();
+            }, []); // S'exécute une seule fois au montage du composant
 
             // Fonction pour mettre à jour une partie spécifique du contenu
             const updateContent = (keyPath, newValue) => {
-                const path = keyPath.split('.');
                 setContent(prevContent => {
                     const newContent = { ...prevContent };
                     let current = newContent;
+                    const path = keyPath.split('.');
                     for (let i = 0; i < path.length - 1; i++) {
+                        // Si le chemin n'existe pas, le créer pour éviter les erreurs
+                        if (!current[path[i]]) {
+                            current[path[i]] = {};
+                        }
                         current = current[path[i]];
                     }
                     current[path[path.length - 1]] = newValue;
@@ -1792,6 +1762,21 @@
                 window.scrollTo(0, 0); // Fait défiler la fenêtre à la position 0, 0 (en haut à gauche)
             }, [currentPage]); // Se déclenche à chaque fois que `currentPage` change
 
+            if (loadingContent) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-black text-white text-3xl">
+                        Chargement du contenu...
+                    </div>
+                );
+            }
+
+            if (errorContent) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-red-900 text-white text-xl p-4 text-center">
+                        Erreur: {errorContent}
+                    </div>
+                );
+            }
 
             // Fonction de rendu du contenu de la page en fonction de l'état
             const renderPage = () => {
