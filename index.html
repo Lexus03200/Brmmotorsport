@@ -1489,6 +1489,7 @@
             // Met à jour l'état local quand le contenu global change (par exemple, après un rafraîchissement)
             useEffect(() => {
                 setLocalContent(JSON.parse(JSON.stringify(content || {})));
+                console.log("AdminPanelPage: Content state updated. localContent initialized:", JSON.parse(JSON.stringify(content || {})));
             }, [content]);
 
             const handleLocalChange = (pageKey, fieldKey, newValue) => {
@@ -1501,6 +1502,7 @@
                         ...newContent[pageKey],
                         [fieldKey]: newValue
                     };
+                    console.log(`AdminPanelPage: Local change - page: ${pageKey}, field: ${fieldKey}, new value: "${newValue}". Current localContent:`, newContent);
                     return newContent;
                 });
             };
@@ -1508,6 +1510,7 @@
             const handleSaveChanges = async () => {
                 setIsSaving(true);
                 setSaveMessage('Sauvegarde en cours...');
+                console.log("AdminPanelPage: Initiating save. Sending content:", JSON.parse(JSON.stringify(localContent)));
 
                 try {
                     // C'est ici que le frontend envoie les données au backend.
@@ -1527,6 +1530,7 @@
                     const data = await response.json();
                     if (response.ok) {
                         setSaveMessage(`Modifications sauvegardées avec succès sur GitHub ! ${data.commitUrl ? `Voir le commit: ${data.commitUrl}` : ''}`);
+                        console.log("AdminPanelPage: Save successful. Response from backend:", data);
                         // Mettre à jour le contenu global avec le contenu local sauvegardé
                         // Cela est essentiel pour que l'application React reflète les changements après une sauvegarde réelle
                         Object.keys(localContent).forEach(pageKey => {
@@ -1534,12 +1538,13 @@
                                 updateContent(`${pageKey}.${fieldKey}`, localContent[pageKey][fieldKey]);
                             });
                         });
+                        console.log("AdminPanelPage: Global content update triggered.");
                     } else {
                         setSaveMessage(`Erreur de sauvegarde : ${data.message || 'Problème serveur'}`);
-                        console.error('Erreur backend:', data);
+                        console.error('AdminPanelPage: Erreur backend:', data);
                     }
                 } catch (error) {
-                    console.error('Erreur réseau lors de la sauvegarde:', error);
+                    console.error('AdminPanelPage: Erreur réseau lors de la sauvegarde:', error);
                     setSaveMessage(`Erreur réseau. Impossible de contacter le serveur backend. Assurez-vous qu'il est en ligne et accessible (${error.message}).`);
                 } finally {
                     setIsSaving(false);
@@ -1579,7 +1584,7 @@
                                                     <label className="block text-gray-300 text-sm font-bold mb-2">
                                                         {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}:
                                                     </label>
-                                                    { (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('description')) ? (
+                                                    { (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('description') || fieldKey.includes('Text') || fieldKey.includes('Message')) ? ( // Ajout de 'Text' et 'Message' pour une meilleure détection des champs texte
                                                         <input
                                                             type="text"
                                                             value={valueToDisplay}
@@ -1727,6 +1732,7 @@
             // Fonction pour charger le contenu depuis content.json
             useEffect(() => {
                 const fetchContent = async () => {
+                    console.log("App: Attempting to fetch content.json...");
                     try {
                         const response = await fetch('content.json'); // Assurez-vous que content.json est à la racine de votre dépôt
                         if (!response.ok) {
@@ -1734,8 +1740,9 @@
                         }
                         const data = await response.json();
                         setContent(data);
+                        console.log("App: content.json loaded successfully:", data);
                     } catch (error) {
-                        console.error("Erreur lors du chargement de content.json:", error);
+                        console.error("App: Erreur lors du chargement de content.json:", error);
                         setErrorContent("Impossible de charger le contenu du site. Veuillez réessayer plus tard.");
                         // Fallback vers un contenu par défaut si le chargement échoue
                         setContent({
@@ -1769,6 +1776,7 @@
                         current = current[path[i]];
                     }
                     current[path[path.length - 1]] = newValue;
+                    console.log(`App: Global content updated via updateContent for ${keyPath}. New content state:`, newContent);
                     return newContent;
                 });
             };
