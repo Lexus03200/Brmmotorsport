@@ -979,21 +979,37 @@
                 const audio = document.getElementById('background-music');
                 if (audio) {
                     audioRef.current = audio;
-                    setIsPlaying(!audio.paused);
 
+                    // Tentative de lecture automatique
                     const playPromise = audio.play();
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
+                            // Lecture automatique réussie
                             setIsPlaying(true);
                         }).catch(error => {
-                            console.log("La lecture automatique de la musique a été bloquée. L'utilisateur peut la démarrer manuellement.");
-                            setIsPlaying(false);
+                            // Lecture automatique bloquée
+                            console.log("La lecture automatique de la musique a été bloquée. L'utilisateur peut la démarrer manuellement.", error);
+                            setIsPlaying(false); // S'assurer que l'état reflète que la musique ne joue pas
                             setShowAutoplayMessage(true); // Afficher le message
+                            // Masquer le message après 5 secondes si l'utilisateur n'interagit pas
                             setTimeout(() => {
-                                setShowAutoplayMessage(false); // Masquer le message après 5 secondes
+                                setShowAutoplayMessage(false);
                             }, 5000);
                         });
                     }
+
+                    // Mettre à jour l'état isPlaying si la lecture est interrompue par l'utilisateur ou le système
+                    const handleAudioPause = () => setIsPlaying(false);
+                    const handleAudioPlay = () => setIsPlaying(true);
+
+                    audio.addEventListener('pause', handleAudioPause);
+                    audio.addEventListener('play', handleAudioPlay);
+
+                    // Nettoyage de l'effet
+                    return () => {
+                        audio.removeEventListener('pause', handleAudioPause);
+                        audio.removeEventListener('play', handleAudioPlay);
+                    };
                 }
             }, []); // S'exécute une seule fois au montage du composant
 
@@ -1003,10 +1019,18 @@
                     if (isPlaying) {
                         audio.pause();
                     } else {
-                        audio.play();
+                        // Tenter de jouer la musique. C'est ici que le navigateur pourrait encore bloquer si ce n'est pas initié par un geste utilisateur fort.
+                        audio.play().then(() => {
+                            setIsPlaying(true);
+                            setShowAutoplayMessage(false); // Masquer le message si l'utilisateur interagit
+                        }).catch(error => {
+                            console.error("Erreur lors de la tentative de lecture par le bouton:", error);
+                            // Optionnel: Afficher un message à l'utilisateur si la lecture échoue même avec le clic
+                            // Utilisez une modal personnalisée si vous voulez une meilleure UX que alert()
+                             // alert("Impossible de lire la musique. Votre navigateur pourrait bloquer la lecture automatique.");
+                        });
                     }
-                    setIsPlaying(!isPlaying);
-                    setShowAutoplayMessage(false); // Masquer le message si l'utilisateur interagit
+                    // La mise à jour de l'état isPlaying se fait maintenant dans les handlers 'play' et 'pause' ou dans le .then()
                 }
             };
 
