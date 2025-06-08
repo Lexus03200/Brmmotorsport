@@ -1484,9 +1484,6 @@
             const [saveMessage, setSaveMessage] = useState(''); // Message pour la sauvegarde
             const [isSaving, setIsSaving] = useState(false); // État pour le chargement de la sauvegarde
 
-            // Gérer la catégorie actuellement sélectionnée pour l'édition
-            const [selectedCategory, setSelectedCategory] = useState('home'); // Par défaut, 'home'
-
             // Met à jour l'état local quand le contenu global change (par exemple, après un rafraîchissement)
             useEffect(() => {
                 setLocalContent(JSON.parse(JSON.stringify(content || {})));
@@ -1611,17 +1608,6 @@
                 setCurrentPage('accueil'); // Redirige vers l'accueil après déconnexion
             };
 
-            // Définir les catégories et leur affichage (titre convivial)
-            const categories = {
-                home: "Accueil",
-                blog: "Blog",
-                quiSommesNous: "Qui Sommes-nous",
-                contact: "Contact",
-                legalMentions: "Mentions Légales",
-                privacyPolicy: "Politique de Confidentialité",
-                showcaseCar: "Voiture Vitrine"
-            };
-
             return (
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-40 pb-12 font-inter">
                     <div className="container mx-auto px-6 max-w-6xl">
@@ -1632,146 +1618,129 @@
                             Bienvenue, administrateur. Ici, vous pouvez gérer le contenu du site.
                         </p>
 
-                        {/* Navigation des catégories */}
-                        <div className="flex flex-wrap justify-center gap-4 mb-8 p-4 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
-                            {Object.keys(categories).map(categoryKey => (
-                                <button
-                                    key={categoryKey}
-                                    onClick={() => setSelectedCategory(categoryKey)}
-                                    className={`py-2 px-5 rounded-full font-semibold transition-all duration-300 ease-in-out
-                                                ${selectedCategory === categoryKey
-                                                    ? 'bg-blue-600 text-white shadow-md transform scale-105'
-                                                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'
-                                                }`}
-                                >
-                                    {categories[categoryKey]}
-                                </button>
-                            ))}
-                        </div>
-
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                            {/* Affichage du contenu de la catégorie sélectionnée */}
-                            {localContent[selectedCategory] && (
-                                <div className="mb-8 p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
-                                    <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3">
-                                        {categories[selectedCategory]} (Modification)
-                                    </h2>
-                                    <div className="space-y-6">
-                                        {Object.keys(localContent[selectedCategory]).map(fieldKey => {
-                                            const fieldValue = localContent[selectedCategory][fieldKey];
-                                            const contentPath = `${selectedCategory}.${fieldKey}`;
+                            {Object.keys(localContent).map(pageKey => {
+                                // Ne pas afficher les pages Admin Login/Panel ici
+                                if (pageKey === 'adminLogin' || pageKey === 'adminPanel') {
+                                    return null;
+                                }
 
-                                            // Gérer la section des posts du blog séparément
-                                            if (selectedCategory === 'blog' && fieldKey === 'posts' && Array.isArray(fieldValue)) {
+                                return (
+                                    <div key={pageKey} className="mb-8 p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                                        <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3">
+                                            {pageKey.replace(/([A-Z])/g, ' $1')}
+                                        </h2>
+                                        <div className="space-y-6">
+                                            {/* Rendu des champs simples de la page */}
+                                            {Object.keys(localContent[pageKey]).map(fieldKey => {
+                                                const fieldValue = localContent[pageKey][fieldKey];
+                                                const contentPath = `${pageKey}.${fieldKey}`;
+
+                                                // Ne pas afficher les 'posts' du blog ici, ils seront gérés séparément
+                                                if (fieldKey === 'posts' && Array.isArray(fieldValue)) {
+                                                    return null;
+                                                }
+
+                                                const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
+                                                const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram')) ? 'text' : 'textarea';
+                                                const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
+
                                                 return (
-                                                    <div key={contentPath} className="mt-8 pt-6 border-t-2 border-green-600">
-                                                        <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
-                                                        <button
-                                                            onClick={handleAddBlogPost}
-                                                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mb-6"
-                                                        >
-                                                            Ajouter un nouvel article
-                                                        </button>
-                                                        <div className="space-y-8 mt-4">
-                                                            {localContent.blog.posts.map((post, index) => (
-                                                                <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
-                                                                    <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
-                                                                    <button
-                                                                        onClick={() => handleRemoveBlogPost(post.id)}
-                                                                        className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
-                                                                        aria-label="Supprimer l'article"
-                                                                    >
-                                                                        <XIcon className="w-4 h-4"/>
-                                                                    </button>
-                                                                    <div className="space-y-4">
-                                                                        <div>
-                                                                            <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
-                                                                            <input
-                                                                                type="text"
-                                                                                value={post.title || ''}
-                                                                                onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
-                                                                                className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                                                            />
-                                                                        </div>
-                                                                        <div>
-                                                                            <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
-                                                                            <textarea
-                                                                                value={post.description || ''}
-                                                                                onChange={(e) => {
-                                                                                    const newValue = e.target.value;
-                                                                                    console.log(`Blog Description Change: Index: ${index}, New Value: "${newValue}"`);
-                                                                                    handleLocalChange('blog', `posts.${index}.description`, newValue);
-                                                                                }}
-                                                                                rows={Math.max(3, (post.description || '').split('\n').length)}
-                                                                                className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
-                                                                            />
-                                                                        </div>
-                                                                        <div>
-                                                                            <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
-                                                                            <input
-                                                                                type="text"
-                                                                                value={post.image || ''}
-                                                                                onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
-                                                                                className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                                                            />
-                                                                            <p className="text-gray-400 text-xs mt-1">
-                                                                                Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
+                                                    <div key={contentPath} className="pb-4 border-b border-gray-600 last:border-b-0">
+                                                        <label className="block text-gray-300 text-sm font-bold mb-2">
+                                                            {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}:
+                                                        </label>
+                                                        {inputType === 'text' ? (
+                                                            <input
+                                                                type="text"
+                                                                value={valueToDisplay}
+                                                                onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                                                className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
+                                                            />
+                                                        ) : (
+                                                            <textarea
+                                                                value={valueToDisplay}
+                                                                onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                                                rows={rows}
+                                                                className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
+                                                            />
+                                                        )}
+                                                        {typeof fieldValue !== 'string' && (
+                                                            <p className="text-red-400 text-sm mt-1">
+                                                                Ce champ ({contentPath}) n'est pas une chaîne de caractères ou est manquant dans content.json. Il sera enregistré comme une chaîne vide si vous le modifiez.
+                                                            </p>
+                                                        )}
                                                     </div>
                                                 );
-                                            }
+                                            })}
 
-                                            // Rendu des autres champs
-                                            const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
-                                            const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle')) ? 'text' : 'textarea';
-                                            const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
-
-                                            return (
-                                                <div key={contentPath} className="pb-4 border-b border-gray-600 last:border-b-0">
-                                                    <label className="block text-gray-300 text-sm font-bold mb-2">
-                                                        {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}:
-                                                    </label>
-                                                    {inputType === 'text' ? (
-                                                        <input
-                                                            type="text"
-                                                            value={valueToDisplay}
-                                                            onChange={(e) => handleLocalChange(selectedCategory, fieldKey, e.target.value)}
-                                                            className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
-                                                        />
-                                                    ) : (
-                                                        <textarea
-                                                            value={valueToDisplay}
-                                                            onChange={(e) => handleLocalChange(selectedCategory, fieldKey, e.target.value)}
-                                                            rows={rows}
-                                                            className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
-                                                        />
-                                                    )}
-                                                    {typeof fieldValue !== 'string' && (
-                                                        <p className="text-red-400 text-sm mt-1">
-                                                            Ce champ ({contentPath}) n'est pas une chaîne de caractères ou est manquant dans content.json. Il sera enregistré comme une chaîne vide si vous le modifiez.
-                                                        </p>
-                                                    )}
+                                            {/* Section spécifique pour les articles de blog */}
+                                            {pageKey === 'blog' && localContent.blog && Array.isArray(localContent.blog.posts) && (
+                                                <div className="mt-8 pt-6 border-t-2 border-green-600">
+                                                    <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
+                                                    <button
+                                                        onClick={handleAddBlogPost}
+                                                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mb-6"
+                                                    >
+                                                        Ajouter un nouvel article
+                                                    </button>
+                                                    <div className="space-y-8 mt-4">
+                                                        {localContent.blog.posts.map((post, index) => (
+                                                            <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
+                                                                <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
+                                                                <button
+                                                                    onClick={() => handleRemoveBlogPost(post.id)}
+                                                                    className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
+                                                                    aria-label="Supprimer l'article"
+                                                                >
+                                                                    <XIcon className="w-4 h-4"/>
+                                                                </button>
+                                                                <div className="space-y-4">
+                                                                    <div>
+                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            value={post.title || ''}
+                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
+                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
+                                                                        <textarea
+                                                                            value={post.description || ''}
+                                                                            onChange={(e) => {
+                                                                                const newValue = e.target.value;
+                                                                                console.log(`Blog Description Change: Index: ${index}, New Value: "${newValue}"`);
+                                                                                handleLocalChange('blog', `posts.${index}.description`, newValue);
+                                                                            }}
+                                                                            rows={Math.max(3, (post.description || '').split('\n').length)}
+                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            value={post.image || ''}
+                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
+                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                        />
+                                                                        <p className="text-gray-400 text-xs mt-1">
+                                                                            Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
-                                            );
-                                        })}
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-
-                            {/* Message si aucune catégorie n'est sélectionnée ou si le contenu est vide */}
-                            {!selectedCategory || !localContent[selectedCategory] && (
-                                <p className="text-center text-gray-400 text-xl mt-10">
-                                    Veuillez sélectionner une catégorie à modifier ci-dessus.
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="flex justify-center space-x-4 mt-8">
+                                );
+                            })}
+                            <div className="flex justify-center space-x-4 mt-8">
                                 <button
                                     onClick={handleSaveChanges}
                                     className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
