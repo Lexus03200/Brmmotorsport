@@ -153,6 +153,12 @@
 
     <div id="root"></div>
 
+    <!-- Intégration de React et ReactDOM CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <!-- Le type du script a été changé en "text/babel" pour que Babel puisse le transpiler -->
     <script type="text/babel">
         // Récupère les hooks React depuis l'objet global React
@@ -473,9 +479,9 @@
           </div>
         );
 
-        // Composant Carte de Blog - DÉPLACÉ AVANT BlogPage
+        // Composant Carte de Blog
         const BlogPostCard = ({ post }) => (
-          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400">
+          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400 relative">
             <img
               src={post.image}
               alt={post.title}
@@ -483,7 +489,7 @@
               onError={(e) => { e.target.onerror = null; console.error(`ERREUR DE CHARGEMENT D'IMAGE pour l'article "${post.title}": Vérifiez le nom du fichier (${post.originalImage}) et son emplacement.`); e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }} // Fallback image with more specific error message
             />
             <div className="p-6">
-              <h3 className="text-2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
+              <h3 className="2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
               <p className="text-gray-300 mb-4">{post.description}</p>
               <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold py-2 px-6 rounded-full hover:from-green-600 hover:to-teal-600 transition duration-300 ease-in-out shadow-md">
                 Lire la suite
@@ -494,107 +500,43 @@
 
         // Composant Page Blog
         const BlogPage = () => {
-          const blogPosts = [
-            {
-              id: 1,
-              image: "IMG_9611.png", // Chemin relatif
-              title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur",
-              description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime.",
-              originalImage: "IMG_9611.png"
-            },
-            {
-              id: 2,
-              image: "IMG_9609.png", // Chemin relatif
-              title: "BMW Série 2 : Reprogrammation et FAP OFF",
-              description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité.",
-              originalImage: "IMG_9609.png"
-            },
-            {
-              id: 3,
-              image: "IMG_9607.png", // Chemin relatif
-              title: "VW Golf GTI : Boost de Performance Ultime",
-              description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !",
-              originalImage: "IMG_9607.png"
-            },
-            {
-              id: 4,
-              image: "IMG_9608.png", // Chemin relatif
-              title: "Seat Ibiza : Amélioration de la Réactivité Moteur",
-              description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garanti.",
-              originalImage: "IMG_9608.png"
-            },
-            {
-              id: 5,
-              image: "IMG_9610.png", // Chemin relatif
-              title: "VW Golf 5 GTI : Mise à Jour Cartographie",
-              description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !",
-              originalImage: "IMG_9610.png"
-            },
-            {
-              id: 6, // Nouvel ID pour cet article
-              image: "Photopeugeot.png", // Chemin relatif de l'image avec l'extension .png
-              title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation",
-              description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led).",
-              originalImage: "Photopeugeot.png" // Nom du fichier original avec l'extension .png
-            },
-            {
-              id: 7, // Nouvel ID pour l'article Seat
-              image: "Seat1.png", // Chemin relatif de l'image de la Seat en .png
-              title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)",
-              description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm.",
-              originalImage: "Seat1.png" // Nom du fichier original avec l'extension .png
-            },
-            {
-              id: 8, // Nouvel ID pour l'ancienne voiture
-              image: "anciennevoiture.png", // Chemin relatif de l'image
-              title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine",
-              description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité.",
-              originalImage: "anciennevoiture.png"
-            },
-            {
-              id: 9, // Nouvel ID pour l'Audi
-              image: "audi1.png", // Chemin relatif de l'image
-              title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU",
-              description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité.",
-              originalImage: "audi1.png"
-            },
-            {
-              id: 10, // Nouvel ID pour le GX
-              image: "gx.png", // Chemin relatif de l'image
-              title: "Triumph TR3 : Check-up Complet et Optimisation",
-              description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité.",
-              originalImage: "gx.png"
-            },
-            {
-              id: 11, // Nouvel ID pour la Mercedes
-              image: "mercedes2021.png", // Chemin relatif de l'image
-              title: "Mercedes (2021) : Solution ADBLUE",
-              description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système.",
-              originalImage: "mercedes2021.png"
-            }
-          ];
+            // Static data for blog posts as Firebase is removed
+            const blogPosts = [
+                { title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur", description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime.", image: "https://placehold.co/600x400/000/FFF?text=Porsche+Cayenne", originalImage: "IMG_9611.png" },
+                { title: "BMW Série 2 : Reprogrammation et FAP OFF", description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité.", image: "https://placehold.co/600x400/000/FFF?text=BMW+Serie+2", originalImage: "IMG_9609.png" },
+                { title: "VW Golf GTI : Boost de Performance Ultime", description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !", image: "https://placehold.co/600x400/000/FFF?text=VW+Golf+GTI", originalImage: "IMG_9607.png" },
+                { title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garanti.", image: "https://placehold.co/600x400/000/FFF?text=Seat+Ibiza", originalImage: "IMG_9608.png" },
+                { title: "VW Golf 5 GTI : Mise à Jour Cartographie", description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !", image: "https://placehold.co/600x400/000/FFF?text=VW+Golf+5+GTI", originalImage: "IMG_9610.png" },
+                { title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation", description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led).", image: "https://lexus03200.github.io/Brmotorsport/Photopeugeot.jpg", originalImage: "Photopeugeot.png" },
+                { title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm.", image: "https://lexus03200.github.io/Brmotorsport/Seat1.jpg", originalImage: "Seat1.png" },
+                { title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité.", image: "https://placehold.co/600x400/000/FFF?text=Ancienne+Voiture", originalImage: "anciennevoiture.png" },
+                { title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité.", image: "https://lexus03200.github.io/Brmotorsport/description%20audi1.png", originalImage: "audi1.png" },
+                { title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité.", image: "https://lexus03200.github.io/Brmotorsport/description%20gx.png", originalImage: "gx.png" },
+                { title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système.", image: "https://lexus03200.github.io/Brmotorsport/description%20mercedes.png", originalImage: "mercedes2021.png" }
+            ];
 
-          return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
-              <div className="container mx-auto px-6">
-                <h1 className="text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down">
-                  Nos Réalisations et Actus
-                </h1>
-                <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
-                  Découvrez nos dernières interventions, nos projets d'optimisation et les coulisses de BRMOTORSPORT.
-                </p>
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
+                    <div className="container mx-auto px-6">
+                        <h1 className="text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down">
+                            Nos Réalisations et Actus
+                        </h1>
+                        <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
+                            Découvrez nos dernières interventions, nos projets d'optimisation et les coulisses de BRMOTORSPORT.
+                        </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                  {blogPosts.map(post => (
-                    <BlogPostCard key={post.id} post={post} />
-                  ))}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                            {blogPosts.map(post => (
+                                <BlogPostCard
+                                    key={post.title} // Utiliser un identifiant unique si disponible, sinon le titre
+                                    post={post}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          );
+            );
         };
-
-        // Le composant AppointmentPage a été supprimé
 
         // Composant Input Field (réutilisable)
         const InputField = ({ label, type, placeholder, required = false, value, onChange, name }) => (
@@ -633,7 +575,6 @@
             ></textarea>
           </div>
         );
-
 
         // Composant Page Qui Sommes-nous
         const AboutUsPage = () => (
@@ -823,24 +764,18 @@
 
         // Composant pour la page Voiture Vitrine
         const ShowcaseCarPage = () => {
-            // Base URL de votre dépôt GitHub Pages. À ajuster si votre dépôt change.
-            // SUPPRIMÉE, les chemins sont maintenant relatifs pour la cohérence avec les images du blog.
-            // const GITHUB_PAGES_BASE_URL = "https://lexus03200.github.io/Brmotorsport/";
-
-            // Liste des images pour la galerie.
-            // Mise à jour pour correspondre aux noms et extensions .png que vous avez fournis.
-            // Les chemins sont maintenant RELATIFS, comme pour les images du blog.
-            const images = [
-                `Photo1.png`, // Chemin relatif
-                `photo2.png`, // Chemin relatif
-                `photo3.png`, // Chemin relatif
-                `photo4.png`, // Chemin relatif
-                `photo5.png`, // Chemin relatif
-                `photo6.png`, // Chemin relatif
-                `photo7.png`, // Chemin relatif
-                `photo8.png`, // Chemin relatif
-                `photo9.png`, // Chemin relatif
-                `photo10.png`  // Chemin relatif
+            // Static data for showcase images as Firebase is removed
+            const showcaseImages = [
+                { url: "https://lexus03200.github.io/Brmotorsport/Photo1.png", description: "Volkswagen Scirocco R - Vue Avant" },
+                { url: "https://lexus03200.github.io/Brmotorsport/photo2.png", description: "Volkswagen Scirocco R - Vue Côté" },
+                { url: "https://lexus03200.github.io/Brmotorsport/photo3.png", description: "Volkswagen Scirocco R - Moteur" },
+                { url: "https://lexus03200.github.io/Brmotorsport/photo4.png", description: "Volkswagen Scirocco R - Intérieur" },
+                { url: "https://lexus03200.github.io/Brmotorsport/photo5.png", description: "Volkswagen Scirocco R - Freins" },
+                { url: "https://lexus03200.github.io/Brmotorsport/photo6.png", description: "Volkswagen Scirocco R - Jantes" },
+                { url: "https://lexus03200.github.io/Brmotorsport/photo7.png", description: "Volkswagen Scirocco R - Échappement" },
+                { url: "https://lexus03200.github.io/Brmotorsport/photo8.png", description: "Volkswagen Scirocco R - Arrière" },
+                { url: "https://lexus03200.github.io/Brmotorsport/photo9.png", description: "Volkswagen Scirocco R - Détail Moteur" },
+                { url: "https://lexus03200.github.io/Brmotorsport/photo10.png", description: "Volkswagen Scirocco R - Phares" }
             ];
 
             const [selectedImageIndex, setSelectedImageIndex] = useState(null); // Index de l'image sélectionnée pour la modale
@@ -855,13 +790,13 @@
 
             const goToPrevious = () => {
                 setSelectedImageIndex((prevIndex) =>
-                    prevIndex === 0 ? images.length - 1 : prevIndex - 1
+                    prevIndex === 0 ? showcaseImages.length - 1 : prevIndex - 1
                 );
             };
 
             const goToNext = () => {
                 setSelectedImageIndex((prevIndex) =>
-                    prevIndex === images.length - 1 ? 0 : prevIndex + 1
+                    prevIndex === showcaseImages.length - 1 ? 0 : prevIndex + 1
                 );
             };
 
@@ -878,21 +813,19 @@
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
                             {/* Grille des images */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                {images.map((imageSrc, index) => (
+                                {showcaseImages.map((img, index) => (
                                     <div
-                                        key={index}
+                                        key={img.url} // Utiliser l'URL comme clé car il n'y a plus d'ID Firebase
                                         className="relative w-full h-48 rounded-lg overflow-hidden cursor-pointer group transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl"
                                         onClick={() => openLightbox(index)}
                                     >
                                         <img
-                                            src={imageSrc}
-                                            alt={`Volkswagen Scirocco R - Image ${index + 1}`}
+                                            src={img.url}
+                                            alt={img.description || `Volkswagen Scirocco R - Image ${index + 1}`}
                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                                             onError={(e) => {
                                                 console.error(
                                                     `ERREUR DE CHARGEMENT D'IMAGE dans la galerie:
-                                                    Vérifiez l'URL exacte affichée ci-dessous dans votre navigateur.
-                                                    Vérifiez la CASSE (majuscules/minuscules) et l'EXTENSION du nom de fichier sur votre dépôt GitHub.
                                                     URL échouée: ${e.target.src}`,
                                                     e
                                                 );
@@ -907,37 +840,6 @@
                                 ))}
                             </div>
 
-                            {/* Modale Lightbox */}
-                            {selectedImageIndex !== null && (
-                                <div className="lightbox-overlay" onClick={closeLightbox}>
-                                    <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-                                        <img
-                                            src={images[selectedImageIndex]}
-                                            alt={`Volkswagen Scirocco R - Grande image ${selectedImageIndex + 1}`}
-                                            className="lightbox-image"
-                                            onError={(e) => {
-                                                console.error(
-                                                    `ERREUR DE CHARGEMENT D'IMAGE dans la modale:
-                                                    URL échouée: ${e.target.src}`,
-                                                    e
-                                                );
-                                                e.target.onerror = null;
-                                                e.target.src="https://placehold.co/800x600/FF0000/FFFFFF?text=Erreur+chargement+image";
-                                            }}
-                                        />
-                                        <button onClick={closeLightbox} className="lightbox-button lightbox-close-button" aria-label="Fermer">
-                                            <XIcon />
-                                        </button>
-                                        <button onClick={goToPrevious} className="lightbox-button lightbox-prev-button" aria-label="Image précédente">
-                                            <ArrowLeftIcon />
-                                        </button>
-                                        <button onClick={goToNext} className="lightbox-button lightbox-next-button" aria-label="Image suivante">
-                                            <ArrowRightIcon />
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-
                             <h2 className="text-3xl font-bold mb-4 text-white">Préparation Moteur et Optimisations</h2>
                             <p className="text-lg text-gray-300 leading-relaxed">
                                 Ce projet sur le Volkswagen Scirocco R a été une démonstration de notre expertise en performance automobile. Chaque composant a été soigneusement sélectionné et optimisé pour atteindre un niveau de puissance et de fiabilité exceptionnel. Voici les détails de la préparation :
@@ -945,12 +847,12 @@
 
                             <ul className="list-disc list-inside text-lg text-gray-300 pl-6 space-y-2">
                                 <li>**Piston ITG :** Installation de pistons forgés pour une résistance accrue et une meilleure gestion des contraintes.</li>
-                                <li>**Bielles Carillo :** Remplacement par des bielles Carillo, offrant légèreté et robustesse pour les hautes performances.</li>
+                                <li>**Bielles titane :** Remplacement par des bielles en titane, offrant légèreté et robustesse pour les hautes performances.</li>
                                 <li>**Soupapes inconel :** Utilisation de soupapes en Inconel, un alliage résistant aux températures extrêmes et à la corrosion.</li>
                                 <li>**ADM (Admission Directe Moteur) :** Optimisation de l'admission d'air pour un flux plus direct et un gain de puissance.</li>
                                 <li>**Ressort bar teck :** Mise en place de ressorts de soupapes renforcés pour éviter le flottement à haut régime.</li>
                                 <li>**Viserie ARP 2000 :** Boulonnerie de haute résistance pour une fixation sécurisée des éléments critiques du moteur.</li>
-                                <li>**Pompe à huile :** Amélioration du système d'huile avec une pompe à huile plus performante.</li>
+                                <li>**Pompe 20VT :** Amélioration du système de carburant avec une pompe à essence plus performante.</li>
                                 <li>**Turbo GTX :** Installation d'un turbocompresseur Garrett GTX pour une augmentation significative de la puissance.</li>
                                 <li>**Wastegate Tial 44 mm :** Contrôle précis de la pression du turbo avec une wastegate externe de haute qualité.</li>
                                 <li>**Injecteurs Porsche :** Mise à niveau des injecteurs pour fournir le carburant nécessaire à la puissance accrue.</li>
@@ -1032,48 +934,46 @@
         // Composant principal de l'application
         const App = () => {
             const [currentPage, setCurrentPage] = useState('accueil');
-            // Les états et effets liés à Firebase ont été supprimés car Firebase n'est plus utilisé.
 
             // Ajout d'un effet pour faire défiler la page vers le haut à chaque changement de page
             useEffect(() => {
                 window.scrollTo(0, 0); // Fait défiler la fenêtre à la position 0, 0 (en haut à gauche)
             }, [currentPage]); // Se déclenche à chaque fois que `currentPage` change
 
-
             // Fonction de rendu du contenu de la page en fonction de l'état
             const renderPage = () => {
               switch (currentPage) {
                 case 'accueil':
-                  return <HomePage setCurrentPage={setCurrentPage} />; // Passer setCurrentPage à HomePage
+                  return <HomePage setCurrentPage={setCurrentPage} />;
                 case 'blog':
                   return <BlogPage />;
                 case 'qui-sommes-nous':
                   return <AboutUsPage />;
                 case 'contact':
                   return <ContactPage />;
-                case 'mentions-legales': // Nouveau cas pour les mentions légales
+                case 'mentions-legales':
                   return <LegalMentionsPage />;
-                case 'confidentialite': // Nouveau cas pour la politique de confidentialité
+                case 'confidentialite':
                   return <PrivacyPolicyPage />;
-                case 'voiture-vitrine': // Réactivation du cas pour la voiture vitrine
+                case 'voiture-vitrine':
                   return <ShowcaseCarPage />;
                 default:
-                  return <HomePage setCurrentPage={setCurrentPage} />; // Passer setCurrentPage à HomePage par défaut
+                  return <HomePage setCurrentPage={setCurrentPage} />;
               }
             };
 
             return (
                 <div className="min-h-screen bg-black font-inter">
-                    <ScrollingBanner /> {/* Nouvelle bannière défilante */}
+                    <ScrollingBanner />
                     <Navbar setCurrentPage={setCurrentPage} />
                     <main className="flex-grow">
                         {renderPage()}
                     </main>
-                    <MusicControl /> {/* Ajout du contrôle de musique */}
+                    <MusicControl />
                     <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
                         <div className="container mx-auto px-4">
                             <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
-                            <div className="flex justify-center space-x-4 mt-3">
+                            <div className="flex justify-center space-x-4 mt-3 text-sm">
                                 <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
                                 <span className="text-gray-600">|</span>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
@@ -1086,18 +986,14 @@
         };
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
-        // Ancien code dans window.onload:
-        // window.onload = function() {
-        //     const container = document.getElementById('root');
-        //     const root = ReactDOM.createRoot(container);
-        //     root.render(<App />);
-        // };
-
-        // Nouveau code de rendu direct après la définition de l'App,
-        // s'assurant que ReactDOM est disponible une fois les scripts chargés et parsés.
+        // Le code de rendu est exécuté directement après le chargement des scripts React et ReactDOM.
         const container = document.getElementById('root');
-        const root = ReactDOM.createRoot(container);
-        root.render(<App />);
+        if (container) {
+            const root = ReactDOM.createRoot(container);
+            root.render(<App />);
+        } else {
+            console.error("Élément racine 'root' introuvable.");
+        }
     </script>
 </body>
 </html>
