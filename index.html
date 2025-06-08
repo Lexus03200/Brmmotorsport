@@ -614,16 +614,26 @@
                                 className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto"
                             />
                             <div className="mt-8">
-                                <img
-                                    src="https://placehold.co/150x150/000/FFF?text=Remy" // Placeholder pour l'image de Rémy Bruyant
-                                    alt="Portrait de Rémy Bruyant"
+                                <ImageOfRemyBruyant // Remplacement de l'image par le composant ImageOfRemyBruyant
                                     className="mx-auto rounded-full border-4 border-red-500 shadow-lg w-32 h-32 object-cover"
-                                    onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/150x150/000/FFF?text=Rémy+Bruyant"; }}
                                 />
                             </div>
                         </section>
                     </div>
                 </div>
+            );
+        };
+
+        // Nouveau composant pour l'image de Rémy Bruyant
+        const ImageOfRemyBruyant = ({ className }) => {
+            const imageUrl = "https://placehold.co/150x150/000/FFF?text=Remy"; // Ou votre URL d'image réelle
+            return (
+                <img
+                    src={imageUrl}
+                    alt="Portrait de Rémy Bruyant"
+                    className={className}
+                    onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/150x150/000/FFF?text=Rémy+Bruyant"; }}
+                />
             );
         };
 
@@ -1262,7 +1272,7 @@
                                 {/* Bouton Play/Pause pour le diaporama automatique */}
                                 <button
                                     onClick={togglePlayPause}
-                                    className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none focus:ring-2 focus:ring-white"
+                                    className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black bg-opacity50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none focus:ring-2 focus:ring-white"
                                     aria-label={isPlaying ? "Mettre en pause le diaporama" : "Lancer le diaporama"}
                                 >
                                     {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -1501,6 +1511,34 @@
                 });
             };
 
+            // Fonction pour ajouter un nouvel article de blog
+            const handleAddBlogPost = () => {
+                setLocalContent(prevContent => {
+                    const newContent = JSON.parse(JSON.stringify(prevContent));
+                    if (!newContent.blog || !Array.isArray(newContent.blog.posts)) {
+                        newContent.blog = { ...newContent.blog, posts: [] };
+                    }
+                    newContent.blog.posts.push({
+                        id: Date.now(), // Utilise un timestamp comme ID unique
+                        image: "https://placehold.co/600x400/000/FFF?text=Nouvelle+image",
+                        title: "Nouveau titre d'article",
+                        description: "Nouvelle description d'article."
+                    });
+                    return newContent;
+                });
+            };
+
+            // Fonction pour supprimer un article de blog
+            const handleRemoveBlogPost = (idToRemove) => {
+                setLocalContent(prevContent => {
+                    const newContent = JSON.parse(JSON.stringify(prevContent));
+                    if (newContent.blog && Array.isArray(newContent.blog.posts)) {
+                        newContent.blog.posts = newContent.blog.posts.filter(post => post.id !== idToRemove);
+                    }
+                    return newContent;
+                });
+            };
+
             const handleSaveChanges = async () => {
                 setIsSaving(true);
                 setSaveMessage('Sauvegarde en cours...');
@@ -1640,10 +1678,23 @@
                                             {pageKey === 'blog' && localContent.blog && Array.isArray(localContent.blog.posts) && (
                                                 <div className="mt-8 pt-6 border-t-2 border-green-600">
                                                     <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
-                                                    <div className="space-y-8">
+                                                    <button
+                                                        onClick={handleAddBlogPost}
+                                                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mb-6"
+                                                    >
+                                                        Ajouter un nouvel article
+                                                    </button>
+                                                    <div className="space-y-8 mt-4">
                                                         {localContent.blog.posts.map((post, index) => (
-                                                            <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500">
+                                                            <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
                                                                 <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
+                                                                <button
+                                                                    onClick={() => handleRemoveBlogPost(post.id)}
+                                                                    className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
+                                                                    aria-label="Supprimer l'article"
+                                                                >
+                                                                    <XIcon className="w-4 h-4"/>
+                                                                </button>
                                                                 <div className="space-y-4">
                                                                     <div>
                                                                         <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
