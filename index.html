@@ -573,15 +573,15 @@
         );
 
         // Composant Page Blog
-        const BlogPage = ({ isAdmin, onEditBlogPost, onDeleteBlogPost, firebaseDb }) => {
+        const BlogPage = ({ isAdmin, onEditBlogPost, onDeleteBlogPost, firebaseDb, firebaseServices }) => { // Added firebaseServices
           const [blogPosts, setBlogPosts] = useState([]);
           const [loading, setLoading] = useState(true);
           const [error, setError] = useState(null);
 
           useEffect(() => {
-            if (firebaseDb) {
-              const colRef = window.firebaseServices.collection(firebaseDb, 'blogPosts');
-              const unsubscribe = window.firebaseServices.onSnapshot(colRef, (snapshot) => {
+            if (firebaseDb && firebaseServices) { // Ensure firebaseServices is available
+              const colRef = firebaseServices.collection(firebaseDb, `artifacts/${firebaseServices.appId}/public/data/blogPosts`); // Updated path
+              const unsubscribe = firebaseServices.onSnapshot(colRef, (snapshot) => {
                 const postsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setBlogPosts(postsData);
                 setLoading(false);
@@ -598,7 +598,7 @@
               ]);
               setLoading(false);
             }
-          }, [firebaseDb]);
+          }, [firebaseDb, firebaseServices]); // Add firebaseServices to dependency array
 
           if (loading) return <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter flex items-center justify-center"><p className="text-2xl animate-pulse">Chargement des articles de blog...</p></div>;
           if (error) return <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter flex items-center justify-center"><p className="text-2xl text-red-500">{error}</p></div>;
@@ -758,10 +758,10 @@
 
             // Fetch data from Firestore
             useEffect(() => {
-                if (firebaseServices && firebaseServices.db) { // Use prop
+                if (firebaseServices && firebaseServices.db && firebaseServices.appId) { // Ensure appId is available
                     const db = firebaseServices.db; // Use prop
-                    const blogColRef = firebaseServices.collection(db, 'blogPosts');
-                    const showcaseColRef = firebaseServices.collection(db, 'showcaseImages');
+                    const blogColRef = firebaseServices.collection(db, `artifacts/${firebaseServices.appId}/public/data/blogPosts`); // Updated path
+                    const showcaseColRef = firebaseServices.collection(db, `artifacts/${firebaseServices.appId}/public/data/showcaseImages`); // Updated path
 
                     const unsubscribeBlog = firebaseServices.onSnapshot(blogColRef, (snapshot) => {
                         const postsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -798,10 +798,10 @@
             // For this demonstration, I'll let it run on component mount if collections are empty.
             useEffect(() => {
                 const populateInitialData = async () => {
-                    if (firebaseServices && firebaseServices.db) { // Use prop
+                    if (firebaseServices && firebaseServices.db && firebaseServices.appId) { // Ensure appId is available
                         const db = firebaseServices.db; // Use prop
-                        const blogColRef = firebaseServices.collection(db, 'blogPosts');
-                        const showcaseColRef = firebaseServices.collection(db, 'showcaseImages');
+                        const blogColRef = firebaseServices.collection(db, `artifacts/${firebaseServices.appId}/public/data/blogPosts`); // Updated path
+                        const showcaseColRef = firebaseServices.collection(db, `artifacts/${firebaseServices.appId}/public/data/showcaseImages`); // Updated path
 
                         // Check if blogPosts collection is empty
                         const blogSnapshot = await firebaseServices.getDocs(blogColRef);
@@ -858,16 +858,17 @@
 
             // Blog Post Management Functions
             const handleAddOrUpdateBlogPost = async (postData) => {
-                if (!firebaseServices || !firebaseServices.db) {
+                if (!firebaseServices || !firebaseServices.db || !firebaseServices.appId) {
                     console.error("Firebase services non disponibles.");
                     return;
                 }
                 const db = firebaseServices.db;
-                const colRef = firebaseServices.collection(db, 'blogPosts');
+                const colPath = `artifacts/${firebaseServices.appId}/public/data/blogPosts`; // Updated path
+                const colRef = firebaseServices.collection(db, colPath);
                 try {
                     if (postData.id) {
                         // Update existing post
-                        const docRef = firebaseServices.doc(db, 'blogPosts', postData.id);
+                        const docRef = firebaseServices.doc(db, colPath, postData.id); // Updated path
                         await firebaseServices.updateDoc(docRef, {
                             title: postData.title,
                             description: postData.description,
@@ -893,13 +894,14 @@
             };
 
             const handleDeleteBlogPost = async (id) => {
-                if (!firebaseServices || !firebaseServices.db) {
+                if (!firebaseServices || !firebaseServices.db || !firebaseServices.appId) {
                     console.error("Firebase services non disponibles.");
                     return;
                 }
                 const db = firebaseServices.db;
+                const colPath = `artifacts/${firebaseServices.appId}/public/data/blogPosts`; // Updated path
                 try {
-                    await firebaseServices.deleteDoc(firebaseServices.doc(db, 'blogPosts', id));
+                    await firebaseServices.deleteDoc(firebaseServices.doc(db, colPath, id)); // Updated path
                     console.log("Article de blog supprimé avec l'ID:", id);
                 } catch (e) {
                     console.error("Erreur lors de la suppression de l'article de blog:", e);
@@ -908,16 +910,17 @@
 
             // Showcase Image Management Functions
             const handleAddOrUpdateShowcaseImage = async (imageData) => {
-                if (!firebaseServices || !firebaseServices.db) {
+                if (!firebaseServices || !firebaseServices.db || !firebaseServices.appId) {
                     console.error("Firebase services non disponibles.");
                     return;
                 }
                 const db = firebaseServices.db;
-                const colRef = firebaseServices.collection(db, 'showcaseImages');
+                const colPath = `artifacts/${firebaseServices.appId}/public/data/showcaseImages`; // Updated path
+                const colRef = firebaseServices.collection(db, colPath);
                 try {
                     if (imageData.id) {
                         // Update existing image
-                        const docRef = firebaseServices.doc(db, 'showcaseImages', imageData.id);
+                        const docRef = firebaseServices.doc(db, colPath, imageData.id); // Updated path
                         await firebaseServices.updateDoc(docRef, {
                             url: imageData.url,
                             description: imageData.description
@@ -939,13 +942,14 @@
             };
 
             const handleDeleteShowcaseImage = async (id) => {
-                if (!firebaseServices || !firebaseServices.db) {
+                if (!firebaseServices || !firebaseServices.db || !firebaseServices.appId) {
                     console.error("Firebase services non disponibles.");
                     return;
                 }
                 const db = firebaseServices.db;
+                const colPath = `artifacts/${firebaseServices.appId}/public/data/showcaseImages`; // Updated path
                 try {
-                    await firebaseServices.deleteDoc(firebaseServices.doc(db, 'showcaseImages', id));
+                    await firebaseServices.deleteDoc(firebaseServices.doc(db, colPath, id)); // Updated path
                     console.log("Image de la voiture vitrine supprimée avec l'ID:", id);
                 } catch (e) {
                     console.error("Erreur lors de la suppression de l'image de la voiture vitrine:", e);
@@ -1307,16 +1311,16 @@
         );
 
         // Composant pour la page Voiture Vitrine
-        const ShowcaseCarPage = ({ isAdmin, firebaseDb }) => { // Receive firebaseDb as prop
+        const ShowcaseCarPage = ({ isAdmin, firebaseDb, firebaseServices }) => { // Added firebaseServices
             const [showcaseImages, setShowcaseImages] = useState([]);
             const [loading, setLoading] = useState(true);
             const [error, setError] = useState(null);
             const [selectedImageIndex, setSelectedImageIndex] = useState(null); // Index de l'image sélectionnée pour la modale
 
             useEffect(() => {
-                if (firebaseDb) { // Use prop
-                    const colRef = window.firebaseServices.collection(firebaseDb, 'showcaseImages');
-                    const unsubscribe = window.firebaseServices.onSnapshot(colRef, (snapshot) => {
+                if (firebaseDb && firebaseServices && firebaseServices.appId) { // Ensure firebaseServices and appId are available
+                    const colRef = firebaseServices.collection(firebaseDb, `artifacts/${firebaseServices.appId}/public/data/showcaseImages`); // Updated path
+                    const unsubscribe = firebaseServices.onSnapshot(colRef, (snapshot) => {
                         const imagesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                         setShowcaseImages(imagesData);
                         setLoading(false);
@@ -1333,7 +1337,7 @@
                     ]);
                     setLoading(false);
                 }
-            }, [firebaseDb]);
+            }, [firebaseDb, firebaseServices]); // Add firebaseServices to dependency array
 
             const openLightbox = (index) => {
                 setSelectedImageIndex(index);
@@ -1540,7 +1544,7 @@
                             setAppLoading(false); // L'état d'authentification est déterminé, l'application peut se rendre
                         });
                         // Initialiser la population des données ici (s'assurer que cela ne s'exécute qu'une seule fois après que Firebase soit prêt)
-                        populateInitialData(window.firebaseServices.db);
+                        populateInitialData(window.firebaseServices); // Pass the entire firebaseServices object
                         return unsubscribe; // Retourner la fonction de désabonnement pour le nettoyage
                     } else {
                         // Continuer à vérifier jusqu'à ce que les services Firebase soient disponibles
@@ -1548,11 +1552,13 @@
                     }
                 };
 
-                const populateInitialData = async (db) => {
-                    const blogColRef = window.firebaseServices.collection(db, 'blogPosts');
-                    const showcaseColRef = window.firebaseServices.collection(db, 'showcaseImages');
+                const populateInitialData = async (services) => { // Receive services as argument
+                    const db = services.db;
+                    const appId = services.appId;
+                    const blogColRef = services.collection(db, `artifacts/${appId}/public/data/blogPosts`); // Updated path
+                    const showcaseColRef = services.collection(db, `artifacts/${appId}/public/data/showcaseImages`); // Updated path
 
-                    const blogSnapshot = await window.firebaseServices.getDocs(blogColRef);
+                    const blogSnapshot = await services.getDocs(blogColRef);
                     if (blogSnapshot.empty) {
                         console.log("Initialisation des articles de blog dans Firestore...");
                         const initialBlogPosts = [
@@ -1569,12 +1575,12 @@
                             { title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système.", image: "https://lexus03200.github.io/Brmotorsport/mercedes2021.png", originalImage: "mercedes2021.png" }
                         ];
                         for (const post of initialBlogPosts) {
-                            await window.firebaseServices.addDoc(blogColRef, post);
+                            await services.addDoc(blogColRef, post); // Use services.addDoc
                         }
                         console.log("Articles de blog initialisés.");
                     }
 
-                    const showcaseSnapshot = await window.firebaseServices.getDocs(showcaseColRef);
+                    const showcaseSnapshot = await services.getDocs(showcaseColRef); // Use services.getDocs
                     if (showcaseSnapshot.empty) {
                         console.log("Initialisation des images de la voiture vitrine dans Firestore...");
                         const initialShowcaseImages = [
@@ -1590,7 +1596,7 @@
                             { url: "https://lexus03200.github.io/Brmotorsport/photo10.png", description: "Scirocco R Phares" }
                         ];
                         for (const img of initialShowcaseImages) {
-                            await window.firebaseServices.addDoc(showcaseColRef, img);
+                            await services.addDoc(showcaseColRef, img); // Use services.addDoc
                         }
                         console.log("Images de la voiture vitrine initialisées.");
                     }
@@ -1634,6 +1640,7 @@
                             }, 100); }}
                             onDeleteBlogPost={null} // onDeleteBlogPost is handled in AdminDashboardPage
                             firebaseDb={firebaseReadyServices.db} // Passer la base de données Firebase
+                            firebaseServices={firebaseReadyServices} // Passer firebaseServices
                          />;
                 case 'qui-sommes-nous':
                   return <AboutUsPage />;
@@ -1644,7 +1651,7 @@
                 case 'confidentialite': // Nouveau cas pour la politique de confidentialité
                   return <PrivacyPolicyPage />;
                 case 'voiture-vitrine': // Réactivation du cas pour la voiture vitrine
-                  return <ShowcaseCarPage isAdmin={isAdmin} firebaseDb={firebaseReadyServices.db} />; // Passer la base de données Firebase
+                  return <ShowcaseCarPage isAdmin={isAdmin} firebaseDb={firebaseReadyServices.db} firebaseServices={firebaseReadyServices} />; // Passer la base de données Firebase et firebaseServices
                 case 'login': // Nouveau cas pour la page de connexion
                     return <LoginPage
                                 setCurrentUser={setCurrentUser}
