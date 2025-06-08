@@ -303,23 +303,27 @@
                 if (isLastPart) {
                     // C'est la dernière partie du chemin, définissez la valeur
                     current[isArrayIndex ? parseInt(part) : part] = value;
+                    console.log(`setNestedProperty: SETTING final value for path part "${part}" to:`, value);
                 } else {
                     // Si ce n'est pas la dernière partie, naviguez plus profondément
                     if (isArrayIndex) {
                         if (!Array.isArray(current)) {
-                            console.warn(`Attempted to navigate array index ${part} on non-array:`, current);
+                            console.warn(`setNestedProperty: Attempted to navigate array index ${part} on non-array:`, current);
                             return obj; // Retourne l'objet original pour éviter de le corrompre
                         }
                         if (current[parseInt(part)] === undefined || current[parseInt(part)] === null) {
                             current[parseInt(part)] = {}; // Assurez-vous que l'objet à cet index existe
+                            console.log(`setNestedProperty: Created new object at array index ${part}.`);
                         }
                         current = current[parseInt(part)];
                     } else {
                         if (typeof current[part] !== 'object' || current[part] === null) {
                             current[part] = {}; // Initialise comme objet si ce n'est pas déjà le cas
+                            console.log(`setNestedProperty: Created new object for path part "${part}".`);
                         }
                         current = current[part];
                     }
+                    console.log(`setNestedProperty: Navigated to "${part}". Current nested object:`, current);
                 }
             }
             return obj; // Retourne l'objet modifié
@@ -1462,14 +1466,20 @@
             // Fonction pour gérer les changements dans les champs de texte
             // Prend en charge les chemins imbriqués (ex: 'home.mainTitle' ou 'blog.posts.0.title')
             const handleLocalChange = (pageKey, fieldKey, newValue) => {
+                console.log(`handleLocalChange: Attempting to update pageKey: "${pageKey}", fieldKey: "${fieldKey}", with newValue: "${newValue}"`);
                 setLocalContent(prevContent => {
                     const newContent = JSON.parse(JSON.stringify(prevContent)); // Deep copy
                     const targetPage = newContent[pageKey]; // Obtient l'objet de la page spécifique
 
+                    if (!targetPage) {
+                        console.error(`handleLocalChange: Page key "${pageKey}" not found in localContent.`);
+                        return prevContent;
+                    }
+
                     // Utilise la fonction utilitaire setNestedProperty pour définir la valeur
                     setNestedProperty(targetPage, fieldKey, newValue);
 
-                    console.log(`AdminPanelPage: Local change - page: ${pageKey}, field: ${fieldKey}, new value: "${newValue}". Current localContent:`, newContent);
+                    console.log(`handleLocalChange: Local change applied. New localContent:`, newContent);
                     return newContent;
                 });
             };
@@ -1630,7 +1640,11 @@
                                                                         <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
                                                                         <textarea
                                                                             value={post.description || ''}
-                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.description`, e.target.value)}
+                                                                            onChange={(e) => {
+                                                                                const newValue = e.target.value;
+                                                                                console.log(`Blog Description Change: Index: ${index}, New Value: "${newValue}"`);
+                                                                                handleLocalChange('blog', `posts.${index}.description`, newValue);
+                                                                            }}
                                                                             rows={Math.max(3, (post.description || '').split('\n').length)}
                                                                             className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
                                                                         />
