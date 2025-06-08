@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Intégration de React et ReactDOM CDN -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react.production.min.js"></script>
     <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
@@ -1419,6 +1419,7 @@
                 e.preventDefault();
                 if (password === ADMIN_PASSWORD_FRONTEND) {
                     setIsAdminAuthenticated(true);
+                    localStorage.setItem('adminAuthenticated', 'true'); // Stocker l'état dans localStorage
                     setCurrentPage('admin-panel'); // Redirige vers le panneau admin
                 } else {
                     setError('Mot de passe incorrect.');
@@ -1486,6 +1487,10 @@
                     setNestedProperty(targetPage, fieldKey, newValue);
 
                     console.log(`handleLocalChange: Local change applied. New localContent:`, newContent);
+                    // Log spécifique pour le blog pour confirmer que les descriptions sont mises à jour
+                    if (pageKey === 'blog' && fieldKey.includes('description')) {
+                        console.log(`handleLocalChange (Blog Description): Updated localContent.blog.posts[${fieldKey.split('.')[1]}].description to: "${newValue}"`);
+                    }
                     return newContent;
                 });
             };
@@ -1555,6 +1560,7 @@
 
             const handleLogout = () => {
                 setIsAdminAuthenticated(false);
+                localStorage.removeItem('adminAuthenticated'); // Supprimer l'état de localStorage
                 setCurrentPage('accueil'); // Redirige vers l'accueil après déconnexion
             };
 
@@ -1592,7 +1598,7 @@
                                                 }
 
                                                 const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
-                                                const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram')) ? 'text' : 'textarea';
+                                                const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle')) ? 'text' : 'textarea';
                                                 const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
 
                                                 return (
@@ -1648,7 +1654,7 @@
                                                                             value={post.description || ''}
                                                                             onChange={(e) => {
                                                                                 const newValue = e.target.value;
-                                                                                console.log(`Blog Description Change: Index: ${index}, New Value: "${newValue}"`);
+                                                                                console.log(`Blog Description Change (Input Event): Index: ${index}, New Value: "${newValue}"`);
                                                                                 handleLocalChange('blog', `posts.${index}.description`, newValue);
                                                                             }}
                                                                             rows={Math.max(3, (post.description || '').split('\n').length)}
@@ -1790,8 +1796,11 @@
 
         // Composant principal de l'application
         const App = () => {
+            // Initialisation de l'état d'authentification admin à partir de localStorage
+            const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(
+                localStorage.getItem('adminAuthenticated') === 'true'
+            );
             const [currentPage, setCurrentPage] = useState('accueil');
-            const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
             const [content, setContent] = useState(null); // Initialiser à null, sera chargé depuis le JSON
             const [loadingContent, setLoadingContent] = useState(true); // État de chargement du contenu
             const [errorContent, setErrorContent] = useState(null); // État d'erreur de chargement du contenu
@@ -1832,7 +1841,9 @@
                                     { id: 8, image: "anciennevoiture.png", title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité." },
                                     { id: 9, image: "audi1.png", title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité." },
                                     { id: 10, image: "gx.png", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité." },
-                                    { id: 11, image: "mercedes2021.png", title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
+                                    { id: 11, image: "mercedes2021.png",
+                                        "title": "Mercedes (2021) : Solution ADBLUE",
+                                        "description": "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
                                 ]
                             },
                             aboutUs: {
@@ -1886,24 +1897,25 @@
                                 disclaimerText: "Cette politique de confidentialité peut être mise à jour occasionnellement. Nous vous invitons à la consulter régulièrement."
                             },
                             showcaseCar: {
-                                mainTitle: "Notre Voiture Vitrine",
-                                description: "Découvrez notre dernière préparation exceptionnelle : une Volkswagen Scirocco R avec une optimisation Stage 3 poussée, développant plus de 500 chevaux.",
-                                preparationTitle: "Détails de la Préparation Stage 3",
-                                preparationDescription: "Ce véhicule a subi une transformation complète pour atteindre des niveaux de performance extrêmes, tout en conservant une fiabilité optimale.",
-                                piston: "Pistons forgés",
-                                bielles: "Bielles forgées",
-                                soupapes: "Soupapes renforcées",
-                                adm: "Admission gros volume",
-                                ressort: "Ressorts de soupapes renforcés",
-                                viserie: "Vis de bielles, vilebrequin et culasse renforcées",
-                                pompeHuile: "Pompe à huile gros débit",
-                                turbo: "Turbo hybride sur mesure",
-                                wastegate: "Wastegate externe",
-                                injecteurs: "Injecteurs gros débit",
-                                pipAdmission: "Pipe d'admission gros volume",
-                                wmi: "Système WMI (Water-Methanol Injection)",
-                                embrayage: "Embrayage renforcé",
-                                finalDescription: "Chaque composant a été soigneusement sélectionné et installé pour garantir une synergie parfaite et une expérience de conduite inégalée sur route comme sur circuit."
+                                mainTitle: "Notre Voiture Vitrine : Le Projet Scirocco R",
+                                description: "Découvrez en détail la préparation ultime de notre Volkswagen Scirocco R, un chef-d'œuvre de performance et d'ingénierie.",
+                                preparationTitle: "Préparation Moteur et Optimisations",
+                                preparationDescription: "Ce projet sur le Volkswagen Scirocco R a été une démonstration de notre expertise en performance automobile. Chaque composant a été soigneusement sélectionné et optimisé pour atteindre un niveau de puissance et de fiabilité exceptionnel. Voici les détails de la préparation :",
+                                listTitle: "Détails de la préparation :",
+                                piston: "**Piston ITG :** Installation de pistons forgés pour une résistance accrue et une meilleure gestion des contraintes.",
+                                bielles: "**Bielles Carillo :** Remplacement par des bielles Carillo, offrant légèreté et robustesse pour les hautes performances.",
+                                soupapes: "**Soupapes inconel :** Utilisation de soupapes en Inconel, un alliage résistant aux températures extrêmes et à la corrosion.",
+                                adm: "**ADM (Admission Directe Moteur) :** Optimisation de l'admission d'air pour un flux plus direct et un gain de puissance.",
+                                ressort: "**Ressort bar teck :** Mise en place de ressorts de soupapes renforcés pour éviter le flottement à haut régime.",
+                                viserie: "**Viserie ARP 2000 :** Boulonnerie de haute résistance pour une fixation sécurisée des éléments critiques du moteur.",
+                                pompeHuile: "**Pompe à huile :** Amélioration du système d'huile avec une pompe à huile plus performante.",
+                                turbo: "**Turbo GTX :** Installation d'un turbocompresseur Garrett GTX pour une augmentation significative de la puissance.",
+                                wastegate: "**Wastegate Tial 44 mm :** Contrôle précis de la pression du turbo avec une wastegate externe de haute qualité.",
+                                injecteurs: "**Injecteurs Porsche :** Mise à niveau des injecteurs pour fournir le carburant nécessaire à la puissance accrue.",
+                                pipAdmission: "**Pip admission :** Optimisation du conduit d'admission pour un flux d'air maximal.",
+                                wmi: "**WMI (Water Methanol Injection) :** Système d'injection eau-méthanol pour refroidir l'admission et augmenter la puissance.",
+                                embrayage: "**Embrayage 880 nm :** Installation d'un embrayage renforcé capable de supporter un couple moteur de 880 Nm.",
+                                finalDescription": "Cette préparation complète garantit non seulement une performance époustouflante sur piste, mais aussi une fiabilité à toute épreuve pour un usage sportif."
                             }
                         });
                     } finally {
