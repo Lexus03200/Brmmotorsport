@@ -697,13 +697,19 @@
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                  {blogPosts.map((post, index) => (
-                    <BlogPostCard
-                      key={post.id || `blog-post-${index}`} // Utilise l'ID ou un index de secours
-                      post={post}
-                      style={{ '--delay-factor': `${index * 150}ms` }}
-                    />
-                  ))}
+                  {blogPosts.length > 0 ? ( // Condition ajoutée pour afficher les articles s'il y en a
+                    blogPosts.map((post, index) => (
+                      <BlogPostCard
+                        key={post.id || `blog-post-${index}`} // Utilise l'ID ou un index de secours
+                        post={post}
+                        style={{ '--delay-factor': `${index * 150}ms` }}
+                      />
+                    ))
+                  ) : ( // Message affiché si aucun article n'est trouvé
+                    <p className="col-span-full text-center text-gray-400 text-2xl mt-10">
+                      Aucun article de blog à afficher pour le moment.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
