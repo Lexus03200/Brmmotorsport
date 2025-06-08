@@ -1,19 +1,15 @@
-I cannot directly modify the provided `script.html` file in programming mode within this environment. My capabilities are text-based.
-
-However, I can provide you with the full content of the `script.html` file and you can copy and paste it into your preferred code editor to work on it.
-
-Please find the full content of the `script.html` file below:
-
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BRMOTORSPORT - Performance Automobile</title>
+    <!-- Intégration de Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Intégration de React et ReactDOM CDN -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -145,13 +141,19 @@ Please find the full content of the `script.html` file below:
     </style>
 </head>
 <body class="min-h-screen bg-black font-inter">
+    <!-- Section Audio de fond -->
+    <!-- 'autoplay' tente de lancer la lecture automatique, mais peut être bloqué par les navigateurs mobiles. -->
+    <!-- 'loop' assure que la musique se répète. -->
+    <!-- 'style="display:none;"' masque les contrôles de lecture par défaut. -->
     <audio id="background-music" autoplay loop style="display:none;">
+        <!-- L'URL est construite en utilisant votre domaine GitHub Pages et le nom de votre fichier MP3. -->
         <source src="https://lexus03200.github.io/Brmotorsport/musique.mp3" type="audio/mpeg">
         Votre navigateur ne supporte pas l'élément audio.
     </audio>
 
     <div id="root"></div>
 
+    <!-- Le type du script a été changé en "text/babel" pour que Babel puisse le transpiler -->
     <script type="text/babel">
         // Récupère les hooks React depuis l'objet global React
         const { useState, useEffect, useRef } = React;
@@ -650,7 +652,7 @@ Please find the full content of the `script.html` file below:
                   BRMOTORSPORT est né de la passion inébranlable de Rémy Bruyant pour l'automobile et la performance. Fort de plus de 10 ans d'expérience sur le terrain, Rémy a concrétisé notre vision en créant un atelier dédié à l'optimisation des véhicules et à l'excellence mécanique. Ce qui a commencé comme une fascination pour les moteurs et leur potentiel est devenu une entreprise florissante, réputée pour notre expertise et notre approche personnalisée.
                 </p>
                 <p className="text-lg text-gray-300 leading-relaxed">
-                  Notre parcours est jalonné de défis relevés et de succès partagés avec nos clients, qui nous font confiance pour libérer la pleine puissance de leur véhicule, qu'il s'agisse d'une voiture de sport, d'un utilitaire ou d'un véhicule de tous les jours. Chaque projet est traité avec le même engagement: la qualité, la fiabilité et la performance.
+                  Notre parcours est jalonné de défis relevés et de succès partagés avec nos clients, qui nous font confiance pour libérer la pleine puissance de leur véhicule, qu'il s'agisse d'une voiture de sport, d'un utilitaire ou d'un véhicule de tous les jours. Chaque projet est traité avec le même engagement : la qualité, la fiabilité et la performance.
                 </p>
               </section>
 
