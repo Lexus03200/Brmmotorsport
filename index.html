@@ -66,7 +66,7 @@
                 opacity: 1;
             }
         }
-        /* Nouvelle animation pour l'effet de vibration */
+        /* Nouvelle animation pour l'effet de vibration (ralentie) */
         @keyframes vibrate {
             0% { transform: translate(1px, 1px); }
             10% { transform: translate(-1px, -2px); }
@@ -86,7 +86,7 @@
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
         .animate-bounce-in { animation: bounceIn 1s; }
         .animate-blob { animation: blob 7s infinite; }
-        .animate-vibrate { animation: vibrate 0.2s linear infinite; } /* Animation de vibration continue */
+        .animate-vibrate { animation: vibrate 1s linear infinite; } /* Vitesse réduite de 0.2s à 1s */
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
         /* Style pour l'animation de défilement */
@@ -921,13 +921,13 @@
                         </p>
 
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                            {/* Conteneur du carrousel */}
-                            <div className="relative w-full h-96 md:h-[500px] overflow-hidden rounded-lg shadow-2xl border-4 border-red-700 group flex items-center justify-center"> {/* Ajout de flex et centrage */}
-                                {/* Image actuelle du diaporama */}
+                            {/* Conteneur du carrousel avec centrage flexbox */}
+                            <div className="relative w-full h-96 md:h-[500px] overflow-hidden rounded-lg shadow-2xl border-4 border-red-700 group flex items-center justify-center">
+                                {/* Image actuelle du diaporama - Utilise object-cover pour remplir le cadre */}
                                 <img
                                     src={images[currentImageIndex]}
                                     alt={`Volkswagen Scirocco R - Image ${currentImageIndex + 1}`}
-                                    className="w-full h-full object-contain object-center animate-fade-in transition-opacity duration-700" /* Changed object-cover to object-contain */
+                                    className="w-full h-full object-cover object-center animate-fade-in transition-opacity duration-700" /* Changé object-contain en object-cover */
                                     onError={(e) => {
                                         console.error(
                                             `ERREUR DE CHARGEMENT D'IMAGE dans le diaporama:
