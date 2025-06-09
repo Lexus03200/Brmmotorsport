@@ -1610,6 +1610,12 @@
 
             // Fonction utilitaire pour générer les champs éditables
             const renderEditableFields = (pageData, pageKey) => {
+                // Ensure pageData is an object before mapping
+                if (!pageData || typeof pageData !== 'object') {
+                    console.warn(`renderEditableFields received invalid pageData for key: ${pageKey}`, pageData);
+                    return null;
+                }
+
                 return Object.keys(pageData).map(fieldKey => {
                     const fieldValue = pageData[fieldKey];
                     const contentPath = `${pageKey}.${fieldKey}`;
@@ -1618,9 +1624,13 @@
                         return null; // Géré par une section spécifique du blog
                     }
                      if (typeof fieldValue === 'object' && fieldValue !== null && !Array.isArray(fieldValue)) {
-                        // Si c'est un objet imbriqué (comme 'home.offers' si vous l'aviez), vous devrez le gérer de manière récursive ou spécifique
-                        // Pour l'instant, ignorons les objets imbriqués non listes pour simplifier l'affichage principal
-                        return null;
+                        // If it's a nested object that's not an array, render its fields recursively
+                        return (
+                            <div key={contentPath} className="pb-4 border-b border-gray-600 last:border-b-0">
+                                <h4 className="text-xl font-semibold mb-3 text-white capitalize">{fieldKey.replace(/([A-Z])/g, ' $1').trim()}:</h4>
+                                {renderEditableFields(fieldValue, contentPath)}
+                            </div>
+                        );
                     }
 
                     const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
@@ -1704,9 +1714,9 @@
                                             <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3">
                                                 Page Accueil
                                             </h2>
+                                            {/* Wrap adjacent elements in a fragment */}
                                             <div className="space-y-6">
                                                 {renderEditableFields(localContent.home, 'home')}
-                                                {/* Gérer les sections spécifiques "Nos Offres" et "Pourquoi nous faire confiance" */}
                                                 {localContent.home.offerTitle && (
                                                     <div className="mt-8 pt-6 border-t-2 border-red-600">
                                                         <h3 className="text-2xl font-bold mb-4 text-red-300">Nos Offres</h3>
@@ -1761,7 +1771,6 @@
                                                     mainTitle: localContent.blog.mainTitle,
                                                     description: localContent.blog.description,
                                                 }, 'blog')}
-
                                                 <div className="mt-8 pt-6 border-t-2 border-green-600">
                                                     <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
                                                     <button
@@ -1817,7 +1826,7 @@
                                                         ))}
                                                     </div>
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
                                     )}
 
@@ -1864,9 +1873,10 @@
                                             <h2 className="text-3xl font-bold mb-6 text-pink-400 capitalize border-b-2 border-pink-600 pb-3">
                                                 Page Contact
                                             </h2>
-                                            <div className="space-y-6">
+                                            {/* Wrap adjacent elements in a fragment */}
+                                            <React.Fragment>
                                                 {renderEditableFields(localContent.contact, 'contact')}
-                                            </div>
+                                            </React.Fragment>
                                         </div>
                                     )}
 
