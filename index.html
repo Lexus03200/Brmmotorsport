@@ -223,7 +223,7 @@
 
         const WrenchIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wrench">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
             <path d="M5.5 12.5l-3-3L12.5 2.5l3 3z"/>
           </svg>
         );
@@ -1463,15 +1463,34 @@
         // NOUVEAU COMPOSANT : ImageUploader
         // Ce composant gère la sélection de fichier, l'aperçu et simule le téléversement.
         // Dans une vraie application Firebase, la logique de "uploadBytes" et "getDownloadURL" irait ici.
-        const ImageUploader = ({ currentImageUrl, onImageUploadSuccess, folderPath }) => {
+        const ImageUploader = ({ currentImageUrl, onImageUploadSuccess, folderPath, firebaseInitialized, authReady }) => {
             const [file, setFile] = useState(null);
             const [uploading, setUploading] = useState(false);
             const [uploadError, setUploadError] = useState(null);
             const [previewUrl, setPreviewUrl] = useState(currentImageUrl);
+            const [userUid, setUserUid] = useState(null); 
 
             useEffect(() => {
                 setPreviewUrl(currentImageUrl);
-            }, [currentImageUrl]);
+
+                const checkAuth = async () => {
+                    if (window.firebase && firebaseInitialized) {
+                        const currentAuth = window.firebase.getAuth(firebaseApp);
+                        const unsubscribe = window.firebase.onAuthStateChanged(currentAuth, (user) => {
+                            if (user) {
+                                setUserUid(user.uid);
+                                console.log("ImageUploader: User authenticated with UID:", user.uid);
+                            } else {
+                                setUserUid(null);
+                                console.log("ImageUploader: No user authenticated.");
+                            }
+                        });
+                        return () => unsubscribe(); 
+                    }
+                };
+                checkAuth();
+            }, [currentImageUrl, firebaseInitialized]); 
+
 
             const handleFileChange = (e) => {
                 if (e.target.files[0]) {
@@ -1487,24 +1506,38 @@
                     return;
                 }
 
+                if (!authReady || !userUid) { 
+                    setUploadError("Erreur : L'authentification n'est pas prête ou l'utilisateur n'est pas authentifié. Veuillez attendre ou recharger la page.");
+                    console.error("ImageUploader: Téléversement refusé car l'authentification n'est pas prête ou l'utilisateur n'est pas authentifié.");
+                    return;
+                }
+
                 setUploading(true);
                 setUploadError(null);
 
                 try {
-                    // --- VRAI CODE FIREBASE STORAGE ---
-                    // Utilisez directement les instances `storage` qui sont définies globalement par le hook useEffect de `App`
+                    console.log("ImageUploader: Tentative de téléversement...");
+                    console.log("ImageUploader: userUid:", userUid);
+                    console.log("ImageUploader: folderPath:", folderPath);
+                    console.log("ImageUploader: fileName:", file.name);
+
                     const imageRef = firebase.ref(storage, `${folderPath}/${Date.now()}_${file.name}`);
                     await firebase.uploadBytes(imageRef, file);
                     const downloadURL = await firebase.getDownloadURL(imageRef);
                     console.log("Fichier téléchargé sur Firebase Storage, URL:", downloadURL);
-                    // --- FIN DU VRAI CODE ---
-
-                    onImageUploadSuccess(downloadURL); // Passe l'URL générée au composant parent
-                    setFile(null); // Réinitialise le fichier sélectionné
-                    setPreviewUrl(downloadURL); // Affiche l'image "téléchargée"
+                    onImageUploadSuccess(downloadURL); 
+                    setFile(null); 
+                    setPreviewUrl(downloadURL); 
                 } catch (error) {
-                    console.error("Erreur lors du téléversement de l'image (SIMULÉ):", error);
-                    setUploadError(`Échec du téléversement: ${error.message}. (Si en production, vérifier les règles Firebase Storage et la connexion).`);
+                    console.error("Erreur détaillée lors du téléversement de l'image:", error);
+                    if (error.code === 'storage/unauthorized') {
+                        setUploadError(`Échec du téléversement : Permission refusée. Veuillez vérifier les règles de Firebase Storage pour l'écriture. Erreur Firebase : ${error.message}`);
+                    } else if (error.code === 'storage/unknown') {
+                         setUploadError(`Échec du téléversement : Une erreur inconnue est survenue. Vérifiez votre connexion et les logs de Firebase. Erreur Firebase : ${error.message}`);
+                    }
+                    else {
+                        setUploadError(`Échec du téléversement: ${error.message}. (Si en production, vérifier les règles Firebase Storage et la connexion).`);
+                    }
                 } finally {
                     setUploading(false);
                 }
@@ -1513,6 +1546,8 @@
             return (
                 <div className="border border-gray-600 p-4 rounded-lg bg-gray-700 space-y-4">
                     <h4 className="text-xl font-semibold text-white">Gestion de l'image</h4>
+                    {!authReady && <p className="text-yellow-400 text-sm">Initialisation de l'authentification Firebase en cours...</p>}
+                    {authReady && !userUid && <p className="text-red-400 text-sm">Erreur : Utilisateur non authentifié. Impossible de téléverser. Veuillez recharger la page.</p>}
                     {previewUrl && (
                         <div className="w-full h-48 bg-gray-800 flex items-center justify-center rounded-md overflow-hidden">
                             <img src={previewUrl} alt="Aperçu de l'image" className="max-w-full max-h-full object-contain" />
@@ -1531,7 +1566,7 @@
                     />
                     <button
                         onClick={handleUpload}
-                        disabled={!file || uploading}
+                        disabled={!file || uploading || !userUid || !authReady} 
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {uploading ? 'Téléversement...' : 'Téléverser l\'image'}
@@ -1543,7 +1578,7 @@
 
 
         // Composant du panneau administrateur (contenu protégé)
-        const AdminPanelPage = ({ setIsAdminAuthenticated, setCurrentPage }) => {
+        const AdminPanelPage = ({ setIsAdminAuthenticated, setCurrentPage, firebaseInitialized, authReady }) => { 
             const { content, updateContent } = useContext(ContentContext);
             const [localContent, setLocalContent] = useState(() => JSON.parse(JSON.stringify(content || {})));
             const [saveMessage, setSaveMessage] = useState('');
@@ -1857,6 +1892,8 @@
                                                                         currentImageUrl={post.image}
                                                                         onImageUploadSuccess={(url) => handleLocalChange('blog', `posts.${index}.image`, url)}
                                                                         folderPath={`images/blog_posts/${post.id}`}
+                                                                        firebaseInitialized={firebaseInitialized} 
+                                                                        authReady={authReady}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -2030,6 +2067,8 @@
                                                                     currentImageUrl={imageUrl}
                                                                     onImageUploadSuccess={(url) => handleLocalChange('showcaseCar', `images.${index}`, url)}
                                                                     folderPath={`images/showcase_car/${index}`}
+                                                                    firebaseInitialized={firebaseInitialized} 
+                                                                    authReady={authReady}
                                                                 />
                                                             </div>
                                                         ))}
@@ -2292,6 +2331,7 @@
             const [loadingContent, setLoadingContent] = useState(true);
             const [errorContent, setErrorContent] = useState(null);
             const [firebaseInitialized, setFirebaseInitialized] = useState(false);
+            const [authReady, setAuthReady] = useState(false); // New state to track auth readiness
 
             // Initialisation de Firebase et écoute des changements de contenu Firestore
             useEffect(() => {
@@ -2302,7 +2342,24 @@
                             firebaseApp = window.firebase.initializeApp(firebaseConfig);
                             db = window.firebase.getFirestore(firebaseApp);
                             storage = window.firebase.getStorage(firebaseApp);
-                            setFirebaseInitialized(true);
+                            
+                            const auth = window.firebase.getAuth(firebaseApp);
+                            try {
+                                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                                    await window.firebase.signInWithCustomToken(auth, __initial_auth_token);
+                                    console.log("Firebase Auth: Signed in with custom token.");
+                                } else {
+                                    await window.firebase.signInAnonymously(auth);
+                                    console.log("Firebase Auth: Signed in anonymously.");
+                                }
+                                setAuthReady(true); // Set auth ready after successful sign-in
+                            } catch (authError) {
+                                console.error("Firebase Auth Error during sign-in:", authError);
+                                setAuthReady(false); // Auth failed
+                                setErrorContent(`Erreur d'authentification Firebase : ${authError.message}`);
+                            }
+                            
+                            setFirebaseInitialized(true); // Mark Firebase as initialized after auth attempt
                             console.log("Firebase initialisé !");
 
                             // Écoute en temps réel des changements du document 'appContent' dans la collection 'content'
@@ -2310,12 +2367,10 @@
                             window.firebase.onSnapshot(contentDocRef, (docSnap) => {
                                 if (docSnap.exists()) {
                                     const fetchedContent = docSnap.data();
-                                    // Vérifie si le contenu récupéré est "vide" ou incomplet, sauf la clé 'version'
                                     const hasContentKeys = Object.keys(fetchedContent).some(key => key !== 'version');
-                                    if (!hasContentKeys) { // Si le document existe mais ne contient pas les clés de contenu principales
+                                    if (!hasContentKeys) { 
                                         console.log("Document 'appContent' trouvé mais vide/incomplet. Remplissage avec le contenu par défaut.");
-                                        setContent(defaultContent); // Mettre à jour l'état avec le contenu par défaut
-                                        // Tente de créer le document par défaut dans Firestore (cela l'écrasera s'il existe)
+                                        setContent(defaultContent); 
                                         window.firebase.setDoc(contentDocRef, defaultContent)
                                             .then(() => console.log("Document de contenu par défaut créé/mis à jour dans Firestore."))
                                             .catch(err => console.error("Erreur lors de la création/mise à jour du document par défaut dans Firestore:", err));
@@ -2326,8 +2381,7 @@
                                     setLoadingContent(false);
                                 } else {
                                     console.log("Document 'appContent' introuvable dans Firestore. Utilisation et création du contenu par défaut.");
-                                    setContent(defaultContent); // Mettre à jour l'état avec le contenu par défaut
-                                    // Tente de créer le document par défaut dans Firestore
+                                    setContent(defaultContent); 
                                     window.firebase.setDoc(contentDocRef, defaultContent)
                                         .then(() => console.log("Document de contenu par défaut créé dans Firestore."))
                                         .catch(err => console.error("Erreur lors de la création du document par défaut dans Firestore:", err));
@@ -2339,15 +2393,15 @@
                                 setLoadingContent(false);
                             });
                         } catch (error) {
-                            console.error("Erreur lors de l'initialisation de Firebase :", error);
-                            setErrorContent("Impossible d'initialiser Firebase. Vérifiez votre configuration.");
+                            console.error("Erreur lors de l'initialisation de Firebase (général):", error);
+                            setErrorContent("Impossible d'initialiser Firebase. Vérifiez votre configuration et votre connexion.");
                             setLoadingContent(false);
                         }
                     }
                 };
 
                 initFirebaseAndFetchContent();
-            }, [firebaseInitialized]); // Dépend de firebaseInitialized pour ne s'exécuter qu'une fois Firebase chargé
+            }, [firebaseInitialized]); 
 
 
             // Fonction pour mettre à jour une partie spécifique du contenu dans Firestore
@@ -2437,7 +2491,7 @@
                     return null;
                   }
                   // Passe la fonction de mise à jour Firestore au panneau admin
-                  return <AdminPanelPage setIsAdminAuthenticated={setIsAdminAuthenticated} setCurrentPage={setCurrentPage} updateContent={updateContentInFirestore} />;
+                  return <AdminPanelPage setIsAdminAuthenticated={setIsAdminAuthenticated} setCurrentPage={setCurrentPage} updateContent={updateContentInFirestore} firebaseInitialized={firebaseInitialized} authReady={authReady} />; // Pass new props
                 default:
                   return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
               }
