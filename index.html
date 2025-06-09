@@ -434,7 +434,8 @@
 
             // Rendu normal pour les clients
             // Vérifie si textValue est une chaîne avant de le rendre
-            return <Tag className={className}>{typeof textValue === 'string' ? textValue : `[Contenu invalide: ${contentKey}]`}</Tag>;
+            // Utilisation de dangerouslySetInnerHTML pour le rendu HTML
+            return <Tag className={className} dangerouslySetInnerHTML={{ __html: typeof textValue === 'string' ? textValue : '' }} />;
         };
 
         // Composant de la bannière défilante
@@ -2646,7 +2647,7 @@
                         // Fallback vers un contenu par défaut si le chargement échoue
                         setContent({
                             home: {
-                                mainTitle: "BRMOTORSPORT",
+                                mainTitle: "Libérez la <span class=\"text-red-500\">Puissance</span>. Redéfinissez la <span class=\"text-blue-500\">Performance</span>!", // Mise à jour du titre
                                 description: "Spécialiste de la reprogrammation moteur et de l'optimisation de véhicules. Performance, fiabilité et satisfaction client sont nos maîtres mots.",
                                 contactMessage: "Contactez-nous dès aujourd'hui pour transformer votre véhicule !",
                                 offerTitle: "Nos Offres",
