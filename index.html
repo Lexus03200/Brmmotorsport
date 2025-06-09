@@ -726,90 +726,23 @@
         );
 
         // Composant Carte de Blog pour l'affichage public
-        const BlogPostCard = ({ post, style }) => {
-            const [currentImageIndex, setCurrentImageIndex] = useState(0);
-            const [isPlaying, setIsPlaying] = useState(true); // Auto-play by default
-
-            // Gère la lecture automatique du diaporama
-            useEffect(() => {
-                let interval;
-                if (isPlaying && post.images && post.images.length > 1) {
-                    interval = setInterval(() => {
-                        setCurrentImageIndex((prevIndex) =>
-                            (prevIndex + 1) % post.images.length
-                        );
-                    }, 3000); // Change l'image toutes les 3 secondes
-                }
-                return () => clearInterval(interval); // Nettoyage de l'intervalle
-            }, [isPlaying, post.images]); // Dépendances: isPlaying et le tableau d'images
-
-            const goToPrevious = () => {
-                if (!post.images || post.images.length === 0) return;
-                setCurrentImageIndex((prevIndex) =>
-                    prevIndex === 0 ? post.images.length - 1 : prevIndex - 1
-                );
-                setIsPlaying(false);
-            };
-
-            const goToNext = () => {
-                if (!post.images || post.images.length === 0) return;
-                setCurrentImageIndex((prevIndex) =>
-                    (prevIndex + 1) % post.images.length
-                );
-                setIsPlaying(false);
-            };
-
-            const togglePlayPause = () => {
-                setIsPlaying(!isPlaying);
-            };
-
-            const displayImage = post.images && post.images.length > 0 ? post.images[currentImageIndex] : "https://placehold.co/600x400/000/FFF?text=Image+non+trouvée";
-
-            return (
-              <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400 animate-fade-in-up delay-animation" style={style}>
-                <div className="relative w-full h-64 overflow-hidden">
-                    <img
-                      src={displayImage}
-                      alt={post.title}
-                      className="w-full h-full object-cover object-center transition-opacity duration-700"
-                      onError={(e) => { e.target.onerror = null; console.error(`ERREUR DE CHARGEMENT D'IMAGE pour l'article "${post.title}": Vérifiez le nom du fichier (${displayImage}) et son emplacement.`); e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }}
-                    />
-                    {post.images && post.images.length > 1 && (
-                        <>
-                            <button
-                                onClick={goToPrevious}
-                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
-                                aria-label="Image précédente"
-                            ><ArrowLeftIcon className="w-5 h-5"/></button>
-                            <button
-                                onClick={goToNext}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
-                                aria-label="Image suivante"
-                            ><ArrowRightIcon className="w-5 h-5"/></button>
-                            <button
-                                onClick={togglePlayPause}
-                                className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
-                                aria-label={isPlaying ? "Mettre en pause le diaporama" : "Lancer le diaporama"}
-                            >
-                                {isPlaying ? <PauseIcon className="w-5 h-5"/> : <PlayIcon className="w-5 h-5"/>}
-                            </button>
-                            <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                                {currentImageIndex + 1} / {post.images.length}
-                            </div>
-                        </>
-                    )}
-                </div>
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
-                  <p className="text-gray-300 mb-4">{post.description}</p>
-                  <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold py-2 px-6 rounded-full hover:from-green-600 hover:to-teal-600 transition duration-300 ease-in-out shadow-md">
-                    Lire la suite
-                  </button>
-                </div>
-              </div>
-            );
-        };
-
+        const BlogPostCard = ({ post, style }) => (
+          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400 animate-fade-in-up delay-animation" style={style}>
+            <img
+              src={post.image}
+              alt={post.title}
+              className="w-full h-64 object-cover object-center transform transition duration-500 hover:scale-110"
+              onError={(e) => { e.target.onerror = null; console.error(`ERREUR DE CHARGEMENT D'IMAGE pour l'article "${post.title}": Vérifiez le nom du fichier (${post.image}) et son emplacement.`); e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }} // Fallback image with more specific error message
+            />
+            <div className="p-6">
+              <h3 className="text-2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
+              <p className="text-gray-300 mb-4">{post.description}</p>
+              <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold py-2 px-6 rounded-full hover:from-green-600 hover:to-teal-600 transition duration-300 ease-in-out shadow-md">
+                Lire la suite
+              </button>
+            </div>
+          </div>
+        );
 
         // Composant Page Blog
         const BlogPage = ({ isAdminAuthenticated }) => {
@@ -1593,7 +1526,7 @@
         };
 
         // Composant d'édition d'article de blog pour le panneau d'administration
-        const AdminBlogPostCard = ({ post, index, handleLocalChange, handleRemoveBlogPost, handleAddImageToPost, handleRemoveImageFromPost, handleDragStart, handleDragEnd, handleDragOver, handleDrop }) => {
+        const AdminBlogPostCard = ({ post, index, handleLocalChange, handleRemoveBlogPost, handleDragStart, handleDragEnd, handleDragOver, handleDrop }) => {
             const [isDraggingOver, setIsDraggingOver] = useState(false);
             const [zoom, setZoom] = useState(1); // État du zoom
             const [offsetX, setOffsetX] = useState(0); // Décalage X
@@ -1601,28 +1534,6 @@
             const [isPanDragging, setIsPanDragging] = useState(false); // État de glisser-déposer pour le pan
             const [startX, setStartX] = useState(0); // Position de départ pour le glisser-déposer (pan)
             const [startY, setStartY] = useState(0); // Position de départ pour le glisser-déposer (pan)
-            const [newImageUrl, setNewImageUrl] = useState(''); // Pour le champ d'ajout d'image
-
-            const [currentPreviewImageIndex, setCurrentPreviewImageIndex] = useState(0);
-            const [isPlaying, setIsPlaying] = useState(true); // Autoplay for admin preview
-
-            // Reset zoom/pan when the image changes
-            useEffect(() => {
-                resetImage();
-            }, [currentPreviewImageIndex]);
-
-            // Autoplay for the admin preview carousel
-            useEffect(() => {
-                let interval;
-                if (isPlaying && post.images && post.images.length > 1) {
-                    interval = setInterval(() => {
-                        setCurrentPreviewImageIndex((prevIndex) =>
-                            (prevIndex + 1) % post.images.length
-                        );
-                    }, 3000); // Change image every 3 seconds
-                }
-                return () => clearInterval(interval);
-            }, [isPlaying, post.images]);
 
             // Réinitialise le zoom et la position
             const resetImage = () => {
@@ -1639,7 +1550,7 @@
 
             // Gère le zoom
             const handleZoom = (factor) => {
-                setZoom(prevZoom => Math.max(0.5, prevZoom + factor)); // Empêche le dézoom sous 0.5
+                setZoom(prevZoom => Math.max(1, prevZoom + factor)); // Empêche le dézoom sous 1
             };
 
             // Gère le début du glisser-déposer (pan)
@@ -1662,26 +1573,6 @@
                 setIsPanDragging(false);
             };
 
-            const goToPreviousImage = () => {
-                if (!post.images || post.images.length === 0) return;
-                setCurrentPreviewImageIndex((prevIndex) =>
-                    prevIndex === 0 ? post.images.length - 1 : prevIndex - 1
-                );
-                setIsPlaying(false);
-            };
-
-            const goToNextImage = () => {
-                if (!post.images || post.images.length === 0) return;
-                setCurrentPreviewImageIndex((prevIndex) =>
-                    (prevIndex + 1) % post.images.length
-                );
-                setIsPlaying(false);
-            };
-
-            const togglePreviewPlayPause = () => {
-                setIsPlaying(!isPlaying);
-            };
-
             // Fonctions de glisser-déposer pour la réorganisation des cartes
             const onDragEnter = (e) => {
                 e.preventDefault();
@@ -1691,9 +1582,6 @@
             const onDragLeave = () => {
                 setIsDraggingOver(false);
             };
-
-            const displayImage = post.images && post.images.length > 0 ? post.images[currentPreviewImageIndex] : "https://placehold.co/600x400/000/FFF?text=Image+non+trouvée";
-
 
             return (
                 <div
@@ -1733,99 +1621,35 @@
                                 className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
                             />
                         </div>
-                        {/* Section de gestion des images */}
-                        <div className="mt-4 border-t border-gray-500 pt-4">
-                            <label className="block text-gray-300 text-sm font-bold mb-2">Gérer les images du blog:</label>
-                            <div className="flex space-x-2 mb-2">
-                                <input
-                                    type="text"
-                                    placeholder="Nom de fichier image (ex: image.png)"
-                                    value={newImageUrl}
-                                    onChange={(e) => setNewImageUrl(e.target.value)}
-                                    className="flex-grow p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                />
-                                <button
-                                    onClick={() => {
-                                        if (newImageUrl.trim()) {
-                                            handleAddImageToPost(index, newImageUrl.trim());
-                                            setNewImageUrl('');
-                                        }
-                                    }}
-                                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg text-sm transition-all duration-200"
-                                >
-                                    Ajouter
-                                </button>
-                            </div>
-                            <p className="text-gray-400 text-xs mt-1 mb-2">
-                                Assurez-vous que les images sont téléversées dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
+                        <div>
+                            <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
+                            <input
+                                type="text"
+                                value={post.image || ''}
+                                onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
+                                className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                            />
+                            <p className="text-gray-400 text-xs mt-1">
+                                Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
                             </p>
-                            <ul className="space-y-2">
-                                {post.images && post.images.map((imgUrl, imgIdx) => (
-                                    <li key={imgIdx} className="flex items-center justify-between bg-gray-700 p-2 rounded">
-                                        <span className="text-gray-300 text-sm truncate mr-2">{imgUrl}</span>
-                                        <button
-                                            onClick={() => handleRemoveImageFromPost(index, imgIdx)}
-                                            className="bg-red-500 hover:bg-red-600 text-white p-1 rounded-full text-xs"
-                                            aria-label={`Supprimer l'image ${imgUrl}`}
-                                        >
-                                            <XIcon className="w-3 h-3"/>
-                                        </button>
-                                    </li>
-                                ))}
-                                {(!post.images || post.images.length === 0) && (
-                                    <p className="text-gray-400 text-sm italic">Aucune image ajoutée pour cet article.</p>
-                                )}
-                            </ul>
                         </div>
-
-                        {/* Aperçu de l'image (carrousel avec zoom/pan) */}
                         <div className="mt-4 border-t border-gray-500 pt-4">
                             <label className="block text-gray-300 text-sm font-bold mb-2">Aperçu de l'image (pour l'édition):</label>
                             <div className="relative w-full h-48 bg-gray-700 flex items-center justify-center overflow-hidden rounded-lg border-2 border-gray-400">
-                                {post.images && post.images.length > 0 ? (
-                                    <>
-                                        <img
-                                            src={displayImage}
-                                            alt={post.title}
-                                            className="object-contain max-w-full max-h-full transition-transform duration-100 ease-out"
-                                            style={{
-                                                transform: `scale(${zoom}) translate(${offsetX}px, ${offsetY}px)`,
-                                                cursor: zoom > 1 ? (isPanDragging ? 'grabbing' : 'grab') : 'default',
-                                            }}
-                                            onMouseDown={zoom > 1 ? handlePanStart : null}
-                                            onMouseMove={zoom > 1 ? handlePanMove : null}
-                                            onMouseUp={zoom > 1 ? handlePanEnd : null}
-                                            onMouseLeave={zoom > 1 ? handlePanEnd : null}
-                                            onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }}
-                                        />
-                                        {post.images.length > 1 && (
-                                            <>
-                                                <button
-                                                    onClick={goToPreviousImage}
-                                                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
-                                                    aria-label="Image précédente"
-                                                ><ArrowLeftIcon className="w-5 h-5"/></button>
-                                                <button
-                                                    onClick={goToNextImage}
-                                                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
-                                                    aria-label="Image suivante"
-                                                ><ArrowRightIcon className="w-5 h-5"/></button>
-                                                <button
-                                                    onClick={togglePreviewPlayPause}
-                                                    className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
-                                                    aria-label={isPlaying ? "Mettre en pause le diaporama" : "Lancer le diaporama"}
-                                                >
-                                                    {isPlaying ? <PauseIcon className="w-5 h-5"/> : <PlayIcon className="w-5 h-5"/>}
-                                                </button>
-                                                <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                                                    {currentPreviewImageIndex + 1} / {post.images.length}
-                                                </div>
-                                            </>
-                                        )}
-                                    </>
-                                ) : (
-                                    <p className="text-gray-400">Pas d'image à prévisualiser.</p>
-                                )}
+                                <img
+                                    src={post.image}
+                                    alt={post.title}
+                                    className="object-contain max-w-full max-h-full transition-transform duration-100 ease-out"
+                                    style={{
+                                        transform: `scale(${zoom}) translate(${offsetX}px, ${offsetY}px)`,
+                                        cursor: zoom > 1 ? (isPanDragging ? 'grabbing' : 'grab') : 'default', // Curseur de glisser-déposer seulement si zoomé
+                                    }}
+                                    onMouseDown={zoom > 1 ? handlePanStart : null}
+                                    onMouseMove={zoom > 1 ? handlePanMove : null}
+                                    onMouseUp={zoom > 1 ? handlePanEnd : null}
+                                    onMouseLeave={zoom > 1 ? handlePanEnd : null} // Stop drag if mouse leaves container
+                                    onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }}
+                                />
                                 {zoom > 1 && (
                                     <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
                                         Zoom: {Math.round(zoom * 100)}%
@@ -1900,7 +1724,7 @@
                     }
                     newContent.blog.posts.push({
                         id: Date.now(), // Utiliser un timestamp unique pour l'ID
-                        images: ["https://placehold.co/600x400/000/FFF?text=Nouvelle+image"], // Initialise avec une image par défaut
+                        image: "https://placehold.co/600x400/000/FFF?text=Nouvelle+image",
                         title: "Nouveau titre d'article",
                         description: "Nouvelle description d'article."
                     });
@@ -1913,31 +1737,6 @@
                     const newContent = JSON.parse(JSON.stringify(prevContent));
                     if (newContent.blog && Array.isArray(newContent.blog.posts)) {
                         newContent.blog.posts = newContent.blog.posts.filter(post => post.id !== idToRemove);
-                    }
-                    return newContent;
-                });
-            };
-
-            const handleAddImageToPost = (postIndex, imageUrl) => {
-                setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    const targetPost = newContent.blog.posts[postIndex];
-                    if (targetPost) {
-                        if (!targetPost.images) {
-                            targetPost.images = [];
-                        }
-                        targetPost.images.push(imageUrl);
-                    }
-                    return newContent;
-                });
-            };
-
-            const handleRemoveImageFromPost = (postIndex, imageIndex) => {
-                setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    const targetPost = newContent.blog.posts[postIndex];
-                    if (targetPost && targetPost.images && Array.isArray(targetPost.images)) {
-                        targetPost.images.splice(imageIndex, 1);
                     }
                     return newContent;
                 });
@@ -2054,9 +1853,6 @@
 
                     if (fieldKey === 'posts' && Array.isArray(fieldValue)) {
                         return null; // Géré par une section spécifique du blog
-                    }
-                    if (fieldKey === 'images' && Array.isArray(fieldValue)) {
-                        return null; // Géré par une section spécifique dans AdminBlogPostCard
                     }
                      if (typeof fieldValue === 'object' && fieldValue !== null && !Array.isArray(fieldValue)) {
                         // If it's a nested object that's not an array, render its fields recursively
@@ -2222,8 +2018,6 @@
                                                                 index={index}
                                                                 handleLocalChange={handleLocalChange}
                                                                 handleRemoveBlogPost={handleRemoveBlogPost}
-                                                                handleAddImageToPost={handleAddImageToPost}
-                                                                handleRemoveImageFromPost={handleRemoveImageFromPost}
                                                                 handleDragStart={handleDragStart}
                                                                 handleDragEnd={handleDragEnd}
                                                                 handleDragOver={handleDragOver}
@@ -2542,17 +2336,17 @@
                                 mainTitle: "Notre Blog BRMOTORSPORT",
                                 description: "Découvrez nos dernières actualités, projets et optimisations automobiles.",
                                 posts: [
-                                    { id: 1, images: ["IMG_9611.png", "Photo1.png"], title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur", description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime." },
-                                    { id: 2, images: ["IMG_9609.png"], title: "BMW Série 2 : Reprogrammation et FAP OFF", description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité." },
-                                    { id: 3, images: ["IMG_9607.png"], title: "VW Golf GTI : Boost de Performance Ultime", description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !" },
-                                    { id: 4, images: ["IMG_9608.png"], title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini." },
-                                    { id: 5, images: ["IMG_9610.png"], title: "VW Golf 5 GTI : Mise à Jour Cartographie", description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !" },
-                                    { id: 6, images: ["Photopeugeot.png", "anciennevoiture.png"], title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation", description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led)." },
-                                    { id: 7, images: ["Seat1.png"], title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm." },
-                                    { id: 8, images: ["anciennevoiture.png"], title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité." },
-                                    { id: 9, images: ["audi1.png"], title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité." },
-                                    { id: 10, images: ["gx.png"], title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance notre priorité." },
-                                    { id: 11, images: ["mercedes2021.png"], title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
+                                    { id: 1, image: "IMG_9611.png", title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur", description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime." },
+                                    { id: 2, image: "IMG_9609.png", title: "BMW Série 2 : Reprogrammation et FAP OFF", description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité." },
+                                    { id: 3, image: "IMG_9607.png", title: "VW Golf GTI : Boost de Performance Ultime", description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !" },
+                                    { id: 4, image: "IMG_9608.png", title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini." },
+                                    { id: 5, image: "IMG_9610.png", title: "VW Golf 5 GTI : Mise à Jour Cartographie", description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !" },
+                                    { id: 6, image: "Photopeugeot.png", title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation", description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led)." },
+                                    { id: 7, image: "Seat1.png", title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm." },
+                                    { id: 8, image: "anciennevoiture.png", title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité." },
+                                    { id: 9, image: "audi1.png", title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité." },
+                                    { id: 10, image: "gx.png", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance notre priorité." },
+                                    { id: 11, image: "mercedes2021.png", title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
                                 ]
                             },
                             aboutUs: {
