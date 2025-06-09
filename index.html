@@ -6,9 +6,9 @@
     <title>BRMOTORSPORT - Performance Automobile</title>
     <!-- Intégration de Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Intégration de React et ReactDOM CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react.production.min.js"></script>
+    <!-- Intégration de React et ReactDOM CDN depuis cdnjs (plus fiable pour CORS) -->
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
@@ -175,12 +175,6 @@
     </style>
 </head>
 <body class="min-h-screen bg-black font-inter">
-    <!-- MESSAGE DE DIAGNOSTIC - À SUPPRIMER APRÈS RÉSOLUTION -->
-    <div style="position: fixed; top: 0; left: 0; background: yellow; color: black; padding: 5px; z-index: 9999;">
-        HTML EN COURS DE CHARGEMENT. Si vous voyez ce message, le problème est dans l'app React.
-    </div>
-    <!-- FIN MESSAGE DE DIAGNOSTIC -->
-
     <!-- Section Audio de fond -->
     <!-- 'autoplay' tente de lancer la lecture automatique, mais peut être bloqué par les navigateurs mobiles. -->
     <!-- 'loop' assure que la musique se répète. -->
