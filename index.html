@@ -6,13 +6,14 @@
     <title>BRMOTORSPORT - Performance Automobile</title>
     <!-- Intégration de Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Intégration de React et ReactDOM CDN depuis cdnjs (plus fiable pour CORS) -->
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <!-- Intégration de React et ReactDOM CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
+        /* Importation de la police Inter */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
         body {
             font-family: 'Inter', sans-serif;
@@ -145,7 +146,7 @@
             border-radius: 9999px; /* fully rounded */
             display: flex;
             align-items: center;
-            justify: center;
+            justify-content: center;
             transition: background-color 0.2s ease-in-out;
             cursor: pointer;
             position: absolute;
@@ -175,11 +176,6 @@
     </style>
 </head>
 <body class="min-h-screen bg-black font-inter">
-    <!-- Message affiché avant que l'application React ne soit rendue -->
-    <div id="initial-loading-message" class="fixed inset-0 flex items-center justify-center bg-black text-white text-3xl z-[9999]">
-        Initialisation de l'application React...
-    </div>
-
     <!-- Section Audio de fond -->
     <!-- 'autoplay' tente de lancer la lecture automatique, mais peut être bloqué par les navigateurs mobiles. -->
     <!-- 'loop' assure que la musique se répète. -->
@@ -195,105 +191,117 @@
 
     <!-- Le type du script a été changé en "text/babel" pour le transpiler -->
     <script type="text/babel">
-        console.log("Babel script started parsing and executing."); // NEW LOG
-
         // Récupère les hooks React depuis l'objet global React
         const { useState, useEffect, useRef, createContext, useContext } = React;
 
         // --- Icônes Lucide React ---
+        // Composant d'icône de voiture
         const CarIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-car">
             <path d="M19 17H5c-1.1 0-2 .9-2 2v2h18v-2c0-1.1-.9-2-2-2Z"/><path d="M7 17V5h12v12"/><path d="M18 10h-8"/><path d="M10 10v7"/>
           </svg>
         );
 
+        // Composant d'icône de poignée de main
         const HandshakeIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucude-handshake">
             <path d="M12.23 20.73a4.7 4.7 0 0 0 6.64-6.64L12.23 7.07l-2.06 2.06"/><path d="M16 16l-3.23 3.23a4.7 4.7 0 0 1-6.64-6.64L9.07 7.07l2.06 2.06"/><path d="M14 10l-2.06 2.06"/><path d="m10 14 2.06-2.06"/>
           </svg>
         );
 
+        // Composant d'icône de clé à molette
         const WrenchIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wrench">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1 7.94-7.94l-3.77 3.77a1 1 0 0 0-1.4 0l-1.6-1.6a1 1 0 0 0 0-1.4l3.77-3.77a6 6 0 0 0-7.94-7.94zM5.5 12.5l-3-3L12.5 2.5l3 3z"/>
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
+            <path d="M5.5 12.5l-3-3L12.5 2.5l3 3z"/>
           </svg>
         );
 
+        // Composant d'icône de calendrier
         const CalendarIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-calendar-days">
             <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>
           </svg>
         );
 
+        // Composant d'icône d'utilisateurs
         const UsersIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-users">
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87L16 16"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
         );
 
+        // Composant d'icône RSS
         const RssIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rss">
             <path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>
           </svg>
         );
 
+        // Composant d'icône de téléphone
         const PhoneIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-phone">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2H7c.43 0 .79.27.94.66.14.39.07.82-.2 1.1L5.05 6.05c-.35.35-.5.85-.34 1.34A19.79 19.79 0 0 0 16.92 19c.49.16.99.01 1.34-.34l2.29-2.29c.28-.27.71-.34 1.1-.2.39.14.66.5.66.94Z"/>
           </svg>
         );
 
+        // Composant d'icône de mail
         const MailIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mail">
               <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
             </svg>
         );
 
+        // Composant d'icône Instagram
         const InstagramIcon = () => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram">
               <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.5" y1="6.5" y2="6.5"/>
             </svg>
         );
 
-        // Nouvelle icône Play
+        // Composant d'icône Play
         const PlayIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play">
                 <polygon points="5 3 19 12 5 21 5 3"/>
             </svg>
         );
 
-        // Nouvelle icône Pause
+        // Composant d'icône Pause
         const PauseIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pause">
                 <rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>
             </svg>
         );
 
+        // Composant d'icône Étoile
         const StarIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-star">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
         );
 
+        // Composant d'icône Flèche Gauche
         const ArrowLeftIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left">
                 <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
             </svg>
         );
 
+        // Composant d'icône Flèche Droite
         const ArrowRightIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right">
                 <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
             </svg>
         );
 
+        // Composant d'icône X (fermer)
         const XIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x">
                 <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
             </svg>
         );
 
-        // --- Context pour la gestion du contenu éditable ---
+        // --- Contexte pour la gestion du contenu éditable ---
         const ContentContext = createContext();
 
         // Fonction utilitaire pour définir une propriété imbriquée par un chemin (similaire à lodash.set)
@@ -309,7 +317,7 @@
                 if (isLastPart) {
                     // C'est la dernière partie du chemin, définissez la valeur
                     current[isArrayIndex ? parseInt(part) : part] = value;
-                    console.log(`setNestedProperty: SETTING final value for path part "${part}" to:`, value);
+                    // console.log(`setNestedProperty: SETTING final value for path part "${part}" to:`, value);
                 } else {
                     // Si ce n'est pas la dernière partie, naviguez plus profondément
                     if (isArrayIndex) {
@@ -319,17 +327,17 @@
                         }
                         if (current[parseInt(part)] === undefined || current[parseInt(part)] === null) {
                             current[parseInt(part)] = {}; // Assurez-vous que l'objet à cet index existe
-                            console.log(`setNestedProperty: Created new object at array index ${part}.`);
+                            // console.log(`setNestedProperty: Created new object at array index ${part}.`);
                         }
                         current = current[parseInt(part)];
                     } else {
                         if (typeof current[part] !== 'object' || current[part] === null) {
                             current[part] = {}; // Initialise comme objet si ce n'est pas déjà le cas
-                            console.log(`setNestedProperty: Created new object for path part "${part}".`);
+                            // console.log(`setNestedProperty: Created new object for path part "${part}".`);
                         }
                         current = current[part];
                     }
-                    console.log(`setNestedProperty: Navigated to "${part}". Current nested object:`, current);
+                    // console.log(`setNestedProperty: Navigated to "${part}". Current nested object:`, current);
                 }
             }
             return obj; // Retourne l'objet modifié
@@ -503,6 +511,7 @@
         const HomePage = ({ setCurrentPage, isAdminAuthenticated }) => {
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
+                    {/* Effets visuels de fond (blobs animés) */}
                     <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                         <div className="absolute w-64 h-64 bg-red-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob top-10 left-1/4"></div>
                         <div className="absolute w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 top-1/2 right-1/4"></div>
@@ -510,6 +519,7 @@
                     </div>
 
                     <div className="container mx-auto px-6 relative z-10">
+                        {/* Section Titre principal et description */}
                         <section className="text-center mb-20">
                             <EditableText
                                 tag="h1"
@@ -523,6 +533,7 @@
                                 isAdminAuthenticated={isAdminAuthenticated}
                                 className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mt-10 animate-fade-in-up"
                             />
+                            {/* Boutons d'appel à l'action */}
                             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mt-8">
                                 <button
                                     onClick={() => setCurrentPage('blog')}
@@ -539,6 +550,7 @@
                             </div>
                         </section>
 
+                        {/* Section Message de contact cliquable */}
                         <section className="text-center bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-20 animate-fade-in-up">
                             <a
                                 href="#"
@@ -554,6 +566,7 @@
                             </a>
                         </section>
 
+                        {/* Section Nos Offres */}
                         <section className="mb-20">
                             <EditableText
                                 tag="h2"
@@ -580,6 +593,7 @@
                             </div>
                         </section>
 
+                        {/* Section Pourquoi nous faire confiance */}
                         <section className="mb-20">
                             <EditableText
                                 tag="h2"
@@ -606,6 +620,7 @@
                             </div>
                         </section>
 
+                        {/* Section L'équipe (avec image de Rémy Bruyant) */}
                         <section className="text-center mb-20 bg-gray-800 p-12 rounded-2xl shadow-xl transform transition duration-500 hover:scale-[1.02] hover:shadow-2xl">
                             <EditableText
                                 tag="h2"
@@ -913,7 +928,7 @@
                                     <EditableText
                                         tag="span"
                                         contentKey="contact.email"
-                                    isAdminAuthenticated={isAdminAuthenticated}
+                                        isAdminAuthenticated={isAdminAuthenticated}
                                         className="text-blue-400 hover:underline text-lg"
                                     />
                                 </a>
@@ -931,7 +946,7 @@
                                     <EditableText
                                         tag="span"
                                         contentKey="contact.phoneNumber"
-                                    isAdminAuthenticated={isAdminAuthenticated}
+                                        isAdminAuthenticated={isAdminAuthenticated}
                                         className="text-blue-400 hover:underline text-lg"
                                     />
                                 </a>
@@ -949,7 +964,7 @@
                                     <EditableText
                                         tag="span"
                                         contentKey="contact.instagramHandle"
-                                    isAdminAuthenticated={isAdminAuthenticated}
+                                        isAdminAuthenticated={isAdminAuthenticated}
                                         className="text-blue-400 hover:underline text-lg"
                                     />
                                 </a>
@@ -1484,43 +1499,33 @@
         // Composant du panneau administrateur (contenu protégé)
         const AdminPanelPage = ({ setIsAdminAuthenticated, setCurrentPage }) => {
             const { content, updateContent } = useContext(ContentContext);
-            // Initialiser localContent avec une copie profonde pour éviter les références directes
-            // et s'assurer que même si content est null au début, localContent est un objet vide
             const [localContent, setLocalContent] = useState(() => JSON.parse(JSON.stringify(content || {})));
-            const [saveMessage, setSaveMessage] = useState(''); // Message pour la sauvegarde
-            const [isSaving, setIsSaving] = useState(false); // État pour le chargement de la sauvegarde
+            const [saveMessage, setSaveMessage] = useState('');
+            const [isSaving, setIsSaving] = useState(false);
+            const [activeTab, setActiveTab] = useState('home'); // Nouvelle gestion des onglets
 
-            // Gérer la catégorie actuellement sélectionnée pour l'édition
-            const [selectedCategory, setSelectedCategory] = useState('home'); // Par défaut, 'home'
-
-            // Met à jour l'état local quand le contenu global change (par exemple, après un rafraîchissement)
             useEffect(() => {
                 setLocalContent(JSON.parse(JSON.stringify(content || {})));
                 console.log("AdminPanelPage: Content state updated. localContent initialized:", JSON.parse(JSON.stringify(content || {})));
             }, [content]);
 
-            // Fonction pour gérer les changements dans les champs de texte
-            // Prend en charge les chemins imbriqués (ex: 'home.mainTitle' ou 'blog.posts.0.title')
             const handleLocalChange = (pageKey, fieldKey, newValue) => {
-                console.log(`handleLocalChange: Attempting to update pageKey: "${pageKey}", fieldKey: "${fieldKey}", with newValue: "${newValue}"`);
+                // console.log(`handleLocalChange: Attempting to update pageKey: "${pageKey}", fieldKey: "${fieldKey}", with newValue: "${newValue}"`);
                 setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent)); // Deep copy
-                    const targetPage = newContent[pageKey]; // Obtient l'objet de la page spécifique
+                    const newContent = JSON.parse(JSON.stringify(prevContent));
+                    const targetPage = newContent[pageKey];
 
                     if (!targetPage) {
                         console.error(`handleLocalChange: Page key "${pageKey}" not found in localContent.`);
                         return prevContent;
                     }
 
-                    // Utilise la fonction utilitaire setNestedProperty pour définir la valeur
                     setNestedProperty(targetPage, fieldKey, newValue);
-
-                    console.log(`handleLocalChange: Local change applied. New localContent:`, newContent);
+                    // console.log(`handleLocalChange: Local change applied. New localContent:`, newContent);
                     return newContent;
                 });
             };
 
-            // Fonction pour ajouter un nouvel article de blog
             const handleAddBlogPost = () => {
                 setLocalContent(prevContent => {
                     const newContent = JSON.parse(JSON.stringify(prevContent));
@@ -1528,7 +1533,7 @@
                         newContent.blog = { ...newContent.blog, posts: [] };
                     }
                     newContent.blog.posts.push({
-                        id: Date.now(), // Utilise un timestamp comme ID unique
+                        id: Date.now(),
                         image: "https://placehold.co/600x400/000/FFF?text=Nouvelle+image",
                         title: "Nouveau titre d'article",
                         description: "Nouvelle description d'article."
@@ -1537,7 +1542,6 @@
                 });
             };
 
-            // Fonction pour supprimer un article de blog
             const handleRemoveBlogPost = (idToRemove) => {
                 setLocalContent(prevContent => {
                     const newContent = JSON.parse(JSON.stringify(prevContent));
@@ -1554,42 +1558,29 @@
                 console.log("AdminPanelPage: Initiating save. Sending content:", JSON.parse(JSON.stringify(localContent)));
 
                 try {
-                    // C'est ici que le frontend envoie les données au backend.
-                    // Remplacez 'http://localhost:3001/api/save-content' par l'URL réelle de votre backend déployé.
                     const response = await fetch('http://localhost:3001/api/save-content', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            // IMPORTANT: Pour la démonstration, nous passons le mot de passe admin ici.
-                            // En production, vous utiliseriez un système d'authentification basé sur des sessions ou des JWT
-                            // après un processus de connexion sécurisé pour obtenir un token.
-                            'Authorization': `Bearer Remy03200!` // Doit correspondre à ADMIN_PASSWORD_BACKEND dans le .env du backend
+                            'Authorization': `Bearer Remy03200!`
                         },
-                        body: JSON.stringify(localContent) // Envoyer le contenu modifié
+                        body: JSON.stringify(localContent)
                     });
 
                     const data = await response.json();
                     if (response.ok) {
                         setSaveMessage(`Modifications sauvegardées avec succès sur GitHub ! ${data.commitUrl ? `Voir le commit: ${data.commitUrl}` : ''}`);
                         console.log("AdminPanelPage: Save successful. Response from backend:", data);
-                        // Mettre à jour le contenu global avec le contenu local sauvegardé
-                        // Cela est essentiel pour que l'application React reflète les changements après une sauvegarde réelle
-                        // Utilise setNestedProperty pour propager les changements à l'état global
                         Object.keys(localContent).forEach(pageKey => {
                              const pageData = localContent[pageKey];
-                             if (pageData) { // S'assurer que la page existe
+                             if (pageData) {
                                  Object.keys(pageData).forEach(fieldKey => {
-                                     // Pour les champs simples, on met à jour directement
-                                     // Pour les tableaux comme 'posts', on met à jour l'objet complet
                                      const value = pageData[fieldKey];
                                      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                                         // C'est un objet imbriqué (pas un tableau)
                                          Object.keys(value).forEach(nestedFieldKey => {
                                              updateContent(`${pageKey}.${fieldKey}.${nestedFieldKey}`, value[nestedFieldKey]);
                                          });
                                      } else if (Array.isArray(value)) {
-                                         // Si c'est un tableau (comme 'posts'), on met à jour l'ensemble du tableau
-                                         // Cela implique que les modifications des éléments du tableau sont déjà dans 'localContent'
                                          updateContent(`${pageKey}.${fieldKey}`, value);
                                      } else {
                                          updateContent(`${pageKey}.${fieldKey}`, value);
@@ -1607,26 +1598,74 @@
                     setSaveMessage(`Erreur réseau. Impossible de contacter le serveur backend. Assurez-vous qu'il est en ligne et accessible (${error.message}).`);
                 } finally {
                     setIsSaving(false);
-                    setTimeout(() => setSaveMessage(''), 10000); // Masquer le message après 10 secondes
+                    setTimeout(() => setSaveMessage(''), 10000);
                 }
             };
 
             const handleLogout = () => {
                 setIsAdminAuthenticated(false);
-                localStorage.removeItem('isAdminAuthenticated'); // Supprime l'état d'authentification
-                setCurrentPage('accueil'); // Redirige vers l'accueil après déconnexion
+                localStorage.removeItem('isAdminAuthenticated');
+                setCurrentPage('accueil');
             };
 
-            // Définir les catégories et leur affichage (titre convivial)
-            const categories = {
-                home: "Accueil",
-                blog: "Blog",
-                quiSommesNous: "Qui Sommes-nous",
-                contact: "Contact",
-                legalMentions: "Mentions Légales",
-                privacyPolicy: "Politique de Confidentialité",
-                showcaseCar: "Voiture Vitrine"
+            // Fonction utilitaire pour générer les champs éditables
+            const renderEditableFields = (pageData, pageKey) => {
+                return Object.keys(pageData).map(fieldKey => {
+                    const fieldValue = pageData[fieldKey];
+                    const contentPath = `${pageKey}.${fieldKey}`;
+
+                    if (fieldKey === 'posts' && Array.isArray(fieldValue)) {
+                        return null; // Géré par une section spécifique du blog
+                    }
+                     if (typeof fieldValue === 'object' && fieldValue !== null && !Array.isArray(fieldValue)) {
+                        // Si c'est un objet imbriqué (comme 'home.offers' si vous l'aviez), vous devrez le gérer de manière récursive ou spécifique
+                        // Pour l'instant, ignorons les objets imbriqués non listes pour simplifier l'affichage principal
+                        return null;
+                    }
+
+                    const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
+                    const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle')) ? 'text' : 'textarea';
+                    const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
+
+                    return (
+                        <div key={contentPath} className="pb-4 border-b border-gray-600 last:border-b-0">
+                            <label className="block text-gray-300 text-sm font-bold mb-2">
+                                {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}:
+                            </label>
+                            {inputType === 'text' ? (
+                                <input
+                                    type="text"
+                                    value={valueToDisplay}
+                                    onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                    className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
+                                />
+                            ) : (
+                                <textarea
+                                    value={valueToDisplay}
+                                    onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                    rows={rows}
+                                    className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
+                                />
+                            )}
+                            {typeof fieldValue !== 'string' && (
+                                <p className="text-red-400 text-xs mt-1">
+                                    Ce champ ({contentPath}) n'est pas une chaîne de caractères ou est manquant.
+                                </p>
+                            )}
+                        </div>
+                    );
+                });
             };
+
+            const pageTabs = [
+                { key: 'home', label: 'Accueil' },
+                { key: 'blog', label: 'Blog' },
+                { key: 'aboutUs', label: 'Qui sommes-nous' },
+                { key: 'contact', label: 'Contact' },
+                { key: 'legalMentions', label: 'Mentions Légales' },
+                { key: 'privacyPolicy', label: 'Politique de Confidentialité' },
+                { key: 'showcaseCar', label: 'Voiture Vitrine' }
+            ];
 
             return (
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-40 pb-12 font-inter">
@@ -1638,167 +1677,308 @@
                             Bienvenue, administrateur. Ici, vous pouvez gérer le contenu du site.
                         </p>
 
-                        {/* Navigation des catégories */}
-                        <div className="flex flex-wrap justify-center gap-4 mb-8 p-4 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
-                            {Object.keys(categories).map(categoryKey => (
-                                <button
-                                    key={categoryKey}
-                                    onClick={() => setSelectedCategory(categoryKey)}
-                                    className={`py-2 px-5 rounded-full font-semibold transition-all duration-300 ease-in-out
-                                                ${selectedCategory === categoryKey
-                                                    ? 'bg-blue-600 text-white shadow-md transform scale-105'
-                                                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'
-                                                }`}
-                                >
-                                    {categories[categoryKey]}
-                                </button>
-                            ))}
-                        </div>
-                        {/* Fragment React pour envelopper les éléments adjacents */}
-                        <>
-                            <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                                {/* Affichage du contenu de la catégorie sélectionnée */}
-                                {localContent[selectedCategory] && (
-                                    <div className="mb-8 p-6 bg-gray-700 rounded-lg shadow-inner border border-gray-600">
-                                        <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3">
-                                            {categories[selectedCategory]} (Modification)
-                                        </h2>
-                                        <div className="space-y-6">
-                                            {Object.keys(localContent[selectedCategory]).map(fieldKey => {
-                                                const fieldValue = localContent[selectedCategory][fieldKey];
-                                                const contentPath = `${selectedCategory}.${fieldKey}`;
-
-                                                // Gérer la section des posts du blog séparément
-                                                if (selectedCategory === 'blog' && fieldKey === 'posts' && Array.isArray(fieldValue)) {
-                                                    return (
-                                                        <div key={contentPath} className="mt-8 pt-6 border-t-2 border-green-600">
-                                                            <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
-                                                            <button
-                                                                onClick={handleAddBlogPost}
-                                                                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mb-6"
-                                                            >
-                                                                Ajouter un nouvel article
-                                                            </button>
-                                                            <div className="space-y-8 mt-4">
-                                                                {localContent.blog.posts.map((post, index) => (
-                                                                    <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
-                                                                        <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
-                                                                        <button
-                                                                            onClick={() => handleRemoveBlogPost(post.id)}
-                                                                            className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
-                                                                            aria-label="Supprimer l'article"
-                                                                        >
-                                                                            <XIcon className="w-4 h-4"/>
-                                                                        </button>
-                                                                        <div className="space-y-4">
-                                                                            <div>
-                                                                                <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
-                                                                                <input
-                                                                                    type="text"
-                                                                                    value={post.title || ''}
-                                                                                    onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
-                                                                                    className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                                                                />
-                                                                            </div>
-                                                                            <div>
-                                                                                <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
-                                                                                <textarea
-                                                                                    value={post.description || ''}
-                                                                                    onChange={(e) => {
-                                                                                        const newValue = e.target.value;
-                                                                                        console.log(`Blog Description Change: Index: ${index}, New Value: "${newValue}"`);
-                                                                                        handleLocalChange('blog', `posts.${index}.description`, newValue);
-                                                                                    }}
-                                                                                    rows={Math.max(3, (post.description || '').split('\n').length)}
-                                                                                    className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
-                                                                                />
-                                                                            </div>
-                                                                            <div>
-                                                                                <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
-                                                                                <input
-                                                                                    type="text"
-                                                                                    value={post.image || ''}
-                                                                                    onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
-                                                                                    className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                                                                />
-                                                                                <p className="text-gray-400 text-xs mt-1">
-                                                                                    Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
-                                                                                </p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                }
-
-                                                // Rendu des autres champs
-                                                const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
-                                                const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle')) ? 'text' : 'textarea';
-                                                const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
-
-                                                return (
-                                                    <div key={contentPath} className="pb-4 border-b border-gray-600 last:border-b-0">
-                                                        <label className="block text-gray-300 text-sm font-bold mb-2">
-                                                            {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}:
-                                                        </label>
-                                                        {inputType === 'text' ? (
-                                                            <input
-                                                                type="text"
-                                                                value={valueToDisplay}
-                                                                onChange={(e) => handleLocalChange(selectedCategory, fieldKey, e.target.value)}
-                                                                className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
-                                                            />
-                                                        ) : (
-                                                            <textarea
-                                                                value={valueToDisplay}
-                                                                onChange={(e) => handleLocalChange(selectedCategory, fieldKey, e.target.value)}
-                                                                rows={rows}
-                                                                className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
-                                                            />
-                                                        )}
-                                                        {typeof fieldValue !== 'string' && (
-                                                            <p className="text-red-400 text-sm mt-1">
-                                                                Ce champ ({contentPath}) n'est pas une chaîne de caractères ou est manquant dans content.json. Il sera enregistré comme une chaîne vide si vous le modifiez.
-                                                            </p>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Message si aucune catégorie n'est sélectionnée ou si le contenu est vide */}
-                                {!selectedCategory || !localContent[selectedCategory] && (
-                                    <p className="text-center text-gray-400 text-xl mt-10">
-                                        Veuillez sélectionner une catégorie à modifier ci-dessus.
-                                    </p>
-                                )}
+                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
+                            {/* Navigation par onglets */}
+                            <div className="flex flex-wrap justify-center gap-4 mb-8 border-b border-gray-700 pb-4">
+                                {pageTabs.map(tab => (
+                                    <button
+                                        key={tab.key}
+                                        onClick={() => setActiveTab(tab.key)}
+                                        className={`px-6 py-3 rounded-lg font-semibold transition duration-300 ease-in-out
+                                                    ${activeTab === tab.key
+                                                        ? 'bg-blue-600 text-white shadow-lg transform scale-105'
+                                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'
+                                                    }`}
+                                    >
+                                        {tab.label}
+                                    </button>
+                                ))}
                             </div>
 
-                            <div className="flex justify-center space-x-4 mt-8">
-                                    <button
-                                        onClick={handleSaveChanges}
-                                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        disabled={isSaving} // Désactiver le bouton pendant la sauvegarde
-                                    >
-                                        {isSaving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
-                                    </button>
-                                    <button
-                                        onClick={handleLogout}
-                                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-                                    >
-                                        Déconnexion
-                                    </button>
+                            {/* Contenu des onglets */}
+                            {localContent && (
+                                <div className="space-y-8">
+                                    {/* Section Accueil */}
+                                    {activeTab === 'home' && (
+                                        <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                                            <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3">
+                                                Page Accueil
+                                            </h2>
+                                            <div className="space-y-6">
+                                                {renderEditableFields(localContent.home, 'home')}
+                                                {/* Gérer les sections spécifiques "Nos Offres" et "Pourquoi nous faire confiance" */}
+                                                {localContent.home.offerTitle && (
+                                                    <div className="mt-8 pt-6 border-t-2 border-red-600">
+                                                        <h3 className="text-2xl font-bold mb-4 text-red-300">Nos Offres</h3>
+                                                        {renderEditableFields({
+                                                            offer1Title: localContent.home.offer1Title,
+                                                            offer1Description: localContent.home.offer1Description,
+                                                            offer2Title: localContent.home.offer2Title,
+                                                            offer2Description: localContent.home.offer2Description,
+                                                            offer3Title: localContent.home.offer3Title,
+                                                            offer3Description: localContent.home.offer3Description,
+                                                            offer4Title: localContent.home.offer4Title,
+                                                            offer4Description: localContent.home.offer4Description,
+                                                        }, 'home')}
+                                                    </div>
+                                                )}
+                                                {localContent.home.trustTitle && (
+                                                    <div className="mt-8 pt-6 border-t-2 border-blue-600">
+                                                        <h3 className="text-2xl font-bold mb-4 text-blue-300">Pourquoi nous faire confiance</h3>
+                                                        {renderEditableFields({
+                                                            trust1Title: localContent.home.trust1Title,
+                                                            trust1Description: localContent.home.trust1Description,
+                                                            trust2Title: localContent.home.trust2Title,
+                                                            trust2Description: localContent.home.trust2Description,
+                                                            trust3Title: localContent.home.trust3Title,
+                                                            trust3Description: localContent.home.trust3Description,
+                                                            trust4Title: localContent.home.trust4Title,
+                                                            trust4Description: localContent.home.trust4Description,
+                                                        }, 'home')}
+                                                    </div>
+                                                )}
+                                                {localContent.home.teamTitle && (
+                                                    <div className="mt-8 pt-6 border-t-2 border-orange-600">
+                                                        <h3 className="text-2xl font-bold mb-4 text-orange-300">L'équipe</h3>
+                                                        {renderEditableFields({
+                                                            teamTitle: localContent.home.teamTitle,
+                                                            teamDescription: localContent.home.teamDescription,
+                                                        }, 'home')}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Section Blog */}
+                                    {activeTab === 'blog' && (
+                                        <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                                            <h2 className="text-3xl font-bold mb-6 text-green-400 capitalize border-b-2 border-green-600 pb-3">
+                                                Page Blog
+                                            </h2>
+                                            <div className="space-y-6">
+                                                {renderEditableFields({
+                                                    mainTitle: localContent.blog.mainTitle,
+                                                    description: localContent.blog.description,
+                                                }, 'blog')}
+
+                                                <div className="mt-8 pt-6 border-t-2 border-green-600">
+                                                    <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
+                                                    <button
+                                                        onClick={handleAddBlogPost}
+                                                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mb-6"
+                                                    >
+                                                        Ajouter un nouvel article
+                                                    </button>
+                                                    <div className="space-y-8 mt-4">
+                                                        {localContent.blog.posts && localContent.blog.posts.map((post, index) => (
+                                                            <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
+                                                                <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
+                                                                <button
+                                                                    onClick={() => handleRemoveBlogPost(post.id)}
+                                                                    className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
+                                                                    aria-label="Supprimer l'article"
+                                                                >
+                                                                    <XIcon className="w-4 h-4"/>
+                                                                </button>
+                                                                <div className="space-y-4">
+                                                                    <div>
+                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            value={post.title || ''}
+                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
+                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
+                                                                        <textarea
+                                                                            value={post.description || ''}
+                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.description`, e.target.value)}
+                                                                            rows={Math.max(3, (post.description || '').split('\n').length)}
+                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            value={post.image || ''}
+                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
+                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                        />
+                                                                        <p className="text-gray-400 text-xs mt-1">
+                                                                            Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* Section Qui sommes-nous */}
+                                    {activeTab === 'aboutUs' && (
+                                        <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                                            <h2 className="text-3xl font-bold mb-6 text-yellow-400 capitalize border-b-2 border-yellow-600 pb-3">
+                                                Page Qui sommes-nous
+                                            </h2>
+                                            <div className="space-y-6">
+                                                {renderEditableFields(localContent.aboutUs, 'aboutUs')}
+                                                {localContent.aboutUs.historyTitle && (
+                                                    <div className="mt-8 pt-6 border-t-2 border-yellow-600">
+                                                        <h3 className="text-2xl font-bold mb-4 text-yellow-300">Notre Histoire</h3>
+                                                        {renderEditableFields({
+                                                            historyTitle: localContent.aboutUs.historyTitle,
+                                                            historyParagraph1: localContent.aboutUs.historyParagraph1,
+                                                            historyParagraph2: localContent.aboutUs.historyParagraph2,
+                                                        }, 'aboutUs')}
+                                                    </div>
+                                                )}
+                                                {localContent.aboutUs.valuesTitle && (
+                                                    <div className="mt-8 pt-6 border-t-2 border-yellow-600">
+                                                        <h3 className="text-2xl font-bold mb-4 text-yellow-300">Nos Valeurs</h3>
+                                                        {renderEditableFields({
+                                                            value1Title: localContent.aboutUs.value1Title,
+                                                            value1Description: localContent.aboutUs.value1Description,
+                                                            value2Title: localContent.aboutUs.value2Title,
+                                                            value2Description: localContent.aboutUs.value2Description,
+                                                            value3Title: localContent.aboutUs.value3Title,
+                                                            value3Description: localContent.aboutUs.value3Description,
+                                                            value4Title: localContent.aboutUs.value4Title,
+                                                            value4Description: localContent.aboutUs.value4Description,
+                                                        }, 'aboutUs')}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Section Contact */}
+                                    {activeTab === 'contact' && (
+                                        <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                                            <h2 className="text-3xl font-bold mb-6 text-pink-400 capitalize border-b-2 border-pink-600 pb-3">
+                                                Page Contact
+                                            </h2>
+                                            <div className="space-y-6">
+                                                {renderEditableFields(localContent.contact, 'contact')}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Section Mentions Légales */}
+                                    {activeTab === 'legalMentions' && (
+                                        <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                                            <h2 className="text-3xl font-bold mb-6 text-teal-400 capitalize border-b-2 border-teal-600 pb-3">
+                                                Page Mentions Légales
+                                            </h2>
+                                            <div className="space-y-6">
+                                                {renderEditableFields(localContent.legalMentions, 'legalMentions')}
+                                                {localContent.legalMentions.list1Item1 && (
+                                                    <div className="mt-8 pt-6 border-t-2 border-teal-600">
+                                                        <h3 className="text-2xl font-bold mb-4 text-teal-300">Liste 1</h3>
+                                                        {renderEditableFields({
+                                                            list1Item1: localContent.legalMentions.list1Item1,
+                                                            list1Item2: localContent.legalMentions.list1Item2,
+                                                            list1Item3: localContent.legalMentions.list1Item3,
+                                                        }, 'legalMentions')}
+                                                    </div>
+                                                )}
+                                                {localContent.legalMentions.list2Item1 && (
+                                                    <div className="mt-8 pt-6 border-t-2 border-teal-600">
+                                                        <h3 className="text-2xl font-bold mb-4 text-teal-300">Liste 2</h3>
+                                                        {renderEditableFields({
+                                                            list2Item1: localContent.legalMentions.list2Item1,
+                                                            list2Item2: localContent.legalMentions.list2Item2,
+                                                            list2Item3: localContent.legalMentions.list2Item3,
+                                                        }, 'legalMentions')}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Section Politique de Confidentialité */}
+                                    {activeTab === 'privacyPolicy' && (
+                                        <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                                            <h2 className="text-3xl font-bold mb-6 text-purple-400 capitalize border-b-2 border-purple-600 pb-3">
+                                                Page Politique de Confidentialité
+                                            </h2>
+                                            <div className="space-y-6">
+                                                {renderEditableFields(localContent.privacyPolicy, 'privacyPolicy')}
+                                                {localContent.privacyPolicy.usageListItem1 && (
+                                                    <div className="mt-8 pt-6 border-t-2 border-purple-600">
+                                                        <h3 className="text-2xl font-bold mb-4 text-purple-300">Utilisation des informations</h3>
+                                                        {renderEditableFields({
+                                                            usageListItem1: localContent.privacyPolicy.usageListItem1,
+                                                            usageListItem2: localContent.privacyPolicy.usageListItem2,
+                                                            usageListItem3: localContent.privacyPolicy.usageListItem3,
+                                                        }, 'privacyPolicy')}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Section Voiture Vitrine */}
+                                    {activeTab === 'showcaseCar' && (
+                                        <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                                            <h2 className="text-3xl font-bold mb-6 text-yellow-400 capitalize border-b-2 border-yellow-600 pb-3">
+                                                Page Voiture Vitrine
+                                            </h2>
+                                            <div className="space-y-6">
+                                                {renderEditableFields(localContent.showcaseCar, 'showcaseCar')}
+                                                {localContent.showcaseCar.piston && (
+                                                    <div className="mt-8 pt-6 border-t-2 border-yellow-600">
+                                                        <h3 className="text-2xl font-bold mb-4 text-yellow-300">Détails de la Préparation</h3>
+                                                        {renderEditableFields({
+                                                            piston: localContent.showcaseCar.piston,
+                                                            bielles: localContent.showcaseCar.bielles,
+                                                            soupapes: localContent.showcaseCar.soupapes,
+                                                            adm: localContent.showcaseCar.adm,
+                                                            ressort: localContent.showcaseCar.ressort,
+                                                            viserie: localContent.showcaseCar.viserie,
+                                                            pompeHuile: localContent.showcaseCar.pompeHuile,
+                                                            turbo: localContent.showcaseCar.turbo,
+                                                            wastegate: localContent.showcaseCar.wastegate,
+                                                            injecteurs: localContent.showcaseCar.injecteurs,
+                                                            pipAdmission: localContent.showcaseCar.pipAdmission,
+                                                            wmi: localContent.showcaseCar.wmi,
+                                                            embrayage: localContent.showcaseCar.embrayage,
+                                                        }, 'showcaseCar')}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                                {saveMessage && (
-                                    <p className="text-center text-yellow-400 mt-4 text-md animate-fade-in">
-                                        {saveMessage}
-                                    </p>
-                                )}
-                        </>
+                            )}
+
+                            <div className="flex justify-center space-x-4 mt-8">
+                                <button
+                                    onClick={handleSaveChanges}
+                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    disabled={isSaving}
+                                >
+                                    {isSaving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
+                                </button>
+                                <button
+                                    onClick={handleLogout}
+                                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                                >
+                                    Déconnexion
+                                </button>
+                            </div>
+                            {saveMessage && (
+                                <p className="text-center text-yellow-400 mt-4 text-md animate-fade-in">
+                                    {saveMessage}
+                                </p>
+                            )}
+                        </div>
                     </div>
                 </div>
             );
@@ -1891,7 +2071,6 @@
 
         // Composant principal de l'application
         const App = () => {
-            console.log("App component rendered."); // NEW LOG
             // Initialise isAdminAuthenticated en lisant depuis localStorage
             const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(
                 localStorage.getItem('isAdminAuthenticated') === 'true'
@@ -1900,31 +2079,48 @@
             const [content, setContent] = useState(null); // Initialiser à null, sera chargé depuis le JSON
             const [loadingContent, setLoadingContent] = useState(true); // État de chargement du contenu
             const [errorContent, setErrorContent] = useState(null); // État d'erreur de chargement du contenu
-            const [renderError, setRenderError] = useState(null); // Nouvel état pour les erreurs de rendu
 
             // Fonction pour charger le contenu depuis content.json
             useEffect(() => {
-                console.log("App useEffect [fetchContent]: Running..."); // NEW LOG
                 const fetchContent = async () => {
-                    console.log("App fetchContent: Attempting to fetch content.json...");
+                    console.log("App: Attempting to fetch content.json...");
                     try {
                         const response = await fetch('content.json'); // Assurez-vous que content.json est à la racine de votre dépôt
                         if (!response.ok) {
-                            const errorText = await response.text(); // Try to get more details from the response
-                            throw new Error(`Erreur HTTP: ${response.status}. Réponse: ${errorText.substring(0, 200)}...`);
+                            throw new Error(`Erreur HTTP: ${response.status}`);
                         }
                         const data = await response.json();
                         setContent(data);
-                        console.log("App fetchContent: content.json loaded successfully:", data);
+                        console.log("App: content.json loaded successfully:", data);
                     } catch (error) {
-                        console.error("App fetchContent: Erreur lors du chargement de content.json:", error);
-                        setErrorContent(`Impossible de charger le contenu du site. Détails: ${error.message}`);
+                        console.error("App: Erreur lors du chargement de content.json:", error);
+                        setErrorContent("Impossible de charger le contenu du site. Veuillez réessayer plus tard.");
                         // Fallback vers un contenu par défaut si le chargement échoue
-                        const fallbackContent = {
+                        setContent({
                             home: {
                                 mainTitle: "BRMOTORSPORT",
                                 description: "Spécialiste de la reprogrammation moteur et de l'optimisation de véhicules. Performance, fiabilité et satisfaction client sont nos maîtres mots.",
-                                contactMessage: "Contactez-nous dès aujourd'hui pour transformer votre véhicule !"
+                                contactMessage: "Contactez-nous dès aujourd'hui pour transformer votre véhicule !",
+                                offerTitle: "Nos Offres",
+                                offer1Title: "Reprogrammation Moteur",
+                                offer1Description: "Optimisation des performances et de la consommation de votre véhicule.",
+                                offer2Title: "Diagnostic Électronique",
+                                offer2Description: "Identification précise des problèmes moteur et électroniques.",
+                                offer3Title: "Préparation de Véhicule",
+                                offer3Description: "Solutions complètes pour piste et route, du châssis au moteur.",
+                                offer4Title: "Conseil Personnalisé",
+                                offer4Description: "Accompagnement expert pour tous vos projets automobiles.",
+                                trustTitle: "Pourquoi nous faire confiance ?",
+                                trust1Title: "Rapidité d'Intervention",
+                                trust1Description: "Des délais optimisés pour que vous retrouviez votre véhicule au plus vite.",
+                                trust2Title: "Transparence et Confiance",
+                                trust2Description: "Une communication claire et honnête à chaque étape du processus.",
+                                trust3Title: "Qualité Garantie",
+                                trust3Description: "Des prestations de haute qualité avec des résultats mesurables.",
+                                trust4Title: "Satisfaction Client",
+                                trust4Description: "Votre plaisir de conduire est notre plus grande réussite.",
+                                teamTitle: "Notre Équipe",
+                                teamDescription: "Notre équipe est composée de professionnels passionnés et expérimentés, dévoués à l'excellence automobile."
                             },
                             blog: {
                                 mainTitle: "Notre Blog BRMOTORSPORT",
@@ -1947,11 +2143,17 @@
                                 mainTitle: "Qui sommes-nous ?",
                                 description: "BRMOTORSPORT est votre partenaire de confiance pour l'optimisation automobile. Fondée sur la passion de la performance et de la mécanique, notre entreprise s'engage à offrir des services de reprogrammation moteur, de préparation de véhicules et de diagnostics électroniques de pointe.",
                                 historyTitle: "Notre Histoire",
-                                historyParagraph1: "Notre aventure a débuté il y a plusieurs années, animée par une vision : celle de repousser les limites de la performance automobile tout en garantissant une fiabilité et une sécurité optimales. Forts d'une expertise technique approfondie et d'une passion inébranlable pour les voitures, nous avons bâti BRMOTORSPORT sur des valeurs de précision, d'innovation et de dévouement. Chaque véhicule qui passe entre nos mains est traité avec le plus grand soin, comme si c'était le nôtre.",
+                                historyParagraph1: "Notre aventure a débuté il y a plusieurs années, animée par une vision : celle de repousser les limites de la performance automobile tout en garantissant une fiabilité et une sécurité optimale. Forts d'une expertise technique approfondie et d'une passion inébranlable pour les voitures, nous avons bâti BRMOTORSPORT sur des valeurs de précision, d'innovation et de dévouement. Chaque véhicule qui passe entre nos mains est traité avec le plus grand soin, comme si c'était le nôtre.",
                                 historyParagraph2: "Au fil des ans, nous avons développé des compétences uniques en reprogrammation sur mesure, en travaillant avec les technologies les plus avancées pour extraire le potentiel caché de chaque moteur. Notre histoire est marquée par des milliers de clients satisfaits, des voitures transformées et une réputation bâtie sur l'excellence. Nous sommes fiers de notre parcours et de l'impact que nous avons sur la performance et le plaisir de conduite de nos clients.",
                                 valuesTitle: "Nos Valeurs",
                                 value1Title: "Expertise Technique",
-                                value1Description: "Une connaissance approfondie des systèmes moteurs et des technologies d'optimisation."
+                                value1Description: "Une connaissance approfondie des systèmes moteurs et des technologies d'optimisation.",
+                                value2Title: "Innovation Continue",
+                                value2Description: "Veille technologique et développement de solutions toujours plus performantes.",
+                                value3Title: "Qualité et Fiabilité",
+                                value3Description: "Des interventions rigoureuses pour une durabilité et une sécurité maximales.",
+                                value4Title: "Service Client Exceptionnel",
+                                value4Description: "Écoute, conseil personnalisé et accompagnement pour une satisfaction totale."
                             },
                             contact: {
                                 mainTitle: "Contactez-nous",
@@ -1984,7 +2186,7 @@
                                 collectionTitle: "Collecte des Informations Personnelles",
                                 collectionText: "Nous collectons des informations lorsque vous nous contactez via le formulaire de contact, lorsque vous naviguez sur notre site, ou lorsque vous interagissez avec nos services. Les informations collectées peuvent inclure votre nom, adresse e-mail, numéro de téléphone, et toute autre information que vous choisissez de nous fournir.",
                                 usageTitle: "Utilisation des Informations",
-                                usageListItem1: "Pour répondre à vos demandes et vous fournir les services que you avez sollicités.",
+                                usageListItem1: "Pour répondre à vos demandes et vous fournir les services que vous avez sollicités.",
                                 usageListItem2: "Pour améliorer notre site web et nos offres de services.",
                                 usageListItem3: "Pour vous envoyer des communications marketing (avec votre consentement).",
                                 protectionTitle: "Protection des Informations",
@@ -2013,37 +2215,21 @@
                                 embrayage: "Embrayage renforcé",
                                 finalDescription: "Chaque composant a été soigneusement sélectionné et installé pour garantir une synergie parfaite et une expérience de conduite inégalée sur route comme sur circuit."
                             }
-                        };
-                        setContent(fallbackContent); // Ensure content is set even on error
+                        });
                     } finally {
                         setLoadingContent(false);
-                        console.log("App fetchContent: setLoadingContent(false) called.");
                     }
                 };
 
                 fetchContent();
             }, []); // S'exécute une seule fois au montage du composant
 
-            // Logging pour suivre le chargement du contenu
-            useEffect(() => {
-                console.log(`App useEffect [loading/content]: loadingContent is ${loadingContent}, content is ${content ? 'set' : 'null'}.`);
-                if (!loadingContent && content) {
-                    console.log("App useEffect [loading/content]: Content loaded and ready, attempting to render actual application.");
-                    // Check if the initial loading message is still visible and hide it.
-                    const initialLoadingMessage = document.getElementById('initial-loading-message');
-                    if (initialLoadingMessage && initialLoadingMessage.style.display !== 'none') {
-                        initialLoadingMessage.style.display = 'none';
-                        console.log("Initial loading message hidden from App useEffect.");
-                    }
-                }
-            }, [loadingContent, content]);
-
             // Fonction pour mettre à jour une partie spécifique du contenu
             const updateContent = (keyPath, newValue) => {
                 setContent(prevContent => {
                     const newContent = JSON.parse(JSON.stringify(prevContent)); // Deep copy
                     setNestedProperty(newContent, keyPath, newValue);
-                    console.log(`App: Global content updated via updateContent for ${keyPath}. New content state:`, newContent);
+                    // console.log(`App: Global content updated via updateContent for ${keyPath}. New content state:`, newContent);
                     return newContent;
                 });
             };
@@ -2057,12 +2243,10 @@
 
             // Ajout d'un effet pour faire défiler la page vers le haut à chaque changement de page
             useEffect(() => {
-                console.log(`App useEffect [currentPage]: Current page changed to: ${currentPage}. Scrolling to top.`);
                 window.scrollTo(0, 0); // Fait défiler la fenêtre à la position 0, 0 (en haut à gauche)
             }, [currentPage]); // Se déclenche à chaque fois que `currentPage` change
 
             if (loadingContent) {
-                console.log("App render: Still loading content.");
                 return (
                     <div className="min-h-screen flex items-center justify-center bg-black text-white text-3xl">
                         Chargement du contenu...
@@ -2070,23 +2254,16 @@
                 );
             }
 
-            // Affiche l'erreur de chargement de contenu (par exemple, si content.json n'existe pas)
             if (errorContent) {
-                console.error("App render: Displaying content loading error.");
                 return (
                     <div className="min-h-screen flex items-center justify-center bg-red-900 text-white text-xl p-4 text-center">
-                        Erreur de chargement du site : {errorContent}
-                        <br/><br/>
-                        Vérifiez la console du navigateur (F12) pour plus de détails.
+                        Erreur: {errorContent}
                     </div>
                 );
             }
-            console.log("App render: Content loaded, rendering page content."); // NEW LOG
-
 
             // Fonction de rendu du contenu de la page en fonction de l'état
-            const renderPageContent = () => {
-              console.log(`App renderPageContent: Rendering page for: ${currentPage}`); // NEW LOG
+            const renderPage = () => {
               switch (currentPage) {
                 case 'accueil':
                   return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
@@ -2116,92 +2293,52 @@
               }
             };
 
-            // Capture les erreurs de rendu React
-            try {
-                // Effet pour masquer le message d'initialisation initial après le premier rendu de App
-                useEffect(() => {
-                    console.log("App useEffect [hide initial message]: Running..."); // NEW LOG
-                    const initialLoadingMessage = document.getElementById('initial-loading-message');
-                    if (initialLoadingMessage) {
-                        initialLoadingMessage.style.display = 'none';
-                        console.log("Message d'initialisation masqué par React App.");
-                    }
-                }, []); // S'exécute une seule fois après le premier rendu de App
-
-                return (
-                    <ContentContext.Provider value={{ content, updateContent }}>
-                        <div className="min-h-screen bg-black font-inter">
-                            <ScrollingBanner /> {/* Nouvelle bannière défilante */}
-                            {/* Passe isAdminAuthenticated et handleLogout à Navbar */}
-                            <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} />
-                            <main className="flex-grow">
-                                {renderPageContent()} {/* Appelle la fonction de rendu de page */}
-                            </main>
-                            <MusicControl /> {/* Ajout du contrôle de musique */}
-                            <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
-                                <div className="container mx-auto px-4">
-                                    <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
-                                    <div className="flex justify-center space-x-4 mt-3">
-                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
-                                        <span className="text-gray-600">|</span>
-                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
-                                        <span className="text-gray-600">|</span>
-                                        {/* Lien Admin/Déconnexion conditionnel dans le footer */}
-                                        {isAdminAuthenticated ? (
-                                            <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="hover:text-red-500 transition duration-300">Déconnexion</a>
-                                        ) : (
-                                            <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin-login'); }} className="hover:text-red-500 transition duration-300">Admin</a>
-                                        )}
-                                    </div>
-                                    <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
+            return (
+                <ContentContext.Provider value={{ content, updateContent }}>
+                    <div className="min-h-screen bg-black font-inter">
+                        <ScrollingBanner /> {/* Nouvelle bannière défilante */}
+                        {/* Passe isAdminAuthenticated et handleLogout à Navbar */}
+                        <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} />
+                        <main className="flex-grow">
+                            {renderPage()}
+                        </main>
+                        <MusicControl /> {/* Ajout du contrôle de musique */}
+                        <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
+                            <div className="container mx-auto px-4">
+                                <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
+                                <div className="flex justify-center space-x-4 mt-3">
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
+                                    <span className="text-gray-600">|</span>
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
+                                    <span className="text-gray-600">|</span>
+                                    {/* Lien Admin/Déconnexion conditionnel dans le footer */}
+                                    {isAdminAuthenticated ? (
+                                        <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="hover:text-red-500 transition duration-300">Déconnexion</a>
+                                    ) : (
+                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin-login'); }} className="hover:text-red-500 transition duration-300">Admin</a>
+                                    )}
                                 </div>
-                            </footer>
-                        </div>
-                    </ContentContext.Provider>
-                );
-            } catch (e) {
-                // Si une erreur se produit pendant le rendu de l'interface utilisateur, affichez-la
-                console.error("Erreur de rendu de l'application (en dehors de ContentContext):", e); // NEW LOG
-                return (
-                    <div className="min-h-screen flex items-center justify-center bg-red-900 text-white text-xl p-4 text-center">
-                        Une erreur inattendue s'est produite lors de l'affichage du site.
-                        <br/><br/>
-                        Détails : ${e.message}
-                        <br/><br/>
-                        Vérifiez la console du navigateur (F12) pour plus d'informations.
+                                <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
+                            </div>
+                        </footer>
                     </div>
-                );
-            }
+                </ContentContext.Provider>
+            );
         };
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
-        // ENVELOPPEZ L'APP DANS DOMContentLoaded POUR ASSURER QUE LE DOM EST PRÊT
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.getElementById('root');
-            if (container) {
-                console.log("DOMContentLoaded: Tentative de rendu de l'application React...");
-                try {
-                    const root = ReactDOM.createRoot(container);
-                    root.render(<App />);
-                    console.log("ReactDOM.render(<App />) appelé avec succès.");
-                } catch (renderErr) {
-                    console.error("Erreur lors du rendu de l'application React (catch bloc DOMContentLoaded):", renderErr);
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = "min-h-screen flex items-center justify-center bg-red-900 text-white text-xl p-4 text-center";
-                    errorDiv.innerHTML = `
-                        Une erreur inattendue s'est produite lors du rendu.
-                        <br/><br/>
-                        Détails : ${renderErr.message}
-                        <br/><br/>
-                        Vérifiez la console du navigateur (F12) pour plus d'informations.
-                    `;
-                    document.body.innerHTML = ''; // Efface le contenu existant
-                    document.body.appendChild(errorDiv); // Ajoute le message d'erreur
-                }
-            } else {
-                console.error("L'élément avec l'ID 'root' n'a pas été trouvé dans le DOM. L'application React ne peut pas être montée.");
-            }
-        });
+        // Ancien code dans window.onload:
+        // window.onload = function() {
+        //     const container = document.getElementById('root');
+        //     const root = ReactDOM.createRoot(container);
+        //     root.render(<App />);
+        // };
+
+        // Nouveau code de rendu direct après la définition de l'App,
+        // s'assurant que ReactDOM est disponible une fois les scripts chargés et parsés.
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
     </script>
 </body>
 </html>
