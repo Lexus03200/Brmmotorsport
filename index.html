@@ -696,7 +696,7 @@
           </div>
         );
 
-        // Composant Carte de Blog
+        // Composant Carte de Blog pour l'affichage public
         const BlogPostCard = ({ post, style }) => (
           <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 border border-gray-700 hover:border-green-400 animate-fade-in-up delay-animation" style={style}>
             <img
@@ -1496,6 +1496,76 @@
             );
         };
 
+        // Composant d'édition d'article de blog pour le panneau d'administration
+        const AdminBlogPostCard = ({ post, index, handleLocalChange, handleRemoveBlogPost, handleDragStart, handleDragEnd, handleDragOver, handleDrop }) => {
+            const contentPathPrefix = `blog.posts.${index}`;
+            const [isDraggingOver, setIsDraggingOver] = useState(false);
+
+            const onDragEnter = (e) => {
+                e.preventDefault();
+                setIsDraggingOver(true);
+            };
+
+            const onDragLeave = () => {
+                setIsDraggingOver(false);
+            };
+
+            return (
+                <div
+                    draggable="true"
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, index)}
+                    onDragEnter={onDragEnter}
+                    onDragLeave={onDragLeave}
+                    className={`p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative cursor-grab ${isDraggingOver ? 'border-blue-400 scale-102' : ''} transition-all duration-200 ease-in-out`}
+                >
+                    <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
+                    <button
+                        onClick={() => handleRemoveBlogPost(post.id)}
+                        className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
+                        aria-label="Supprimer l'article"
+                    >
+                        <XIcon className="w-4 h-4"/>
+                    </button>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
+                            <input
+                                type="text"
+                                value={post.title || ''}
+                                onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
+                                className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
+                            <textarea
+                                value={post.description || ''}
+                                onChange={(e) => handleLocalChange('blog', `posts.${index}.description`, e.target.value)}
+                                rows={Math.max(3, (post.description || '').split('\n').length)}
+                                className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
+                            <input
+                                type="text"
+                                value={post.image || ''}
+                                onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
+                                className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                            />
+                            <p className="text-gray-400 text-xs mt-1">
+                                Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+
         // Composant du panneau administrateur (contenu protégé)
         const AdminPanelPage = ({ setIsAdminAuthenticated, setCurrentPage }) => {
             const { content, updateContent } = useContext(ContentContext);
@@ -1503,6 +1573,7 @@
             const [saveMessage, setSaveMessage] = useState('');
             const [isSaving, setIsSaving] = useState(false);
             const [activeTab, setActiveTab] = useState('home'); // Nouvelle gestion des onglets
+            const [draggedIndex, setDraggedIndex] = useState(null); // État pour l'index de l'élément glissé
 
             useEffect(() => {
                 setLocalContent(JSON.parse(JSON.stringify(content || {})));
@@ -1533,7 +1604,7 @@
                         newContent.blog = { ...newContent.blog, posts: [] };
                     }
                     newContent.blog.posts.push({
-                        id: Date.now(),
+                        id: Date.now(), // Utiliser un timestamp unique pour l'ID
                         image: "https://placehold.co/600x400/000/FFF?text=Nouvelle+image",
                         title: "Nouveau titre d'article",
                         description: "Nouvelle description d'article."
@@ -1551,6 +1622,56 @@
                     return newContent;
                 });
             };
+
+            // Fonctions pour le glisser-déposer
+            const handleDragStart = (e, index) => {
+                setDraggedIndex(index);
+                e.dataTransfer.effectAllowed = 'move';
+                // e.dataTransfer.setData('text/html', e.currentTarget); // Pas nécessaire pour reorder array
+                e.currentTarget.classList.add('opacity-50', 'border-dashed', 'border-4', 'border-blue-400'); // Feedback visuel
+            };
+
+            const handleDragEnd = (e) => {
+                e.currentTarget.classList.remove('opacity-50', 'border-dashed', 'border-4', 'border-blue-400');
+                setDraggedIndex(null);
+            };
+
+            const handleDragOver = (e) => {
+                e.preventDefault(); // Nécessaire pour permettre le drop
+                e.dataTransfer.dropEffect = 'move';
+            };
+
+            const handleDrop = (e, targetIndex) => {
+                e.preventDefault();
+                // console.log(`handleDrop: draggedIndex=${draggedIndex}, targetIndex=${targetIndex}`);
+
+                if (draggedIndex === null || draggedIndex === targetIndex) {
+                    return;
+                }
+
+                setLocalContent(prevContent => {
+                    const newContent = JSON.parse(JSON.stringify(prevContent));
+                    const newPosts = [...newContent.blog.posts]; // Copie pour éviter la mutation directe
+                    
+                    const [reorderedItem] = newPosts.splice(draggedIndex, 1);
+                    newPosts.splice(targetIndex, 0, reorderedItem);
+
+                    // Reconstruire les IDs si nécessaire ou simplement mettre à jour le tableau
+                    // Pour cet exemple, on ne change pas les IDs des objets existants, juste leur ordre.
+                    // Si vos IDs étaient basés sur l'index, il faudrait les mettre à jour.
+                    // Ici, l'ID est un timestamp, donc il reste stable.
+
+                    return {
+                        ...newContent,
+                        blog: {
+                            ...newContent.blog,
+                            posts: newPosts
+                        }
+                    };
+                });
+                setDraggedIndex(null); // Réinitialiser l'index de l'élément glissé
+            };
+
 
             const handleSaveChanges = async () => {
                 setIsSaving(true);
@@ -1571,23 +1692,15 @@
                     if (response.ok) {
                         setSaveMessage(`Modifications sauvegardées avec succès sur GitHub ! ${data.commitUrl ? `Voir le commit: ${data.commitUrl}` : ''}`);
                         console.log("AdminPanelPage: Save successful. Response from backend:", data);
-                        Object.keys(localContent).forEach(pageKey => {
-                             const pageData = localContent[pageKey];
-                             if (pageData) {
-                                 Object.keys(pageData).forEach(fieldKey => {
-                                     const value = pageData[fieldKey];
-                                     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                                         Object.keys(value).forEach(nestedFieldKey => {
-                                             updateContent(`${pageKey}.${fieldKey}.${nestedFieldKey}`, value[nestedFieldKey]);
-                                         });
-                                     } else if (Array.isArray(value)) {
-                                         updateContent(`${pageKey}.${fieldKey}`, value);
-                                     } else {
-                                         updateContent(`${pageKey}.${fieldKey}`, value);
-                                     }
-                                 });
-                             }
-                        });
+                        // Mettre à jour le contenu global après une sauvegarde réussie
+                        updateContent('home', localContent.home); // Mettre à jour la page d'accueil
+                        updateContent('blog', localContent.blog); // Mettre à jour la page de blog (inclut l'ordre des posts)
+                        updateContent('aboutUs', localContent.aboutUs); // Mettre à jour la page Qui sommes-nous
+                        updateContent('contact', localContent.contact); // Mettre à jour la page Contact
+                        updateContent('legalMentions', localContent.legalMentions); // Mettre à jour les Mentions Légales
+                        updateContent('privacyPolicy', localContent.privacyPolicy); // Mettre à jour la Politique de Confidentialité
+                        updateContent('showcaseCar', localContent.showcaseCar); // Mettre à jour la Voiture Vitrine
+
                         console.log("AdminPanelPage: Global content update triggered.");
                     } else {
                         setSaveMessage(`Erreur de sauvegarde : ${data.message || 'Problème serveur'}`);
@@ -1781,48 +1894,17 @@
                                                     </button>
                                                     <div className="space-y-8 mt-4">
                                                         {localContent.blog.posts && localContent.blog.posts.map((post, index) => (
-                                                            <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
-                                                                <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
-                                                                <button
-                                                                    onClick={() => handleRemoveBlogPost(post.id)}
-                                                                    className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
-                                                                    aria-label="Supprimer l'article"
-                                                                >
-                                                                    <XIcon className="w-4 h-4"/>
-                                                                </button>
-                                                                <div className="space-y-4">
-                                                                    <div>
-                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
-                                                                        <input
-                                                                            type="text"
-                                                                            value={post.title || ''}
-                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
-                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                                                        />
-                                                                    </div>
-                                                                    <div>
-                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
-                                                                        <textarea
-                                                                            value={post.description || ''}
-                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.description`, e.target.value)}
-                                                                            rows={Math.max(3, (post.description || '').split('\n').length)}
-                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
-                                                                        />
-                                                                    </div>
-                                                                    <div>
-                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
-                                                                        <input
-                                                                            type="text"
-                                                                            value={post.image || ''}
-                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
-                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                                                        />
-                                                                        <p className="text-gray-400 text-xs mt-1">
-                                                                            Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                            <AdminBlogPostCard
+                                                                key={post.id || `blog-edit-${index}`}
+                                                                post={post}
+                                                                index={index}
+                                                                handleLocalChange={handleLocalChange}
+                                                                handleRemoveBlogPost={handleRemoveBlogPost}
+                                                                handleDragStart={handleDragStart}
+                                                                handleDragEnd={handleDragEnd}
+                                                                handleDragOver={handleDragOver}
+                                                                handleDrop={handleDrop}
+                                                            />
                                                         ))}
                                                     </div>
                                                 </div>
