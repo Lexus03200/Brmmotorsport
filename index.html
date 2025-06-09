@@ -13,13 +13,16 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        /* Importation de la police Inter */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        /* Importation des polices Inter et Montserrat */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Montserrat:wght@700;800;900&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
             overflow-x: hidden; /* Empêche le défilement horizontal */
+        }
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif; /* Nouvelle police pour les titres */
         }
         /* Keyframes pour les animations */
         @keyframes fadeInDown {
@@ -2609,7 +2612,7 @@
                         {isPlaying ? <PauseIcon /> : <PlayIcon />}
                     </button>
                     {showAutoplayMessage && (
-                        <div className="fixed bottom-24 right-8 bg-yellow-500 text-gray-900 px-4 py-2 rounded-lg shadow-lg text-sm animate-fade-in z-50">
+                        <div className="fixed bottom-24 right-8 bg-yellow-500 text-gray-900 px-4 py-2 rounded-lg shadow-lg text-sm animate-fade-in-down z-50">
                             Cliquez sur le bouton de lecture pour lancer la musique !
                         </div>
                     )}
