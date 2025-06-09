@@ -501,7 +501,7 @@
           };
 
           return (
-            <nav className={`bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg mt-12 navbar-transition ${isVisible ? 'navbar-visible' : 'navbar-hidden'}`}>
+            <nav className={`bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg top-[40px] navbar-transition ${isVisible ? 'navbar-visible' : 'navbar-hidden'}`}>
               <div className="container mx-auto flex justify-between items-center px-4">
                 {/* Titre BRMOTORSPORT avec un style amélioré et des couleurs et l'animation de coulissement */}
                 <div className="text-3xl md:text-4xl font-extrabold tracking-widest drop-shadow-lg opacity-0 animate-slide-in-left">
@@ -2371,15 +2371,6 @@
                                                         }, 'home')}
                                                     </div>
                                                 )}
-                                                {localContent.home.teamTitle && (
-                                                    <div className="mt-8 pt-6 border-t-2 border-orange-600">
-                                                        <h3 className="text-2xl font-bold mb-4 text-orange-300">L'équipe</h3>
-                                                        {renderEditableFields({
-                                                            teamTitle: localContent.home.teamTitle,
-                                                            teamDescription: localContent.home.teamDescription,
-                                                        }, 'home')}
-                                                    </div>
-                                                )}
                                             </div>
                                         </div>
                                     )}
@@ -2997,11 +2988,11 @@
             };
 
             // Calcule le padding-top pour le main content en fonction de la visibilité de la navbar
-            // La navbar a une hauteur de 64px (p-4 + mt-12, soit 16px de padding + 48px de margin-top).
-            // Le scrolling banner a une hauteur de 40px (py-2 + text-lg + font-bold).
-            // Donc, 64px (navbar) + 40px (banner) = 104px.
-            // On ajoute une petite marge supplémentaire pour l'esthétique.
-            const mainContentPaddingTop = isNavbarVisible ? 'pt-[104px]' : 'pt-[40px]'; // 40px pour le bandeau seul
+            // La bannière défilante a une hauteur fixe de 40px (py-2 + text-lg).
+            // La navbar a un padding de p-4 (16px vertical) et une hauteur de contenu d'environ 40px, soit ~56px.
+            // Total visible: 40px (bannière) + 56px (navbar) = 96px.
+            // On ajoute une petite marge supplémentaire pour l'esthétique, donc 104px (pt-26).
+            const mainContentPaddingTop = isNavbarVisible ? 'pt-[96px]' : 'pt-[40px]';
 
 
             return (
