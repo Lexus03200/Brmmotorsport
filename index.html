@@ -6,9 +6,9 @@
     <title>BRMOTORSPORT - Performance Automobile</title>
     <!-- Intégration de Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Intégration de React et ReactDOM CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Intégration de React et ReactDOM CDN depuis cdnjs (plus fiable pour CORS) -->
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
@@ -145,7 +145,7 @@
             border-radius: 9999px; /* fully rounded */
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify: center;
             transition: background-color 0.2s ease-in-out;
             cursor: pointer;
             position: absolute;
@@ -175,6 +175,11 @@
     </style>
 </head>
 <body class="min-h-screen bg-black font-inter">
+    <!-- Message affiché avant que l'application React ne soit rendue -->
+    <div id="initial-loading-message" class="fixed inset-0 flex items-center justify-center bg-black text-white text-3xl z-[9999]">
+        Initialisation de l'application React...
+    </div>
+
     <!-- Section Audio de fond -->
     <!-- 'autoplay' tente de lancer la lecture automatique, mais peut être bloqué par les navigateurs mobiles. -->
     <!-- 'loop' assure que la musique se répète. -->
@@ -208,8 +213,7 @@
 
         const WrenchIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wrench">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
-            <path d="M5.5 12.5l-3-3L12.5 2.5l3 3z"/>
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1 7.94-7.94l-3.77 3.77a1 1 0 0 0-1.4 0l-1.6-1.6a1 1 0 0 0 0-1.4l3.77-3.77a6 6 0 0 0-7.94-7.94zM5.5 12.5l-3-3L12.5 2.5l3 3z"/>
           </svg>
         );
 
@@ -1484,6 +1488,9 @@
             const [saveMessage, setSaveMessage] = useState(''); // Message pour la sauvegarde
             const [isSaving, setIsSaving] = useState(false); // État pour le chargement de la sauvegarde
 
+            // Gérer la catégorie actuellement sélectionnée pour l'édition
+            const [selectedCategory, setSelectedCategory] = useState('home'); // Par défaut, 'home'
+
             // Met à jour l'état local quand le contenu global change (par exemple, après un rafraîchissement)
             useEffect(() => {
                 setLocalContent(JSON.parse(JSON.stringify(content || {})));
@@ -1608,6 +1615,17 @@
                 setCurrentPage('accueil'); // Redirige vers l'accueil après déconnexion
             };
 
+            // Définir les catégories et leur affichage (titre convivial)
+            const categories = {
+                home: "Accueil",
+                blog: "Blog",
+                quiSommesNous: "Qui Sommes-nous",
+                contact: "Contact",
+                legalMentions: "Mentions Légales",
+                privacyPolicy: "Politique de Confidentialité",
+                showcaseCar: "Voiture Vitrine"
+            };
+
             return (
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-40 pb-12 font-inter">
                     <div className="container mx-auto px-6 max-w-6xl">
@@ -1618,31 +1636,104 @@
                             Bienvenue, administrateur. Ici, vous pouvez gérer le contenu du site.
                         </p>
 
-                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                            {Object.keys(localContent).map(pageKey => {
-                                // Ne pas afficher les pages Admin Login/Panel ici
-                                if (pageKey === 'adminLogin' || pageKey === 'adminPanel') {
-                                    return null;
-                                }
-
-                                return (
-                                    <div key={pageKey} className="mb-8 p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                        {/* Navigation des catégories */}
+                        <div className="flex flex-wrap justify-center gap-4 mb-8 p-4 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
+                            {Object.keys(categories).map(categoryKey => (
+                                <button
+                                    key={categoryKey}
+                                    onClick={() => setSelectedCategory(categoryKey)}
+                                    className={`py-2 px-5 rounded-full font-semibold transition-all duration-300 ease-in-out
+                                                ${selectedCategory === categoryKey
+                                                    ? 'bg-blue-600 text-white shadow-md transform scale-105'
+                                                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'
+                                                }`}
+                                >
+                                    {categories[categoryKey]}
+                                </button>
+                            ))}
+                        </div>
+                        {/* Fragment React pour envelopper les éléments adjacents */}
+                        <>
+                            <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
+                                {/* Affichage du contenu de la catégorie sélectionnée */}
+                                {localContent[selectedCategory] && (
+                                    <div className="mb-8 p-6 bg-gray-700 rounded-lg shadow-inner border border-gray-600">
                                         <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3">
-                                            {pageKey.replace(/([A-Z])/g, ' $1')}
+                                            {categories[selectedCategory]} (Modification)
                                         </h2>
                                         <div className="space-y-6">
-                                            {/* Rendu des champs simples de la page */}
-                                            {Object.keys(localContent[pageKey]).map(fieldKey => {
-                                                const fieldValue = localContent[pageKey][fieldKey];
-                                                const contentPath = `${pageKey}.${fieldKey}`;
+                                            {Object.keys(localContent[selectedCategory]).map(fieldKey => {
+                                                const fieldValue = localContent[selectedCategory][fieldKey];
+                                                const contentPath = `${selectedCategory}.${fieldKey}`;
 
-                                                // Ne pas afficher les 'posts' du blog ici, ils seront gérés séparément
-                                                if (fieldKey === 'posts' && Array.isArray(fieldValue)) {
-                                                    return null;
+                                                // Gérer la section des posts du blog séparément
+                                                if (selectedCategory === 'blog' && fieldKey === 'posts' && Array.isArray(fieldValue)) {
+                                                    return (
+                                                        <div key={contentPath} className="mt-8 pt-6 border-t-2 border-green-600">
+                                                            <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
+                                                            <button
+                                                                onClick={handleAddBlogPost}
+                                                                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mb-6"
+                                                            >
+                                                                Ajouter un nouvel article
+                                                            </button>
+                                                            <div className="space-y-8 mt-4">
+                                                                {localContent.blog.posts.map((post, index) => (
+                                                                    <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
+                                                                        <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
+                                                                        <button
+                                                                            onClick={() => handleRemoveBlogPost(post.id)}
+                                                                            className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
+                                                                            aria-label="Supprimer l'article"
+                                                                        >
+                                                                            <XIcon className="w-4 h-4"/>
+                                                                        </button>
+                                                                        <div className="space-y-4">
+                                                                            <div>
+                                                                                <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    value={post.title || ''}
+                                                                                    onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
+                                                                                    className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                                />
+                                                                            </div>
+                                                                            <div>
+                                                                                <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
+                                                                                <textarea
+                                                                                    value={post.description || ''}
+                                                                                    onChange={(e) => {
+                                                                                        const newValue = e.target.value;
+                                                                                        console.log(`Blog Description Change: Index: ${index}, New Value: "${newValue}"`);
+                                                                                        handleLocalChange('blog', `posts.${index}.description`, newValue);
+                                                                                    }}
+                                                                                    rows={Math.max(3, (post.description || '').split('\n').length)}
+                                                                                    className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
+                                                                                />
+                                                                            </div>
+                                                                            <div>
+                                                                                <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    value={post.image || ''}
+                                                                                    onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
+                                                                                    className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                                />
+                                                                                <p className="text-gray-400 text-xs mt-1">
+                                                                                    Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    );
                                                 }
 
+                                                // Rendu des autres champs
                                                 const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
-                                                const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram')) ? 'text' : 'textarea';
+                                                const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle')) ? 'text' : 'textarea';
                                                 const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
 
                                                 return (
@@ -1654,13 +1745,13 @@
                                                             <input
                                                                 type="text"
                                                                 value={valueToDisplay}
-                                                                onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                                                onChange={(e) => handleLocalChange(selectedCategory, fieldKey, e.target.value)}
                                                                 className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
                                                             />
                                                         ) : (
                                                             <textarea
                                                                 value={valueToDisplay}
-                                                                onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                                                onChange={(e) => handleLocalChange(selectedCategory, fieldKey, e.target.value)}
                                                                 rows={rows}
                                                                 className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
                                                             />
@@ -1673,94 +1764,39 @@
                                                     </div>
                                                 );
                                             })}
-
-                                            {/* Section spécifique pour les articles de blog */}
-                                            {pageKey === 'blog' && localContent.blog && Array.isArray(localContent.blog.posts) && (
-                                                <div className="mt-8 pt-6 border-t-2 border-green-600">
-                                                    <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
-                                                    <button
-                                                        onClick={handleAddBlogPost}
-                                                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mb-6"
-                                                    >
-                                                        Ajouter un nouvel article
-                                                    </button>
-                                                    <div className="space-y-8 mt-4">
-                                                        {localContent.blog.posts.map((post, index) => (
-                                                            <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
-                                                                <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
-                                                                <button
-                                                                    onClick={() => handleRemoveBlogPost(post.id)}
-                                                                    className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
-                                                                    aria-label="Supprimer l'article"
-                                                                >
-                                                                    <XIcon className="w-4 h-4"/>
-                                                                </button>
-                                                                <div className="space-y-4">
-                                                                    <div>
-                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
-                                                                        <input
-                                                                            type="text"
-                                                                            value={post.title || ''}
-                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
-                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                                                        />
-                                                                    </div>
-                                                                    <div>
-                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
-                                                                        <textarea
-                                                                            value={post.description || ''}
-                                                                            onChange={(e) => {
-                                                                                const newValue = e.target.value;
-                                                                                console.log(`Blog Description Change: Index: ${index}, New Value: "${newValue}"`);
-                                                                                handleLocalChange('blog', `posts.${index}.description`, newValue);
-                                                                            }}
-                                                                            rows={Math.max(3, (post.description || '').split('\n').length)}
-                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
-                                                                        />
-                                                                    </div>
-                                                                    <div>
-                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
-                                                                        <input
-                                                                            type="text"
-                                                                            value={post.image || ''}
-                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
-                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                                                        />
-                                                                        <p className="text-gray-400 text-xs mt-1">
-                                                                            Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
                                         </div>
                                     </div>
-                                );
-                            })}
-                            <div className="flex justify-center space-x-4 mt-8">
-                                <button
-                                    onClick={handleSaveChanges}
-                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    disabled={isSaving} // Désactiver le bouton pendant la sauvegarde
-                                >
-                                    {isSaving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
-                                </button>
-                                <button
-                                    onClick={handleLogout}
-                                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-                                >
-                                    Déconnexion
-                                </button>
+                                )}
+
+                                {/* Message si aucune catégorie n'est sélectionnée ou si le contenu est vide */}
+                                {!selectedCategory || !localContent[selectedCategory] && (
+                                    <p className="text-center text-gray-400 text-xl mt-10">
+                                        Veuillez sélectionner une catégorie à modifier ci-dessus.
+                                    </p>
+                                )}
                             </div>
-                            {saveMessage && (
-                                <p className="text-center text-yellow-400 mt-4 text-md animate-fade-in">
-                                    {saveMessage}
-                                </p>
-                            )}
-                        </div>
+
+                            <div className="flex justify-center space-x-4 mt-8">
+                                    <button
+                                        onClick={handleSaveChanges}
+                                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        disabled={isSaving} // Désactiver le bouton pendant la sauvegarde
+                                    >
+                                        {isSaving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
+                                    </button>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                                    >
+                                        Déconnexion
+                                    </button>
+                                </div>
+                                {saveMessage && (
+                                    <p className="text-center text-yellow-400 mt-4 text-md animate-fade-in">
+                                        {saveMessage}
+                                    </p>
+                                )}
+                        </>
                     </div>
                 </div>
             );
@@ -1861,6 +1897,7 @@
             const [content, setContent] = useState(null); // Initialiser à null, sera chargé depuis le JSON
             const [loadingContent, setLoadingContent] = useState(true); // État de chargement du contenu
             const [errorContent, setErrorContent] = useState(null); // État d'erreur de chargement du contenu
+            const [renderError, setRenderError] = useState(null); // Nouvel état pour les erreurs de rendu
 
             // Fonction pour charger le contenu depuis content.json
             useEffect(() => {
@@ -1869,14 +1906,15 @@
                     try {
                         const response = await fetch('content.json'); // Assurez-vous que content.json est à la racine de votre dépôt
                         if (!response.ok) {
-                            throw new Error(`Erreur HTTP: ${response.status}`);
+                            const errorText = await response.text(); // Try to get more details from the response
+                            throw new Error(`Erreur HTTP: ${response.status}. Réponse: ${errorText.substring(0, 200)}...`);
                         }
                         const data = await response.json();
                         setContent(data);
                         console.log("App: content.json loaded successfully:", data);
                     } catch (error) {
                         console.error("App: Erreur lors du chargement de content.json:", error);
-                        setErrorContent("Impossible de charger le contenu du site. Veuillez réessayer plus tard.");
+                        setErrorContent(`Impossible de charger le contenu du site. Détails: ${error.message}`);
                         // Fallback vers un contenu par défaut si le chargement échoue
                         setContent({
                             home: {
@@ -1942,7 +1980,7 @@
                                 collectionTitle: "Collecte des Informations Personnelles",
                                 collectionText: "Nous collectons des informations lorsque vous nous contactez via le formulaire de contact, lorsque vous naviguez sur notre site, ou lorsque vous interagissez avec nos services. Les informations collectées peuvent inclure votre nom, adresse e-mail, numéro de téléphone, et toute autre information que vous choisissez de nous fournir.",
                                 usageTitle: "Utilisation des Informations",
-                                usageListItem1: "Pour répondre à vos demandes et vous fournir les services que vous avez sollicités.",
+                                usageListItem1: "Pour répondre à vos demandes et vous fournir les services que you avez sollicités.",
                                 usageListItem2: "Pour améliorer notre site web et nos offres de services.",
                                 usageListItem3: "Pour vous envoyer des communications marketing (avec votre consentement).",
                                 protectionTitle: "Protection des Informations",
@@ -2010,16 +2048,19 @@
                 );
             }
 
+            // Affiche l'erreur de chargement de contenu (par exemple, si content.json n'existe pas)
             if (errorContent) {
                 return (
                     <div className="min-h-screen flex items-center justify-center bg-red-900 text-white text-xl p-4 text-center">
-                        Erreur: {errorContent}
+                        Erreur de chargement du site : {errorContent}
+                        <br/><br/>
+                        Vérifiez la console du navigateur (F12) pour plus de détails.
                     </div>
                 );
             }
 
             // Fonction de rendu du contenu de la page en fonction de l'état
-            const renderPage = () => {
+            const renderPageContent = () => {
               switch (currentPage) {
                 case 'accueil':
                   return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
@@ -2049,52 +2090,91 @@
               }
             };
 
-            return (
-                <ContentContext.Provider value={{ content, updateContent }}>
-                    <div className="min-h-screen bg-black font-inter">
-                        <ScrollingBanner /> {/* Nouvelle bannière défilante */}
-                        {/* Passe isAdminAuthenticated et handleLogout à Navbar */}
-                        <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} />
-                        <main className="flex-grow">
-                            {renderPage()}
-                        </main>
-                        <MusicControl /> {/* Ajout du contrôle de musique */}
-                        <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
-                            <div className="container mx-auto px-4">
-                                <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
-                                <div className="flex justify-center space-x-4 mt-3">
-                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
-                                    <span className="text-gray-600">|</span>
-                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
-                                    <span className="text-gray-600">|</span>
-                                    {/* Lien Admin/Déconnexion conditionnel dans le footer */}
-                                    {isAdminAuthenticated ? (
-                                        <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="hover:text-red-500 transition duration-300">Déconnexion</a>
-                                    ) : (
-                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin-login'); }} className="hover:text-red-500 transition duration-300">Admin</a>
-                                    )}
+            // Capture les erreurs de rendu React
+            try {
+                // Effet pour masquer le message d'initialisation initial après le premier rendu de App
+                useEffect(() => {
+                    const initialLoadingMessage = document.getElementById('initial-loading-message');
+                    if (initialLoadingMessage) {
+                        initialLoadingMessage.style.display = 'none';
+                        console.log("Message d'initialisation masqué par React App.");
+                    }
+                }, []); // S'exécute une seule fois après le premier rendu de App
+
+                return (
+                    <ContentContext.Provider value={{ content, updateContent }}>
+                        <div className="min-h-screen bg-black font-inter">
+                            <ScrollingBanner /> {/* Nouvelle bannière défilante */}
+                            {/* Passe isAdminAuthenticated et handleLogout à Navbar */}
+                            <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} />
+                            <main className="flex-grow">
+                                {renderPageContent()} {/* Appelle la fonction de rendu de page */}
+                            </main>
+                            <MusicControl /> {/* Ajout du contrôle de musique */}
+                            <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
+                                <div className="container mx-auto px-4">
+                                    <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
+                                    <div className="flex justify-center space-x-4 mt-3">
+                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
+                                        <span className="text-gray-600">|</span>
+                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
+                                        <span className="text-gray-600">|</span>
+                                        {/* Lien Admin/Déconnexion conditionnel dans le footer */}
+                                        {isAdminAuthenticated ? (
+                                            <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="hover:text-red-500 transition duration-300">Déconnexion</a>
+                                        ) : (
+                                            <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin-login'); }} className="hover:text-red-500 transition duration-300">Admin</a>
+                                        )}
+                                    </div>
+                                    <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
                                 </div>
-                                <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
-                            </div>
-                        </footer>
+                            </footer>
+                        </div>
+                    </ContentContext.Provider>
+                );
+            } catch (e) {
+                // Si une erreur se produit pendant le rendu de l'interface utilisateur, affichez-la
+                console.error("Erreur de rendu de l'application:", e);
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-red-900 text-white text-xl p-4 text-center">
+                        Une erreur inattendue s'est produite lors de l'affichage du site.
+                        <br/><br/>
+                        Détails : {e.message}
+                        <br/><br/>
+                        Vérifiez la console du navigateur (F12) pour plus d'informations.
                     </div>
-                </ContentContext.Provider>
-            );
+                );
+            }
         };
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
-        // Ancien code dans window.onload:
-        // window.onload = function() {
-        //     const container = document.getElementById('root');
-        //     const root = ReactDOM.createRoot(container);
-        //     root.render(<App />);
-        // };
-
-        // Nouveau code de rendu direct après la définition de l'App,
-        // s'assurant que ReactDOM est disponible une fois les scripts chargés et parsés.
-        const container = document.getElementById('root');
-        const root = ReactDOM.createRoot(container);
-        root.render(<App />);
+        // ENVELOPPEZ L'APP DANS DOMContentLoaded POUR ASSURER QUE LE DOM EST PRÊT
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('root');
+            if (container) {
+                console.log("DOMContentLoaded: Tentative de rendu de l'application React...");
+                try {
+                    const root = ReactDOM.createRoot(container);
+                    root.render(<App />);
+                    console.log("ReactDOM.render(<App />) appelé avec succès.");
+                } catch (renderErr) {
+                    console.error("Erreur lors du rendu de l'application React (catch bloc):", renderErr);
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = "min-h-screen flex items-center justify-center bg-red-900 text-white text-xl p-4 text-center";
+                    errorDiv.innerHTML = `
+                        Une erreur inattendue s'est produite lors du rendu de l'application.
+                        <br/><br/>
+                        Détails : ${renderErr.message}
+                        <br/><br/>
+                        Vérifiez la console du navigateur (F12) pour plus d'informations.
+                    `;
+                    document.body.innerHTML = ''; // Efface le contenu existant
+                    document.body.appendChild(errorDiv); // Ajoute le message d'erreur
+                }
+            } else {
+                console.error("L'élément avec l'ID 'root' n'a pas été trouvé dans le DOM. L'application React ne peut pas être montée.");
+            }
+        });
     </script>
 </body>
 </html>
