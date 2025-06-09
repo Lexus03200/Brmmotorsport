@@ -301,6 +301,35 @@
             </svg>
         );
 
+        // Composant d'icône Plus (Zoom In)
+        const PlusIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus">
+                <path d="M12 5v14"/><path d="M5 12h14"/>
+            </svg>
+        );
+
+        // Composant d'icône Moins (Zoom Out)
+        const MinusIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-minus">
+                <path d="M5 12h14"/>
+            </svg>
+        );
+
+        // Composant d'icône de cible (Centrer)
+        const TargetIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-target">
+                <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+            </svg>
+        );
+
+        // Composant d'icône de rotation (Réinitialiser)
+        const RotateCcwIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-ccw">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.79 2.91L3 12H3z"/><path d="M3 3v.01"/>
+            </svg>
+        );
+
+
         // --- Contexte pour la gestion du contenu éditable ---
         const ContentContext = createContext();
 
@@ -1498,9 +1527,53 @@
 
         // Composant d'édition d'article de blog pour le panneau d'administration
         const AdminBlogPostCard = ({ post, index, handleLocalChange, handleRemoveBlogPost, handleDragStart, handleDragEnd, handleDragOver, handleDrop }) => {
-            const contentPathPrefix = `blog.posts.${index}`;
             const [isDraggingOver, setIsDraggingOver] = useState(false);
+            const [zoom, setZoom] = useState(1); // État du zoom
+            const [offsetX, setOffsetX] = useState(0); // Décalage X
+            const [offsetY, setOffsetY] = useState(0); // Décalage Y
+            const [isPanDragging, setIsPanDragging] = useState(false); // État de glisser-déposer pour le pan
+            const [startX, setStartX] = useState(0); // Position de départ pour le glisser-déposer (pan)
+            const [startY, setStartY] = useState(0); // Position de départ pour le glisser-déposer (pan)
 
+            // Réinitialise le zoom et la position
+            const resetImage = () => {
+                setZoom(1);
+                setOffsetX(0);
+                setOffsetY(0);
+            };
+
+            // Centre l'image (réinitialise seulement la position, pas le zoom)
+            const centerImage = () => {
+                setOffsetX(0);
+                setOffsetY(0);
+            };
+
+            // Gère le zoom
+            const handleZoom = (factor) => {
+                setZoom(prevZoom => Math.max(1, prevZoom + factor)); // Empêche le dézoom sous 1
+            };
+
+            // Gère le début du glisser-déposer (pan)
+            const handlePanStart = (e) => {
+                e.preventDefault(); // Empêche le drag native de l'image
+                setIsPanDragging(true);
+                setStartX(e.clientX - offsetX);
+                setStartY(e.clientY - offsetY);
+            };
+
+            // Gère le glisser-déposer (pan)
+            const handlePanMove = (e) => {
+                if (!isPanDragging) return;
+                setOffsetX(e.clientX - startX);
+                setOffsetY(e.clientY - startY);
+            };
+
+            // Gère la fin du glisser-déposer (pan)
+            const handlePanEnd = () => {
+                setIsPanDragging(false);
+            };
+
+            // Fonctions de glisser-déposer pour la réorganisation des cartes
             const onDragEnter = (e) => {
                 e.preventDefault();
                 setIsDraggingOver(true);
@@ -1559,6 +1632,52 @@
                             <p className="text-gray-400 text-xs mt-1">
                                 Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
                             </p>
+                        </div>
+                        <div className="mt-4 border-t border-gray-500 pt-4">
+                            <label className="block text-gray-300 text-sm font-bold mb-2">Aperçu de l'image (pour l'édition):</label>
+                            <div className="relative w-full h-48 bg-gray-700 flex items-center justify-center overflow-hidden rounded-lg border-2 border-gray-400">
+                                <img
+                                    src={post.image}
+                                    alt={post.title}
+                                    className="object-contain max-w-full max-h-full transition-transform duration-100 ease-out"
+                                    style={{
+                                        transform: `scale(${zoom}) translate(${offsetX}px, ${offsetY}px)`,
+                                        cursor: zoom > 1 ? (isPanDragging ? 'grabbing' : 'grab') : 'default', // Curseur de glisser-déposer seulement si zoomé
+                                    }}
+                                    onMouseDown={zoom > 1 ? handlePanStart : null}
+                                    onMouseMove={zoom > 1 ? handlePanMove : null}
+                                    onMouseUp={zoom > 1 ? handlePanEnd : null}
+                                    onMouseLeave={zoom > 1 ? handlePanEnd : null} // Stop drag if mouse leaves container
+                                    onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }}
+                                />
+                                {zoom > 1 && (
+                                    <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                                        Zoom: {Math.round(zoom * 100)}%
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex justify-center space-x-2 mt-3">
+                                <button
+                                    onClick={() => handleZoom(0.1)}
+                                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
+                                    title="Zoomer"
+                                ><PlusIcon className="w-4 h-4"/></button>
+                                <button
+                                    onClick={() => handleZoom(-0.1)}
+                                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
+                                    title="Dézoomer"
+                                ><MinusIcon className="w-4 h-4"/></button>
+                                <button
+                                    onClick={centerImage}
+                                    className="bg-purple-500 hover:bg-purple-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
+                                    title="Centrer l'image"
+                                ><TargetIcon className="w-4 h-4"/></button>
+                                <button
+                                    onClick={resetImage}
+                                    className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
+                                    title="Réinitialiser le zoom et la position"
+                                ><RotateCcwIcon className="w-4 h-4"/></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1658,7 +1777,6 @@
 
                     // Reconstruire les IDs si nécessaire ou simplement mettre à jour le tableau
                     // Pour cet exemple, on ne change pas les IDs des objets existants, juste leur ordre.
-                    // Si vos IDs étaient basés sur l'index, il faudrait les mettre à jour.
                     // Ici, l'ID est un timestamp, donc il reste stable.
 
                     return {
@@ -2227,7 +2345,7 @@
                                     { id: 7, image: "Seat1.png", title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm." },
                                     { id: 8, image: "anciennevoiture.png", title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité." },
                                     { id: 9, image: "audi1.png", title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité." },
-                                    { id: 10, image: "gx.png", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité." },
+                                    { id: 10, image: "gx.png", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance notre priorité." },
                                     { id: 11, image: "mercedes2021.png", title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
                                 ]
                             },
