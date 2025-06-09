@@ -123,7 +123,9 @@
         "image": "gx.png",
         "title": "Triumph TR3 : Check-up Complet et Optimisation",
         "description": "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité.✅",
-        "images": []
+        "images": [
+          "gx.png"
+        ]
       },
       {
         "id": 11,
