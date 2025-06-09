@@ -113,7 +113,10 @@
         "id": 9,
         "image": "audi1.png",
         "title": "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU",
-        "description": "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité.✅"
+        "description": "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité.✅",
+        "images": [
+          "audi1.png"
+        ]
       },
       {
         "id": 10,
@@ -135,7 +138,10 @@
         "id": 1749421809033,
         "image": "Audi2.png",
         "title": "Audi A3 finition S line",
-        "description": "🔧 Entretien complet réalisé sur le véhicule :\n✅ Vidange moteur effectuée avec huile de qualité supérieure\n✅ Remplacement du filtre à huile\n✅ Remplacement du filtre à air\n✅ Remplacement du filtre à gazole\n✅ Airbag remplacé, sécurité assurée\n\n🚗 Esthétique soignée :\n✅ Lavage complet intérieur & extérieur effectué avec soin\n\nVéhicule prêt à prendre la route, révisé et entretenu avec rigueur. Idéal pour un achat en toute confiance."
+        "description": "🔧 Entretien complet réalisé sur le véhicule :\n✅ Vidange moteur effectuée avec huile de qualité supérieure\n✅ Remplacement du filtre à huile\n✅ Remplacement du filtre à air\n✅ Remplacement du filtre à gazole\n✅ Airbag remplacé, sécurité assurée\n\n🚗 Esthétique soignée :\n✅ Lavage complet intérieur & extérieur effectué avec soin\n\nVéhicule prêt à prendre la route, révisé et entretenu avec rigueur. Idéal pour un achat en toute confiance.",
+        "images": [
+          "Audi2.png"
+        ]
       }
     ]
   },
