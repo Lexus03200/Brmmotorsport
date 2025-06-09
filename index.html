@@ -190,6 +190,17 @@
             from { opacity: 1; }
             to { opacity: 0; }
         }
+
+        /* Styles pour la navbar dynamique */
+        .navbar-hidden {
+            transform: translateY(-100%);
+        }
+        .navbar-visible {
+            transform: translateY(0);
+        }
+        .navbar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-black font-inter">
@@ -482,7 +493,7 @@
         };
 
         // Composant de la barre de navigation
-        const Navbar = ({ setCurrentPage, isAdminAuthenticated, handleLogout }) => {
+        const Navbar = ({ setCurrentPage, isAdminAuthenticated, handleLogout, isVisible }) => {
           const [isOpen, setIsOpen] = useState(false); // État pour la visibilité du menu mobile
 
           const toggleMenu = () => {
@@ -490,7 +501,7 @@
           };
 
           return (
-            <nav className="bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg mt-12"> {/* Ajout de mt-12 pour décaler la navbar sous le bandeau */}
+            <nav className={`bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg mt-12 navbar-transition ${isVisible ? 'navbar-visible' : 'navbar-hidden'}`}>
               <div className="container mx-auto flex justify-between items-center px-4">
                 {/* Titre BRMOTORSPORT avec un style amélioré et des couleurs et l'animation de coulissement */}
                 <div className="text-3xl md:text-4xl font-extrabold tracking-widest drop-shadow-lg opacity-0 animate-slide-in-left">
@@ -2736,6 +2747,8 @@
             const [content, setContent] = useState(null); // Initialiser à null, sera chargé depuis le JSON
             const [loadingContent, setLoadingContent] = useState(true); // État de chargement du contenu
             const [errorContent, setErrorContent] = useState(null); // État d'erreur de chargement du contenu
+            const [isNavbarVisible, setIsNavbarVisible] = useState(true); // État de visibilité de la navbar
+            const lastScrollY = useRef(0); // Dernière position de défilement connue
 
             // Fonction pour charger le contenu depuis content.json
             useEffect(() => {
@@ -2906,6 +2919,31 @@
                 window.scrollTo(0, 0); // Fait défiler la fenêtre à la position 0, 0 (en haut à gauche)
             }, [currentPage]); // Se déclenche à chaque fois que `currentPage` change
 
+            // Logique de visibilité de la navbar au défilement
+            useEffect(() => {
+                const handleScroll = () => {
+                    const currentScrollY = window.scrollY;
+                    // Détermine la direction du défilement
+                    // Si l'utilisateur est tout en haut de la page, la navbar est toujours visible
+                    // Sinon, si le défilement est vers le haut (currentScrollY < lastScrollY.current), la navbar est visible
+                    // Si le défilement est vers le bas (currentScrollY > lastScrollY.current) et qu'on a dépassé un certain seuil (ex: 200px), la navbar est cachée
+                    if (currentScrollY === 0) {
+                        setIsNavbarVisible(true);
+                    } else if (currentScrollY < lastScrollY.current) {
+                        setIsNavbarVisible(true);
+                    } else if (currentScrollY > lastScrollY.current && currentScrollY > 200) { // Cacher si on descend et qu'on est au-delà de 200px
+                        setIsNavbarVisible(false);
+                    }
+                    lastScrollY.current = currentScrollY;
+                };
+
+                window.addEventListener('scroll', handleScroll);
+                return () => {
+                    window.removeEventListener('scroll', handleScroll);
+                };
+            }, []);
+
+
             if (loadingContent) {
                 return (
                     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white text-3xl">
@@ -2958,13 +2996,21 @@
               }
             };
 
+            // Calcule le padding-top pour le main content en fonction de la visibilité de la navbar
+            // La navbar a une hauteur de 64px (p-4 + mt-12, soit 16px de padding + 48px de margin-top).
+            // Le scrolling banner a une hauteur de 40px (py-2 + text-lg + font-bold).
+            // Donc, 64px (navbar) + 40px (banner) = 104px.
+            // On ajoute une petite marge supplémentaire pour l'esthétique.
+            const mainContentPaddingTop = isNavbarVisible ? 'pt-[104px]' : 'pt-[40px]'; // 40px pour le bandeau seul
+
+
             return (
                 <ContentContext.Provider value={{ content, updateContent }}>
                     <div className="min-h-screen bg-black font-inter">
                         <ScrollingBanner /> {/* Nouvelle bannière défilante */}
-                        {/* Passe isAdminAuthenticated et handleLogout à Navbar */}
-                        <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} />
-                        <main className="flex-grow">
+                        {/* Passe isAdminAuthenticated et handleLogout à Navbar, ainsi que la nouvelle prop isVisible */}
+                        <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} isVisible={isNavbarVisible} />
+                        <main className={`flex-grow ${mainContentPaddingTop}`}> {/* Padding dynamique */}
                             {renderPage()}
                         </main>
                         {/* Passe le volume de la musique du content aux contrôles de musique */}
