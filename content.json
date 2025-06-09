@@ -1,6 +1,7 @@
 {
   "home": {
     "mainTitle": "Libérez la <span class=\"text-red-500\">Puissance</span>. Redéfinissez la <span class=\"text-blue-500\">Performance</span>!",
+    "mainTitleColor": "#FF0000",
     "description": "Chez BRMOTORSPORT, nous transformons votre passion pour l'automobile en une expérience de conduite inégalée.",
     "contactMessage": "Pour toute prise de rendez-vous ou demande de devis, nous vous invitons à nous contacter directement via les informations disponibles dans la section 'Contact'.",
     "offerTitle": "Ce que nous vous proposons",
