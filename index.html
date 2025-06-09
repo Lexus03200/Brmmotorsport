@@ -2875,15 +2875,6 @@
         };
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
-        // Ancien code dans window.onload:
-        // window.onload = function() {
-        //     const container = document.getElementById('root');
-        //     const root = ReactDOM.createRoot(container);
-        //     root.render(<App />);
-        // };
-
-        // Nouveau code de rendu direct après la définition de l'App,
-        // s'assurant que ReactDOM est disponible une fois les scripts chargés et parsés.
         const container = document.getElementById('root');
         const root = ReactDOM.createRoot(container);
         root.render(<App />);
