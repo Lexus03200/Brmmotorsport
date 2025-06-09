@@ -12,22 +12,6 @@
     <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Firebase CDN Imports (AJOUTÉS POUR LA GESTION D'UPLOAD ET DE CONTENU) -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-      import { getAuth, signInWithCustomToken, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-      import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, query, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-      import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
-
-      // Expose Firebase services to the global window object for use in text/babel script
-      window.firebase = {
-        initializeApp,
-        getAuth, signInWithCustomToken, onAuthStateChanged, signInAnonymously,
-        getFirestore, doc, getDoc, setDoc, collection, onSnapshot, query, addDoc, deleteDoc,
-        getStorage, ref, uploadBytes, getDownloadURL, deleteObject
-      };
-    </script>
-
     <style>
         /* Importation de la police Inter */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
@@ -193,8 +177,13 @@
 </head>
 <body class="min-h-screen bg-black font-inter">
     <!-- Section Audio de fond -->
+    <!-- 'autoplay' tente de lancer la lecture automatique, mais peut être bloqué par les navigateurs mobiles. -->
+    <!-- 'loop' assure que la musique se répète. -->
+    <!-- 'style="display:none;"' masque les contrôles de lecture par défaut. -->
+    <!-- Ajout de l'attribut volume pour réduire le son (valeur de 0.0 à 1.0) -->
     <audio id="background-music" autoplay loop volume="0.01" style="display:none;">
-        <source src="musique.mp3" type="audio/mpeg">
+        <!-- L'URL est construite en utilisant votre domaine GitHub Pages et le nom de votre fichier MP3. -->
+        <source src="musique.mp3" type="audio/mpeg"> <!-- Chemin mis à jour pour être relatif au dossier racine -->
         Votre navigateur ne supporte pas l'élément audio.
     </audio>
 
@@ -205,95 +194,107 @@
         // Récupère les hooks React depuis l'objet global React
         const { useState, useEffect, useRef, createContext, useContext } = React;
 
-        // Définition des instances Firebase (initialisées dans le composant App)
-        let firebaseApp, db, storage;
-
         // --- Icônes Lucide React ---
+        // Composant d'icône de voiture
         const CarIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-car">
             <path d="M19 17H5c-1.1 0-2 .9-2 2v2h18v-2c0-1.1-.9-2-2-2Z"/><path d="M7 17V5h12v12"/><path d="M18 10h-8"/><path d="M10 10v7"/>
           </svg>
         );
 
+        // Composant d'icône de poignée de main
         const HandshakeIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucude-handshake">
             <path d="M12.23 20.73a4.7 4.7 0 0 0 6.64-6.64L12.23 7.07l-2.06 2.06"/><path d="M16 16l-3.23 3.23a4.7 4.7 0 0 1-6.64-6.64L9.07 7.07l2.06 2.06"/><path d="M14 10l-2.06 2.06"/><path d="m10 14 2.06-2.06"/>
           </svg>
         );
 
+        // Composant d'icône de clé à molette
         const WrenchIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wrench">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
             <path d="M5.5 12.5l-3-3L12.5 2.5l3 3z"/>
           </svg>
         );
 
+        // Composant d'icône de calendrier
         const CalendarIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-calendar-days">
             <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>
           </svg>
         );
 
+        // Composant d'icône d'utilisateurs
         const UsersIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-users">
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87L16 16"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
         );
 
+        // Composant d'icône RSS
         const RssIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rss">
             <path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>
           </svg>
         );
 
+        // Composant d'icône de téléphone
         const PhoneIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-phone">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2H7c.43 0 .79.27.94.66.14.39.07.82-.2 1.1L5.05 6.05c-.35.35-.5.85-.34 1.34A19.79 19.79 0 0 0 16.92 19c.49.16.99.01 1.34-.34l2.29-2.29c.28-.27.71-.34 1.1-.2.39.14.66.5.66.94Z"/>
           </svg>
         );
 
+        // Composant d'icône de mail
         const MailIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mail">
               <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
             </svg>
         );
 
+        // Composant d'icône Instagram
         const InstagramIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram">
               <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.5" y1="6.5" y2="6.5"/>
             </svg>
         );
 
+        // Composant d'icône Play
         const PlayIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play">
                 <polygon points="5 3 19 12 5 21 5 3"/>
             </svg>
         );
 
+        // Composant d'icône Pause
         const PauseIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pause">
                 <rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>
             </svg>
         );
 
+        // Composant d'icône Étoile
         const StarIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-star">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
         );
 
+        // Composant d'icône Flèche Gauche
         const ArrowLeftIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left">
                 <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
             </svg>
         );
 
+        // Composant d'icône Flèche Droite
         const ArrowRightIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right">
                 <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
             </svg>
         );
 
+        // Composant d'icône X (fermer)
         const XIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x">
                 <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
@@ -301,7 +302,6 @@
         );
 
         // --- Contexte pour la gestion du contenu éditable ---
-        // Le contexte va maintenant aussi passer les instances Firebase Firestore et Storage
         const ContentContext = createContext();
 
         // Fonction utilitaire pour définir une propriété imbriquée par un chemin (similaire à lodash.set)
@@ -311,36 +311,44 @@
             for (let i = 0; i < pathParts.length; i++) {
                 const part = pathParts[i];
                 const isLastPart = (i === pathParts.length - 1);
+                // Vérifie si la partie est un index numérique (pour les tableaux)
                 const isArrayIndex = !isNaN(parseInt(part)) && String(parseInt(part)) === part;
 
                 if (isLastPart) {
+                    // C'est la dernière partie du chemin, définissez la valeur
                     current[isArrayIndex ? parseInt(part) : part] = value;
+                    // console.log(`setNestedProperty: SETTING final value for path part "${part}" to:`, value);
                 } else {
+                    // Si ce n'est pas la dernière partie, naviguez plus profondément
                     if (isArrayIndex) {
                         if (!Array.isArray(current)) {
-                            console.warn(`setNestedProperty: Tentative de navigation par index de tableau ${part} sur un non-tableau :`, current);
-                            return obj;
+                            console.warn(`setNestedProperty: Attempted to navigate array index ${part} on non-array:`, current);
+                            return obj; // Retourne l'objet original pour éviter de le corrompre
                         }
                         if (current[parseInt(part)] === undefined || current[parseInt(part)] === null) {
-                            current[parseInt(part)] = {};
+                            current[parseInt(part)] = {}; // Assurez-vous que l'objet à cet index existe
+                            // console.log(`setNestedProperty: Created new object at array index ${part}.`);
                         }
                         current = current[parseInt(part)];
                     } else {
                         if (typeof current[part] !== 'object' || current[part] === null) {
-                            current[part] = {};
+                            current[part] = {}; // Initialise comme objet si ce n'est pas déjà le cas
+                            // console.log(`setNestedProperty: Created new object for path part "${part}".`);
                         }
                         current = current[part];
                     }
+                    // console.log(`setNestedProperty: Navigated to "${part}". Current nested object:`, current);
                 }
             }
-            return obj;
+            return obj; // Retourne l'objet modifié
         };
 
         // Composant pour l'édition de texte in-situ (utilisé hors du panneau admin pour l'affichage direct)
         const EditableText = ({ tag: Tag, contentKey, isAdminAuthenticated, className }) => {
             const { content, updateContent } = useContext(ContentContext);
-            const path = contentKey.split('.');
+            const path = contentKey.split('.'); // Ex: "home.mainTitle" -> ["home", "mainTitle"]
 
+            // Fonction récursive pour accéder à la valeur imbriquée
             const getValue = (obj, p) => {
                 let current = obj;
                 for (let i = 0; i < p.length; i++) {
@@ -366,17 +374,20 @@
 
             const textValue = content ? getValue(content, contentKey.split('.')) : `Chargement...`;
 
+
+            // Gérer le changement du texte (seulement si isAdminAuthenticated)
             const handleChange = (e) => {
                 const newValue = e.target.value;
-                updateContent(contentKey, newValue);
+                updateContent(contentKey, newValue); // Appelle la fonction de mise à jour du contexte
             };
 
             if (isAdminAuthenticated) {
+                // Si c'est un h1 ou h2, utiliser un input, sinon un textarea
                 if (Tag === 'h1' || Tag === 'h2') {
                     return (
                         <input
                             type="text"
-                            value={typeof textValue === 'string' ? textValue : ''}
+                            value={typeof textValue === 'string' ? textValue : ''} // Assurer que la valeur est une string
                             onChange={handleChange}
                             className={`${className} bg-gray-700 text-white rounded p-2 focus:ring-2 focus:ring-blue-500 w-full`}
                         />
@@ -384,21 +395,23 @@
                 }
                 return (
                     <textarea
-                        value={typeof textValue === 'string' ? textValue : ''}
+                        value={typeof textValue === 'string' ? textValue : ''} // Assurer que la valeur est une string
                         onChange={handleChange}
                         className={`${className} bg-gray-700 text-white rounded p-2 focus:ring-2 focus:ring-blue-500 w-full min-h-[50px]`}
-                        rows={typeof textValue === 'string' ? Math.max(3, textValue.split('\n').length) : 3}
+                        rows={typeof textValue === 'string' ? Math.max(3, textValue.split('\n').length) : 3} // Ajuste le nombre de lignes
                     />
                 );
             }
 
+            // Rendu normal pour les clients
+            // Vérifie si textValue est une chaîne avant de le rendre
             return <Tag className={className}>{typeof textValue === 'string' ? textValue : `[Contenu invalide: ${contentKey}]`}</Tag>;
         };
 
         // Composant de la bannière défilante
         const ScrollingBanner = () => {
-            const bannerText = "BRMOTORSPORT • VOTRE SATISFACTION EST NOTRE PRIORITÉ • ";
-            const repeatedText = Array(10).fill(bannerText).join('');
+            const bannerText = "BRMOTORSPORT • VOTRE SATISFACTION EST NOTRE PRIORITÉ • "; // Texte à répéter
+            const repeatedText = Array(10).fill(bannerText).join(''); // Répéter le texte plusieurs fois pour l'effet de défilement continu
 
             return (
                 <div className="w-full bg-red-700 text-white text-lg font-bold py-2 overflow-hidden whitespace-nowrap fixed top-0 left-0 z-50 shadow-md">
@@ -407,7 +420,7 @@
                             {repeatedText}
                         </span>
                         <span className="scrolling-banner-text" aria-hidden="true">
-                            {repeatedText}
+                            {repeatedText} {/* Une copie pour assurer la continuité du défilement */}
                         </span>
                     </div>
                 </div>
@@ -416,21 +429,24 @@
 
         // Composant de la barre de navigation
         const Navbar = ({ setCurrentPage, isAdminAuthenticated, handleLogout }) => {
-          const [isOpen, setIsOpen] = useState(false);
+          const [isOpen, setIsOpen] = useState(false); // État pour la visibilité du menu mobile
 
           const toggleMenu = () => {
             setIsOpen(!isOpen);
           };
 
           return (
-            <nav className="bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg mt-12">
+            <nav className="bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg mt-12"> {/* Ajout de mt-12 pour décaler la navbar sous le bandeau */}
               <div className="container mx-auto flex justify-between items-center px-4">
+                {/* Titre BRMOTORSPORT avec un style amélioré et des couleurs et l'animation de coulissement */}
                 <div className="text-3xl md:text-4xl font-extrabold tracking-widest drop-shadow-lg opacity-0 animate-slide-in-left">
                   <span className="text-red-500">BR</span>
                   <span className="text-white">MOTOR</span>
+                  {/* Titre classique sans icône pour SPORT */}
                   <span className="text-blue-500">SPORT</span>
                 </div>
 
+                {/* Icône du menu hamburger pour mobile */}
                 <div className="md:hidden">
                   <button onClick={toggleMenu} className="text-gray-300 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-lg p-2">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -439,12 +455,14 @@
                   </button>
                 </div>
 
+                {/* Menu de bureau */}
                 <div className="hidden md:flex space-x-8">
                   <NavItem icon={<CarIcon />} text="Accueil" page="accueil" setCurrentPage={setCurrentPage} />
-                  <NavItem icon={<StarIcon />} text="Voiture Vitrine" page="voiture-vitrine" setCurrentPage={setCurrentPage} />
+                  <NavItem icon={<StarIcon />} text="Voiture Vitrine" page="voiture-vitrine" setCurrentPage={setCurrentPage} /> {/* Ajout du lien "Voiture Vitrine" */}
                   <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} />
                   <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} />
                   <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} />
+                  {/* Lien Admin/Déconnexion conditionnel */}
                   {isAdminAuthenticated ? (
                       <NavItem text="Déconnexion" page="accueil" setCurrentPage={setCurrentPage} onClick={handleLogout} />
                   ) : (
@@ -453,14 +471,16 @@
                 </div>
               </div>
 
+              {/* Menu coulissant mobile */}
               <div className={`md:hidden absolute top-full left-0 w-full bg-gray-900 bg-opacity-95 backdrop-blur-sm shadow-lg
                              transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} z-40`}>
                 <div className="flex flex-col items-center py-4 space-y-4">
                   <NavItem icon={<CarIcon />} text="Accueil" page="accueil" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
-                  <NavItem icon={<StarIcon />} text="Voiture Vitrine" page="voiture-vitrine" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
+                  <NavItem icon={<StarIcon />} text="Voiture Vitrine" page="voiture-vitrine" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} /> {/* Ajout du lien "Voiture Vitrine" pour mobile */}
                   <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
                   <NavItem icon={<UsersIcon />} text="Qui Sommes-nous" page="qui-sommes-nous" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
                   <NavItem icon={<PhoneIcon />} text="Contact" page="contact" setCurrentPage={setCurrentPage} onClick={() => setIsOpen(false)} />
+                  {/* Lien Admin/Déconnexion conditionnel pour mobile */}
                   {isAdminAuthenticated ? (
                       <NavItem text="Déconnexion" page="accueil" setCurrentPage={setCurrentPage} onClick={() => { handleLogout(); setIsOpen(false); }} />
                   ) : (
@@ -477,7 +497,7 @@
           <button
             onClick={() => {
               setCurrentPage(page);
-              if (onClick) onClick();
+              if (onClick) onClick(); // Appelle onClick pour fermer le menu si fourni
             }}
             className="flex items-center text-gray-300 hover:text-red-500 transition duration-300 ease-in-out transform hover:scale-105
                        px-3 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
@@ -615,7 +635,7 @@
                                 className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto"
                             />
                             <div className="mt-8">
-                                <ImageOfRemyBruyant
+                                <ImageOfRemyBruyant // Remplacement de l'image par le composant ImageOfRemyBruyant
                                     className="mx-auto rounded-full border-4 border-red-500 shadow-lg w-32 h-32 object-cover"
                                 />
                             </div>
@@ -627,7 +647,7 @@
 
         // Nouveau composant pour l'image de Rémy Bruyant
         const ImageOfRemyBruyant = ({ className }) => {
-            const imageUrl = "https://placehold.co/150x150/000/FFF?text=Remy";
+            const imageUrl = "https://placehold.co/150x150/000/FFF?text=Remy"; // Ou votre URL d'image réelle
             return (
                 <img
                     src={imageUrl}
@@ -683,7 +703,7 @@
               src={post.image}
               alt={post.title}
               className="w-full h-64 object-cover object-center transform transition duration-500 hover:scale-110"
-              onError={(e) => { e.target.onerror = null; console.error(`ERREUR DE CHARGEMENT D'IMAGE pour l'article "${post.title}": Vérifiez le nom du fichier (${post.image}) et son emplacement.`); e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }}
+              onError={(e) => { e.target.onerror = null; console.error(`ERREUR DE CHARGEMENT D'IMAGE pour l'article "${post.title}": Vérifiez le nom du fichier (${post.image}) et son emplacement.`); e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }} // Fallback image with more specific error message
             />
             <div className="p-6">
               <h3 className="text-2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
@@ -698,6 +718,7 @@
         // Composant Page Blog
         const BlogPage = ({ isAdminAuthenticated }) => {
           const { content } = useContext(ContentContext);
+          // Utilise content.blog.posts qui est chargé depuis content.json
           const blogPosts = content?.blog?.posts || [];
 
           return (
@@ -717,15 +738,15 @@
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                  {blogPosts.length > 0 ? (
+                  {blogPosts.length > 0 ? ( // Condition ajoutée pour afficher les articles s'il y en a
                     blogPosts.map((post, index) => (
                       <BlogPostCard
-                        key={post.id || `blog-post-${index}`}
+                        key={post.id || `blog-post-${index}`} // Utilise l'ID ou un index de secours
                         post={post}
                         style={{ '--delay-factor': `${index * 150}ms` }}
                       />
                     ))
-                  ) : (
+                  ) : ( // Message affiché si aucun article n'est trouvé
                     <p className="col-span-full text-center text-gray-400 text-2xl mt-10">
                       Aucun article de blog à afficher pour le moment.
                     </p>
@@ -740,13 +761,13 @@
         // Composant Input Field (réutilisable)
         const InputField = ({ label, type, placeholder, required = false, value, onChange, name }) => (
           <div>
-            <label htmlFor={name || label} className="block text-gray-300 text-sm font-bold mb-2">
+            <label htmlFor={name || label} className="block text-gray-300 text-sm font-bold mb-2"> {/* Utilise name comme id si fourni */}
               {label} {required && <span className="text-red-500">*</span>}
             </label>
             <input
-              id={name || label}
+              id={name || label} // Utilise name comme id si fourni
               type={type}
-              name={name}
+              name={name} // Ajout de l'attribut name
               placeholder={placeholder}
               required={required}
               value={value}
@@ -759,12 +780,12 @@
         // Composant TextArea Field (réutilisable)
         const TextAreaField = ({ label, placeholder, required = false, value, onChange, name }) => (
           <div>
-            <label htmlFor={name || label} className="block text-gray-300 text-sm font-bold mb-2">
+            <label htmlFor={name || label} className="block text-gray-300 text-sm font-bold mb-2"> {/* Utilise name comme id si fourni */}
               {label} {required && <span className="text-red-500">*</span>}
             </label>
             <textarea
-              id={name || label}
-              name={name}
+              id={name || label} // Utilise name comme id si fourni
+              name={name} // Ajout de l'attribut name
               placeholder={placeholder}
               required={required}
               rows="5"
@@ -1150,6 +1171,7 @@
                                 isAdminAuthenticated={isAdminAuthenticated}
                                 className="text-lg text-gray-300 leading-relaxed"
                             />
+                            {/* Assurez-vous que ce champ existe et est une chaîne de caractères dans content.json */}
                             <EditableText
                                 tag="p"
                                 contentKey="privacyPolicy.disclaimerText"
@@ -1165,38 +1187,52 @@
         // Composant pour la page Voiture Vitrine
         const ShowcaseCarPage = ({ isAdminAuthenticated }) => {
             const { content } = useContext(ContentContext);
-            // Récupère les images depuis le contenu JSON, si non défini, utilise un tableau vide
-            const images = content?.showcaseCar?.images || [];
+            const images = [
+                `Photo1.png`,
+                `photo2.png`,
+                `photo3.png`,
+                `photo4.png`,
+                `photo5.png`,
+                `photo6.png`,
+                `photo7.png`,
+                `photo8.png`,
+                `photo9.png`,
+                `photo10.png`
+            ];
 
             const [currentImageIndex, setCurrentImageIndex] = useState(0);
-            const [isPlaying, setIsPlaying] = useState(true);
+            const [isPlaying, setIsPlaying] = useState(true); // Auto-play by default
 
+            // Gère la lecture automatique du diaporama
             useEffect(() => {
                 let interval;
-                if (isPlaying && images.length > 0) { // S'assurer qu'il y a des images avant de lancer le diaporama
+                if (isPlaying) {
                     interval = setInterval(() => {
                         setCurrentImageIndex((prevIndex) =>
                             (prevIndex + 1) % images.length
                         );
-                    }, 3000);
+                    }, 3000); // Change l'image toutes les 3 secondes
                 }
-                return () => clearInterval(interval);
-            }, [isPlaying, images.length]);
+                return () => clearInterval(interval); // Nettoyage de l'intervalle
+            }, [isPlaying, images.length]); // Dépendances: isPlaying et la longueur du tableau d'images
 
+            // Fonction pour passer à l'image précédente
             const goToPrevious = () => {
                 setCurrentImageIndex((prevIndex) =>
                     prevIndex === 0 ? images.length - 1 : prevIndex - 1
                 );
-                setIsPlaying(false);
+                setIsPlaying(false); // Met en pause la lecture automatique lors de l'interaction manuelle
             };
 
+            // Fonction pour passer à l'image suivante
             const goToNext = () => {
                 setCurrentImageIndex((prevIndex) =>
                     (prevIndex + 1) % images.length
                 );
-                setIsPlaying(false);
+                setIsPlaying(false); // Met en pause la lecture automatique lors de l'interaction manuelle
             };
 
+            // Fonction pour basculer entre lecture et pause de l'autoplay
             const togglePlayPause = () => {
                 setIsPlaying(!isPlaying);
             };
@@ -1219,65 +1255,64 @@
 
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
                             {/* Conteneur du carrousel avec centrage flexbox */}
-                            {images.length > 0 ? (
-                                <div className="relative w-full h-96 md:h-[500px] overflow-hidden rounded-lg shadow-2xl border-4 border-red-700 group flex items-center justify-center">
-                                    <img
-                                        src={images[currentImageIndex]}
-                                        alt={`Volkswagen Scirocco R - Image ${currentImageIndex + 1}`}
-                                        className="w-full h-full object-contain object-center animate-fade-in transition-opacity duration-700"
-                                        onError={(e) => {
-                                            console.error(
-                                                `ERREUR DE CHARGEMENT D'IMAGE dans le diaporama:
-                                                Vérifiez l'URL exacte affichée ci-dessous dans votre navigateur.
-                                                URL échouée: ${e.target.src}`,
-                                                e
-                                            );
-                                            e.target.onerror = null;
-                                            e.target.src="https://placehold.co/800x500/FF0000/FFFFFF?text=Erreur+chargement+image";
-                                        }}
-                                    />
+                            <div className="relative w-full h-96 md:h-[500px] overflow-hidden rounded-lg shadow-2xl border-4 border-red-700 group flex items-center justify-center">
+                                {/* Image actuelle du diaporama - Utilise object-contain pour afficher l'image entière */}
+                                <img
+                                    src={images[currentImageIndex]}
+                                    alt={`Volkswagen Scirocco R - Image ${currentImageIndex + 1}`}
+                                    className="w-full h-full object-contain object-center animate-fade-in transition-opacity duration-700"
+                                    onError={(e) => {
+                                        console.error(
+                                            `ERREUR DE CHARGEMENT D'IMAGE dans le diaporama:
+                                            Vérifiez l'URL exacte affichée ci-dessous dans votre navigateur.
+                                            Vérifiez la CASSE (majuscules/minuscules) et l'EXTENSION du nom de fichier sur votre dépôt GitHub.
+                                            URL échouée: ${e.target.src}`,
+                                            e
+                                        );
+                                        e.target.onerror = null;
+                                        e.target.src="https://placehold.co/800x500/FF0000/FFFFFF?text=Erreur+chargement+image";
+                                    }}
+                                />
 
-                                    <button
-                                        onClick={goToPrevious}
-                                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 opacity-0 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white"
-                                        aria-label="Image précédente"
-                                    >
-                                        <ArrowLeftIcon />
-                                    </button>
-                                    <button
-                                        onClick={goToNext}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 opacity-0 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white"
-                                        aria-label="Image suivante"
-                                    >
-                                        <ArrowRightIcon />
-                                    </button>
+                                {/* Boutons de navigation (précédent/suivant) */}
+                                <button
+                                    onClick={goToPrevious}
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 opacity-0 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white"
+                                    aria-label="Image précédente"
+                                >
+                                    <ArrowLeftIcon />
+                                </button>
+                                <button
+                                    onClick={goToNext}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 opacity-0 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white"
+                                    aria-label="Image suivante"
+                                >
+                                    <ArrowRightIcon />
+                                </button>
 
-                                    <button
-                                        onClick={togglePlayPause}
-                                        className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black bg-opacity50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none focus:ring-2 focus:ring-white"
-                                        aria-label={isPlaying ? "Mettre en pause le diaporama" : "Lancer le diaporama"}
-                                    >
-                                        {isPlaying ? <PauseIcon /> : <PlayIcon />}
-                                    </button>
+                                {/* Bouton Play/Pause pour le diaporama automatique */}
+                                <button
+                                    onClick={togglePlayPause}
+                                    className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black bg-opacity50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none focus:ring-2 focus:ring-white"
+                                    aria-label={isPlaying ? "Mettre en pause le diaporama" : "Lancer le diaporama"}
+                                >
+                                    {isPlaying ? <PauseIcon /> : <PlayIcon />}
+                                </button>
 
-                                    <div className="absolute bottom-4 flex justify-center w-full space-x-2">
-                                        {images.map((_, index) => (
-                                            <button
-                                                key={index}
-                                                onClick={() => { setCurrentImageIndex(index); setIsPlaying(false); }}
-                                                className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                                                    index === currentImageIndex ? 'bg-red-500' : 'bg-gray-400 hover:bg-gray-300'
-                                                }`}
-                                                aria-label={`Voir l'image ${index + 1}`}
-                                            />
-                                        ))}
-                                    </div>
+                                {/* Indicateurs de pagination (points) */}
+                                <div className="absolute bottom-4 flex justify-center w-full space-x-2">
+                                    {images.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => { setCurrentImageIndex(index); setIsPlaying(false); }}
+                                            className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                                                index === currentImageIndex ? 'bg-red-500' : 'bg-gray-400 hover:bg-gray-300'
+                                            }`}
+                                            aria-label={`Voir l'image ${index + 1}`}
+                                        />
+                                    ))}
                                 </div>
-                            ) : (
-                                <p className="text-center text-gray-400 text-xl">
-                                    Aucune image à afficher pour la voiture vitrine.
-                                </p>
-                            )}
+                            </div>
 
                             <EditableText
                                 tag="h2"
@@ -1419,14 +1454,14 @@
             // Mot de passe pour l'administrateur. ATTENTION: Ce n'est PAS sécurisé pour une production !
             // Pour une production, ce mot de passe ne devrait pas être dans le code client.
             // Il serait envoyé à un backend pour vérification.
-            const ADMIN_PASSWORD_FRONTEND = 'Remy03200!'; // Gardé pour la démo frontend
+            const ADMIN_PASSWORD_FRONTEND = 'Remy03200!';
 
             const handleSubmit = (e) => {
                 e.preventDefault();
                 if (password === ADMIN_PASSWORD_FRONTEND) {
                     setIsAdminAuthenticated(true);
-                    localStorage.setItem('isAdminAuthenticated', 'true');
-                    setCurrentPage('admin-panel');
+                    localStorage.setItem('isAdminAuthenticated', 'true'); // Stocke l'état d'authentification
+                    setCurrentPage('admin-panel'); // Redirige vers le panneau admin
                 } else {
                     setError('Mot de passe incorrect.');
                 }
@@ -1436,6 +1471,7 @@
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-40 pb-12 font-inter flex items-center justify-center">
                     <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 w-full max-w-md animate-fade-in-up">
                         <h1 className="text-4xl font-extrabold text-center mb-4 text-orange-400">Accès Administrateur</h1>
+                        {/* Nouvelle phrase ajoutée ici */}
                         <p className="text-center text-sm text-gray-400 mb-6 italic">Giovanni te souhaite la bienvenue et un bon courage !</p>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <InputField
@@ -1460,112 +1496,32 @@
             );
         };
 
-        // NOUVEAU COMPOSANT : ImageUploader
-        // Ce composant gère la sélection de fichier, l'aperçu et simule le téléversement.
-        // Dans une vraie application Firebase, la logique de "uploadBytes" et "getDownloadURL" irait ici.
-        const ImageUploader = ({ currentImageUrl, onImageUploadSuccess, folderPath }) => {
-            const [file, setFile] = useState(null);
-            const [uploading, setUploading] = useState(false);
-            const [uploadError, setUploadError] = useState(null);
-            const [previewUrl, setPreviewUrl] = useState(currentImageUrl);
-
-            useEffect(() => {
-                setPreviewUrl(currentImageUrl);
-            }, [currentImageUrl]);
-
-            const handleFileChange = (e) => {
-                if (e.target.files[0]) {
-                    setFile(e.target.files[0]);
-                    setPreviewUrl(URL.createObjectURL(e.target.files[0]));
-                    setUploadError(null);
-                }
-            };
-
-            const handleUpload = async () => {
-                if (!file) {
-                    setUploadError("Veuillez sélectionner un fichier.");
-                    return;
-                }
-
-                setUploading(true);
-                setUploadError(null);
-
-                try {
-                    // --- VRAI CODE FIREBASE STORAGE ---
-                    // Utilisez directement les instances `storage` qui sont définies globalement par le hook useEffect de `App`
-                    const imageRef = firebase.ref(storage, `${folderPath}/${Date.now()}_${file.name}`);
-                    await firebase.uploadBytes(imageRef, file);
-                    const downloadURL = await firebase.getDownloadURL(imageRef);
-                    console.log("Fichier téléchargé sur Firebase Storage, URL:", downloadURL);
-                    // --- FIN DU VRAI CODE ---
-
-                    onImageUploadSuccess(downloadURL); // Passe l'URL générée au composant parent
-                    setFile(null); // Réinitialise le fichier sélectionné
-                    setPreviewUrl(downloadURL); // Affiche l'image "téléchargée"
-                } catch (error) {
-                    console.error("Erreur lors du téléversement de l'image (SIMULÉ):", error);
-                    setUploadError(`Échec du téléversement: ${error.message}. (Si en production, vérifier les règles Firebase Storage et la connexion).`);
-                } finally {
-                    setUploading(false);
-                }
-            };
-
-            return (
-                <div className="border border-gray-600 p-4 rounded-lg bg-gray-700 space-y-4">
-                    <h4 className="text-xl font-semibold text-white">Gestion de l'image</h4>
-                    {previewUrl && (
-                        <div className="w-full h-48 bg-gray-800 flex items-center justify-center rounded-md overflow-hidden">
-                            <img src={previewUrl} alt="Aperçu de l'image" className="max-w-full max-h-full object-contain" />
-                        </div>
-                    )}
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="block w-full text-sm text-gray-300
-                                   file:mr-4 file:py-2 file:px-4
-                                   file:rounded-full file:border-0
-                                   file:text-sm file:font-semibold
-                                   file:bg-blue-50 file:text-blue-700
-                                   hover:file:bg-blue-100"
-                    />
-                    <button
-                        onClick={handleUpload}
-                        disabled={!file || uploading}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {uploading ? 'Téléversement...' : 'Téléverser l\'image'}
-                    </button>
-                    {uploadError && <p className="text-red-400 text-sm">{uploadError}</p>}
-                </div>
-            );
-        };
-
-
         // Composant du panneau administrateur (contenu protégé)
         const AdminPanelPage = ({ setIsAdminAuthenticated, setCurrentPage }) => {
             const { content, updateContent } = useContext(ContentContext);
             const [localContent, setLocalContent] = useState(() => JSON.parse(JSON.stringify(content || {})));
             const [saveMessage, setSaveMessage] = useState('');
             const [isSaving, setIsSaving] = useState(false);
-            const [activeTab, setActiveTab] = useState('home');
+            const [activeTab, setActiveTab] = useState('home'); // Nouvelle gestion des onglets
 
             useEffect(() => {
                 setLocalContent(JSON.parse(JSON.stringify(content || {})));
-                console.log("AdminPanelPage: État du contenu mis à jour. localContent initialisé :", JSON.parse(JSON.stringify(content || {})));
+                console.log("AdminPanelPage: Content state updated. localContent initialized:", JSON.parse(JSON.stringify(content || {})));
             }, [content]);
 
             const handleLocalChange = (pageKey, fieldKey, newValue) => {
+                // console.log(`handleLocalChange: Attempting to update pageKey: "${pageKey}", fieldKey: "${fieldKey}", with newValue: "${newValue}"`);
                 setLocalContent(prevContent => {
                     const newContent = JSON.parse(JSON.stringify(prevContent));
                     const targetPage = newContent[pageKey];
 
                     if (!targetPage) {
-                        console.error(`handleLocalChange: Clé de page "${pageKey}" introuvable dans localContent.`);
+                        console.error(`handleLocalChange: Page key "${pageKey}" not found in localContent.`);
                         return prevContent;
                     }
 
                     setNestedProperty(targetPage, fieldKey, newValue);
+                    // console.log(`handleLocalChange: Local change applied. New localContent:`, newContent);
                     return newContent;
                 });
             };
@@ -1578,7 +1534,7 @@
                     }
                     newContent.blog.posts.push({
                         id: Date.now(),
-                        image: "https://placehold.co/600x400/000/FFF?text=Nouvelle+image", // Image placeholder par défaut
+                        image: "https://placehold.co/600x400/000/FFF?text=Nouvelle+image",
                         title: "Nouveau titre d'article",
                         description: "Nouvelle description d'article."
                     });
@@ -1596,50 +1552,53 @@
                 });
             };
 
-            const handleAddShowcaseImage = () => {
-                setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    if (!newContent.showcaseCar || !Array.isArray(newContent.showcaseCar.images)) {
-                        newContent.showcaseCar = { ...newContent.showcaseCar, images: [] };
-                    }
-                    newContent.showcaseCar.images.push(`https://placehold.co/800x500/000/FFF?text=Nouvelle+image+vitrine`);
-                    return newContent;
-                });
-            };
-
-            const handleRemoveShowcaseImage = (indexToRemove) => {
-                setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    if (newContent.showcaseCar && Array.isArray(newContent.showcaseCar.images)) {
-                        newContent.showcaseCar.images.splice(indexToRemove, 1);
-                    }
-                    return newContent;
-                });
-            };
-
             const handleSaveChanges = async () => {
                 setIsSaving(true);
                 setSaveMessage('Sauvegarde en cours...');
-                console.log("AdminPanelPage: Initialisation de la sauvegarde. Envoi du contenu :", JSON.parse(JSON.stringify(localContent)));
+                console.log("AdminPanelPage: Initiating save. Sending content:", JSON.parse(JSON.stringify(localContent)));
 
                 try {
-                    // --- VRAI CODE FIREBASE FIRESTORE ---
-                    // Utilisez directement l'instance `db` qui est définie globalement par le hook useEffect de `App`
-                    const contentDocRef = firebase.doc(db, 'content', 'appContent');
-                    await firebase.setDoc(contentDocRef, localContent); // setDoc écrase ou crée le document
-                    console.log("Contenu sauvegardé avec succès sur Firestore !");
-                    setSaveMessage("Modifications sauvegardées avec succès sur Firebase Firestore !");
-                    // Mettre à jour le contexte global de l'application avec le contenu local
-                    updateContent(null, localContent);
-                    console.log("AdminPanelPage: Mise à jour du contenu global déclenchée.");
-                    // --- FIN DU VRAI CODE ---
+                    const response = await fetch('http://localhost:3001/api/save-content', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer Remy03200!`
+                        },
+                        body: JSON.stringify(localContent)
+                    });
 
+                    const data = await response.json();
+                    if (response.ok) {
+                        setSaveMessage(`Modifications sauvegardées avec succès sur GitHub ! ${data.commitUrl ? `Voir le commit: ${data.commitUrl}` : ''}`);
+                        console.log("AdminPanelPage: Save successful. Response from backend:", data);
+                        Object.keys(localContent).forEach(pageKey => {
+                             const pageData = localContent[pageKey];
+                             if (pageData) {
+                                 Object.keys(pageData).forEach(fieldKey => {
+                                     const value = pageData[fieldKey];
+                                     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                                         Object.keys(value).forEach(nestedFieldKey => {
+                                             updateContent(`${pageKey}.${fieldKey}.${nestedFieldKey}`, value[nestedFieldKey]);
+                                         });
+                                     } else if (Array.isArray(value)) {
+                                         updateContent(`${pageKey}.${fieldKey}`, value);
+                                     } else {
+                                         updateContent(`${pageKey}.${fieldKey}`, value);
+                                     }
+                                 });
+                             }
+                        });
+                        console.log("AdminPanelPage: Global content update triggered.");
+                    } else {
+                        setSaveMessage(`Erreur de sauvegarde : ${data.message || 'Problème serveur'}`);
+                        console.error('AdminPanelPage: Erreur backend:', data);
+                    }
                 } catch (error) {
-                    console.error('AdminPanelPage: Erreur lors de la sauvegarde sur Firestore:', error);
-                    setSaveMessage(`Erreur de sauvegarde sur Firestore : ${error.message}`);
+                    console.error('AdminPanelPage: Erreur réseau lors de la sauvegarde:', error);
+                    setSaveMessage(`Erreur réseau. Impossible de contacter le serveur backend. Assurez-vous qu'il est en ligne et accessible (${error.message}).`);
                 } finally {
                     setIsSaving(false);
-                    setTimeout(() => setSaveMessage(''), 10000); // Message disparaît après 10 secondes
+                    setTimeout(() => setSaveMessage(''), 10000);
                 }
             };
 
@@ -1651,8 +1610,9 @@
 
             // Fonction utilitaire pour générer les champs éditables
             const renderEditableFields = (pageData, pageKey) => {
+                // Ensure pageData is an object before mapping
                 if (!pageData || typeof pageData !== 'object') {
-                    console.warn(`renderEditableFields a reçu des données de page invalides pour la clé : ${pageKey}`, pageData);
+                    console.warn(`renderEditableFields received invalid pageData for key: ${pageKey}`, pageData);
                     return null;
                 }
 
@@ -1660,15 +1620,11 @@
                     const fieldValue = pageData[fieldKey];
                     const contentPath = `${pageKey}.${fieldKey}`;
 
-                    // Gérer les cas spécifiques (posts pour le blog, images pour showcaseCar)
                     if (fieldKey === 'posts' && Array.isArray(fieldValue)) {
                         return null; // Géré par une section spécifique du blog
                     }
-                    if (fieldKey === 'images' && Array.isArray(fieldValue)) {
-                        return null; // Géré par une section spécifique de la voiture vitrine
-                    }
-
-                    if (typeof fieldValue === 'object' && fieldValue !== null && !Array.isArray(fieldValue)) {
+                     if (typeof fieldValue === 'object' && fieldValue !== null && !Array.isArray(fieldValue)) {
+                        // If it's a nested object that's not an array, render its fields recursively
                         return (
                             <div key={contentPath} className="pb-4 border-b border-gray-600 last:border-b-0">
                                 <h4 className="text-xl font-semibold mb-3 text-white capitalize">{fieldKey.replace(/([A-Z])/g, ' $1').trim()}:</h4>
@@ -1758,6 +1714,7 @@
                                             <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3">
                                                 Page Accueil
                                             </h2>
+                                            {/* Wrap adjacent elements in a fragment */}
                                             <div className="space-y-6">
                                                 {renderEditableFields(localContent.home, 'home')}
                                                 {localContent.home.offerTitle && (
@@ -1852,12 +1809,18 @@
                                                                             className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
                                                                         />
                                                                     </div>
-                                                                    {/* Intégration de l'ImageUploader pour chaque article de blog */}
-                                                                    <ImageUploader
-                                                                        currentImageUrl={post.image}
-                                                                        onImageUploadSuccess={(url) => handleLocalChange('blog', `posts.${index}.image`, url)}
-                                                                        folderPath={`images/blog_posts/${post.id}`}
-                                                                    />
+                                                                    <div>
+                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            value={post.image || ''}
+                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
+                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                        />
+                                                                        <p className="text-gray-400 text-xs mt-1">
+                                                                            Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
+                                                                        </p>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         ))}
@@ -1910,6 +1873,7 @@
                                             <h2 className="text-3xl font-bold mb-6 text-pink-400 capitalize border-b-2 border-pink-600 pb-3">
                                                 Page Contact
                                             </h2>
+                                            {/* Wrap adjacent elements in a fragment */}
                                             <React.Fragment>
                                                 {renderEditableFields(localContent.contact, 'contact')}
                                             </React.Fragment>
@@ -1977,14 +1941,7 @@
                                                 Page Voiture Vitrine
                                             </h2>
                                             <div className="space-y-6">
-                                                {renderEditableFields({
-                                                    mainTitle: localContent.showcaseCar.mainTitle,
-                                                    description: localContent.showcaseCar.description,
-                                                    preparationTitle: localContent.showcaseCar.preparationTitle,
-                                                    preparationDescription: localContent.showcaseCar.preparationDescription,
-                                                    finalDescription: localContent.showcaseCar.finalDescription,
-                                                }, 'showcaseCar')}
-
+                                                {renderEditableFields(localContent.showcaseCar, 'showcaseCar')}
                                                 {localContent.showcaseCar.piston && (
                                                     <div className="mt-8 pt-6 border-t-2 border-yellow-600">
                                                         <h3 className="text-2xl font-bold mb-4 text-yellow-300">Détails de la Préparation</h3>
@@ -2005,36 +1962,6 @@
                                                         }, 'showcaseCar')}
                                                     </div>
                                                 )}
-
-                                                <div className="mt-8 pt-6 border-t-2 border-red-600">
-                                                    <h3 className="text-2xl font-bold mb-4 text-red-300">Images de la Voiture Vitrine</h3>
-                                                    <button
-                                                        onClick={handleAddShowcaseImage}
-                                                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mb-6"
-                                                    >
-                                                        Ajouter une nouvelle image
-                                                    </button>
-                                                    <div className="space-y-8 mt-4">
-                                                        {localContent.showcaseCar.images && localContent.showcaseCar.images.map((imageUrl, index) => (
-                                                            <div key={index} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
-                                                                <h4 className="text-xl font-semibold mb-3 text-white">Image #{index + 1}</h4>
-                                                                <button
-                                                                    onClick={() => handleRemoveShowcaseImage(index)}
-                                                                    className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
-                                                                    aria-label="Supprimer l'image"
-                                                                >
-                                                                    <XIcon className="w-4 h-4"/>
-                                                                </button>
-                                                                {/* Intégration de l'ImageUploader pour chaque image de voiture vitrine */}
-                                                                <ImageUploader
-                                                                    currentImageUrl={imageUrl}
-                                                                    onImageUploadSuccess={(url) => handleLocalChange('showcaseCar', `images.${index}`, url)}
-                                                                    folderPath={`images/showcase_car/${index}`}
-                                                                />
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                     )}
@@ -2072,39 +1999,45 @@
         const MusicControl = () => {
             const audioRef = useRef(null);
             const [isPlaying, setIsPlaying] = useState(false);
-            const [showAutoplayMessage, setShowAutoplayMessage] = useState(false);
+            const [showAutoplayMessage, setShowAutoplayMessage] = useState(false); // Nouvel état pour le message d'autoplay
 
             useEffect(() => {
                 const audio = document.getElementById('background-music');
                 if (audio) {
                     audioRef.current = audio;
 
+                    // Tentative de lecture automatique
                     const playPromise = audio.play();
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
+                            // Lecture automatique réussie
                             setIsPlaying(true);
                         }).catch(error => {
+                            // Lecture automatique bloquée
                             console.log("La lecture automatique de la musique a été bloquée. L'utilisateur peut la démarrer manuellement.", error);
-                            setIsPlaying(false);
-                            setShowAutoplayMessage(true);
+                            setIsPlaying(false); // S'assurer que l'état reflète que la musique ne joue pas
+                            setShowAutoplayMessage(true); // Afficher le message
+                            // Masquer le message après 5 secondes si l'utilisateur n'interagit pas
                             setTimeout(() => {
                                 setShowAutoplayMessage(false);
                             }, 5000);
                         });
                     }
 
+                    // Mettre à jour l'état isPlaying si la lecture est interrompue par l'utilisateur ou le système
                     const handleAudioPause = () => setIsPlaying(false);
                     const handleAudioPlay = () => setIsPlaying(true);
 
                     audio.addEventListener('pause', handleAudioPause);
                     audio.addEventListener('play', handleAudioPlay);
 
+                    // Nettoyage de l'effet
                     return () => {
                         audio.removeEventListener('pause', handleAudioPause);
                         audio.removeEventListener('play', handleAudioPlay);
                     };
                 }
-            }, []);
+            }, []); // S'exécute une seule fois au montage du composant
 
             const togglePlayPause = () => {
                 const audio = audioRef.current;
@@ -2112,13 +2045,18 @@
                     if (isPlaying) {
                         audio.pause();
                     } else {
+                        // Tenter de jouer la musique. C'est ici que le navigateur pourrait encore bloquer si ce n'est pas initié par un geste utilisateur fort.
                         audio.play().then(() => {
                             setIsPlaying(true);
-                            setShowAutoplayMessage(false);
+                            setShowAutoplayMessage(false); // Masquer le message si l'utilisateur interagit
                         }).catch(error => {
                             console.error("Erreur lors de la tentative de lecture par le bouton:", error);
+                            // Optionnel: Afficher un message à l'utilisateur si la lecture échoue même avec le clic
+                            // Utilisez une modal personnalisée si vous voulez une meilleure UX que alert()
+                             // alert("Impossible de lire la musique. Votre navigateur pourrait bloquer la lecture automatique.");
                         });
                     }
+                    // La mise à jour de l'état isPlaying se fait maintenant dans les handlers 'play' et 'pause' ou dans le .then()
                 }
             };
 
@@ -2143,258 +2081,180 @@
 
         // Composant principal de l'application
         const App = () => {
-            // Configuration Firebase (REMPLACEZ CES VALEURS PAR LES VÔTRES)
-            // Vous trouverez ces informations dans la console Firebase > Paramètres du projet > Vos applications
-            const firebaseConfig = {
-                apiKey: "AIzaSyAIveRWw9gBJ_aHWarkg8e8OBlExT79KI8",
-                authDomain: "brmotorsport-website-prod.firebaseapp.com",
-                projectId: "brmotorsport-website-prod",
-                storageBucket: "brmotorsport-website-prod.firebasestorage.app",
-                messagingSenderId: "363694610989",
-                appId: "1:363694610989:web:3cbbe3423dc2f89c1d36a4",
-                // measurementId: "G-7GDLE3WVJ7" // measurementId n'est pas utilisé dans le SDK Firebase JS pour le web initialisation simple
-            };
-
-            // Contenu par défaut de l'application
-            const defaultContent = {
-                home: {
-                    mainTitle: "BRMOTORSPORT",
-                    description: "Spécialiste de la reprogrammation moteur et de l'optimisation de véhicules. Performance, fiabilité et satisfaction client sont nos maîtres mots.",
-                    contactMessage: "Contactez-nous dès aujourd'hui pour transformer votre véhicule !",
-                    offerTitle: "Nos Offres",
-                    offer1Title: "Reprogrammation Moteur",
-                    offer1Description: "Optimisation des performances et de la consommation de votre véhicule.",
-                    offer2Title: "Diagnostic Électronique",
-                    offer2Description: "Identification précise des problèmes moteur et électroniques.",
-                    offer3Title: "Préparation de Véhicule",
-                    offer3Description: "Solutions complètes pour piste et route, du châssis au moteur.",
-                    offer4Title: "Conseil Personnalisé",
-                    offer4Description: "Accompagnement expert pour tous vos projets automobiles.",
-                    trustTitle: "Pourquoi nous faire confiance ?",
-                    trust1Title: "Rapidité d'Intervention",
-                    trust1Description: "Des délais optimisés pour que vous retrouviez votre véhicule au plus vite.",
-                    trust2Title: "Transparence et Confiance",
-                    trust2Description: "Une communication claire et honnête à chaque étape du processus.",
-                    trust3Title: "Qualité Garantie",
-                    trust3Description: "Des prestations de haute qualité avec des résultats mesurables.",
-                    trust4Title: "Satisfaction Client",
-                    trust4Description: "Votre plaisir de conduire est notre plus grande réussite.",
-                    teamTitle: "Notre Équipe",
-                    teamDescription: "Notre équipe est composée de professionnels passionnés et expérimentés, dévoués à l'excellence automobile."
-                },
-                blog: {
-                    mainTitle: "Notre Blog BRMOTORSPORT",
-                    description: "Découvrez nos dernières actualités, projets et optimisations automobiles.",
-                    posts: [
-                        { id: 1, image: "https://placehold.co/600x400/000/FFF?text=Porsche_Cayenne", title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur", description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime." },
-                        { id: 2, image: "https://placehold.co/600x400/000/FFF?text=BMW_Serie2", title: "BMW Série 2 : Reprogrammation et FAP OFF", description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité." },
-                        { id: 3, image: "https://placehold.co/600x400/000/FFF?text=VW_Golf_GTI", title: "VW Golf GTI : Boost de Performance Ultime", description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !" },
-                        { id: 4, image: "https://placehold.co/600x400/000/FFF?text=Seat_Ibiza", title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini." },
-                        { id: 5, image: "https://placehold.co/600x400/000/FFF?text=VW_Golf_5_GTI", title: "VW Golf 5 GTI : Mise à Jour Cartographie", description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !" },
-                        { id: 6, image: "https://placehold.co/600x400/000/FFF?text=Peugeot_206_HDi", title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation", description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led)." },
-                        { id: 7, image: "https://placehold.co/600x400/000/FFF?text=Seat_Leon", title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm." },
-                        { id: 8, image: "https://placehold.co/600x400/000/FFF?text=Ancienne_Voiture", title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité." },
-                        { id: 9, image: "https://placehold.co/600x400/000/FFF?text=Audi_TFSI", title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité." },
-                        { id: 10, image: "https://placehold.co/600x400/000/FFF?text=Triumph_TR3", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité." },
-                        { id: 11, image: "https://placehold.co/600x400/000/FFF?text=Mercedes_2021", title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
-                    ]
-                },
-                aboutUs: {
-                    mainTitle: "Qui sommes-nous ?",
-                    description: "BRMOTORSPORT est votre partenaire de confiance pour l'optimisation automobile. Fondée sur la passion de la performance et de la mécanique, notre entreprise s'engage à offrir des services de reprogrammation moteur, de préparation de véhicules et de diagnostics électroniques de pointe.",
-                    historyTitle: "Notre Histoire",
-                    historyParagraph1: "Notre aventure a débuté il y a plusieurs années, animée par une vision : celle de repousser les limites de la performance automobile tout en garantissant une fiabilité et une sécurité optimale. Forts d'une expertise technique approfondie et d'une passion inébranlable pour les voitures, nous avons bâti BRMOTORSPORT sur des valeurs de précision, d'innovation et de dévouement. Chaque véhicule qui passe entre nos mains est traité avec le plus grand soin, comme si c'était le nôtre.",
-                    historyParagraph2: "Au fil des ans, nous avons développé des compétences uniques en reprogrammation sur mesure, en travaillant avec les technologies les plus avancées pour extraire le potentiel caché de chaque moteur. Notre histoire est marquée par des milliers de clients satisfaits, des voitures transformées et une réputation bâtie sur l'excellence. Nous sommes fiers de notre parcours et de l'impact que nous avons sur la performance et le plaisir de conduite de nos clients.",
-                    valuesTitle: "Nos Valeurs",
-                    value1Title: "Expertise Technique",
-                    value1Description: "Une connaissance approfondie des systèmes moteurs et des technologies d'optimisation.",
-                    value2Title: "Innovation Continue",
-                    value2Description: "Veille technologique et développement de solutions toujours plus performantes.",
-                    value3Title: "Qualité et Fiabilité",
-                    value3Description: "Des interventions rigoureuses pour une durabilité et une sécurité maximales.",
-                    value4Title: "Service Client Exceptionnel",
-                    value4Description: "Écoute, conseil personnalisé et accompagnement pour une satisfaction totale."
-                },
-                contact: {
-                    mainTitle: "Contactez-nous",
-                    description: "Nous sommes là pour répondre à toutes vos questions et vous accompagner dans vos projets d'optimisation automobile.",
-                    emailTitle: "Email",
-                    email: "contact@brmotorsport.com",
-                    phoneTitle: "Téléphone",
-                    phoneNumber: "06.12.34.56.78",
-                    instagramTitle: "Instagram",
-                    instagramHandle: "@brmotorsport_official"
-                },
-                legalMentions: {
-                    mainTitle: "Mentions Légales",
-                    sectionTitle: "Informations Générales",
-                    paragraph1: "Ce site web est édité par BRMOTORSPORT.",
-                    paragraph2: "Adresse : [Votre Adresse Complète]",
-                    list1Item1: "Numéro de téléphone : [Votre Numéro de Téléphone]",
-                    list1Item2: "Adresse e-mail : [Votre E-mail]",
-                    list1Item3: "Numéro d'immatriculation : [Votre Numéro SIRET/RCS]",
-                    paragraph3: "Directeur de la publication : Monsieur [Votre Nom]",
-                    list2Item1: "Hébergeur : GitHub Pages",
-                    list2Item2: "Adresse : [Adresse de GitHub]",
-                    list2Item3: "Site web : https://github.com",
-                    paragraph4: "Propriété intellectuelle : L'ensemble des éléments de ce site (textes, images, graphismes, logos, icônes, etc.) est la propriété exclusive de BRMOTORSPORT, sauf mention contraire. Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de BRMOTORSPORT."
-                },
-                privacyPolicy: {
-                    mainTitle: "Politique de Confidentialité",
-                    introTitle: "Introduction",
-                    introText: "La présente politique de confidentialité décrit comment BRMOTORSPORT collecte, utilise et protège vos informations personnelles lorsque vous utilisez notre site web.",
-                    collectionTitle: "Collecte des Informations Personnelles",
-                    collectionText: "Nous collectons des informations lorsque vous nous contactez via le formulaire de contact, lorsque vous naviguez sur notre site, ou lorsque vous interagissez avec nos services. Les informations collectées peuvent inclure votre nom, adresse e-mail, numéro de téléphone, et toute autre information que vous choisissez de nous fournir.",
-                    usageTitle: "Utilisation des Informations",
-                    usageListItem1: "Pour répondre à vos demandes et vous fournir les services que vous avez sollicités.",
-                    usageListItem2: "Pour améliorer notre site web et nos offres de services.",
-                    usageListItem3: "Pour vous envoyer des communications marketing (avec votre consentement).",
-                    protectionTitle: "Protection des Informations",
-                    protectionText: "Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Seuls les employés qui ont besoin d'effectuer un travail spécifique (par exemple, la facturation ou le service client) ont accès aux informations personnelles identifiables.",
-                    rightsTitle: "Vos Droits",
-                    rightsText: "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition au traitement de vos données personnelles. Pour exercer ces droits, veuillez nous contacter à [Votre Adresse E-mail].",
-                    disclaimerText: "Cette politique de confidentialité peut être mise à jour occasionnellement. Nous vous invitons à la consulter régulièrement."
-                },
-                showcaseCar: {
-                    mainTitle: "Notre Voiture Vitrine",
-                    description: "Découvrez notre dernière préparation exceptionnelle : une Volkswagen Scirocco R avec une optimisation Stage 3 poussée, développant plus de 500 chevaux.",
-                    preparationTitle: "Détails de la Préparation Stage 3",
-                    preparationDescription: "Ce véhicule a subi une transformation complète pour atteindre des niveaux de performance extrêmes, tout en conservant une fiabilité optimale.",
-                    piston: "Pistons forgés",
-                    bielles: "Bielles forgées",
-                    soupapes: "Soupapes renforcées",
-                    adm: "Admission gros volume",
-                    ressort: "Ressorts de soupapes renforcés",
-                    viserie: "Vis de bielles, vilebrequin et culasse renforcées",
-                    pompeHuile: "Pompe à huile gros débit",
-                    turbo: "Turbo hybride sur mesure",
-                    wastegate: "Wastegate externe",
-                    injecteurs: "Injecteurs gros débit",
-                    pipAdmission: "Pipe d'admission gros volume",
-                    wmi: "Système WMI (Water-Methanol Injection)",
-                    embrayage: "Embrayage renforcé",
-                    finalDescription: "Chaque composant a été soigneusement sélectionné et installé pour garantir une synergie parfaite et une expérience de conduite inégalée sur route comme sur circuit.",
-                    images: [ // AJOUT DE CE TABLEAU D'IMAGES
-                        "https://placehold.co/800x500/FF0000/FFFFFF?text=Scirocco+R+1",
-                        "https://placehold.co/800x500/00FF00/FFFFFF?text=Scirocco+R+2",
-                        "https://placehold.co/800x500/0000FF/FFFFFF?text=Scirocco+R+3"
-                    ]
-                }
-            };
-
             // Initialise isAdminAuthenticated en lisant depuis localStorage
             const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(
                 localStorage.getItem('isAdminAuthenticated') === 'true'
             );
             const [currentPage, setCurrentPage] = useState('accueil');
-            // Initialiser le contenu avec les données par défaut avant le chargement de Firebase
-            const [content, setContent] = useState(defaultContent); 
-            const [loadingContent, setLoadingContent] = useState(true);
-            const [errorContent, setErrorContent] = useState(null);
-            const [firebaseInitialized, setFirebaseInitialized] = useState(false);
+            const [content, setContent] = useState(null); // Initialiser à null, sera chargé depuis le JSON
+            const [loadingContent, setLoadingContent] = useState(true); // État de chargement du contenu
+            const [errorContent, setErrorContent] = useState(null); // État d'erreur de chargement du contenu
 
-            // Initialisation de Firebase et écoute des changements de contenu Firestore
+            // Fonction pour charger le contenu depuis content.json
             useEffect(() => {
-                const initFirebaseAndFetchContent = async () => {
-                    // Assurez-vous que window.firebase est disponible (chargé par le script module)
-                    if (window.firebase && !firebaseInitialized) {
-                        try {
-                            firebaseApp = window.firebase.initializeApp(firebaseConfig);
-                            db = window.firebase.getFirestore(firebaseApp);
-                            storage = window.firebase.getStorage(firebaseApp);
-                            setFirebaseInitialized(true);
-                            console.log("Firebase initialisé !");
-
-                            // Écoute en temps réel des changements du document 'appContent' dans la collection 'content'
-                            const contentDocRef = window.firebase.doc(db, 'content', 'appContent');
-                            window.firebase.onSnapshot(contentDocRef, (docSnap) => {
-                                if (docSnap.exists()) {
-                                    const fetchedContent = docSnap.data();
-                                    // Vérifie si le contenu récupéré est "vide" ou incomplet, sauf la clé 'version'
-                                    const hasContentKeys = Object.keys(fetchedContent).some(key => key !== 'version');
-                                    if (!hasContentKeys) { // Si le document existe mais ne contient pas les clés de contenu principales
-                                        console.log("Document 'appContent' trouvé mais vide/incomplet. Remplissage avec le contenu par défaut.");
-                                        setContent(defaultContent); // Mettre à jour l'état avec le contenu par défaut
-                                        // Tente de créer le document par défaut dans Firestore (cela l'écrasera s'il existe)
-                                        window.firebase.setDoc(contentDocRef, defaultContent)
-                                            .then(() => console.log("Document de contenu par défaut créé/mis à jour dans Firestore."))
-                                            .catch(err => console.error("Erreur lors de la création/mise à jour du document par défaut dans Firestore:", err));
-                                    } else {
-                                        setContent(fetchedContent);
-                                        console.log("Contenu de Firestore mis à jour :", fetchedContent);
-                                    }
-                                    setLoadingContent(false);
-                                } else {
-                                    console.log("Document 'appContent' introuvable dans Firestore. Utilisation et création du contenu par défaut.");
-                                    setContent(defaultContent); // Mettre à jour l'état avec le contenu par défaut
-                                    // Tente de créer le document par défaut dans Firestore
-                                    window.firebase.setDoc(contentDocRef, defaultContent)
-                                        .then(() => console.log("Document de contenu par défaut créé dans Firestore."))
-                                        .catch(err => console.error("Erreur lors de la création du document par défaut dans Firestore:", err));
-                                    setLoadingContent(false);
-                                }
-                            }, (error) => {
-                                console.error("Erreur lors de l'écoute des changements Firestore :", error);
-                                setErrorContent("Impossible de charger le contenu du site. Veuillez réessayer plus tard.");
-                                setLoadingContent(false);
-                            });
-                        } catch (error) {
-                            console.error("Erreur lors de l'initialisation de Firebase :", error);
-                            setErrorContent("Impossible d'initialiser Firebase. Vérifiez votre configuration.");
-                            setLoadingContent(false);
+                const fetchContent = async () => {
+                    console.log("App: Attempting to fetch content.json...");
+                    try {
+                        const response = await fetch('content.json'); // Assurez-vous que content.json est à la racine de votre dépôt
+                        if (!response.ok) {
+                            throw new Error(`Erreur HTTP: ${response.status}`);
                         }
+                        const data = await response.json();
+                        setContent(data);
+                        console.log("App: content.json loaded successfully:", data);
+                    } catch (error) {
+                        console.error("App: Erreur lors du chargement de content.json:", error);
+                        setErrorContent("Impossible de charger le contenu du site. Veuillez réessayer plus tard.");
+                        // Fallback vers un contenu par défaut si le chargement échoue
+                        setContent({
+                            home: {
+                                mainTitle: "BRMOTORSPORT",
+                                description: "Spécialiste de la reprogrammation moteur et de l'optimisation de véhicules. Performance, fiabilité et satisfaction client sont nos maîtres mots.",
+                                contactMessage: "Contactez-nous dès aujourd'hui pour transformer votre véhicule !",
+                                offerTitle: "Nos Offres",
+                                offer1Title: "Reprogrammation Moteur",
+                                offer1Description: "Optimisation des performances et de la consommation de votre véhicule.",
+                                offer2Title: "Diagnostic Électronique",
+                                offer2Description: "Identification précise des problèmes moteur et électroniques.",
+                                offer3Title: "Préparation de Véhicule",
+                                offer3Description: "Solutions complètes pour piste et route, du châssis au moteur.",
+                                offer4Title: "Conseil Personnalisé",
+                                offer4Description: "Accompagnement expert pour tous vos projets automobiles.",
+                                trustTitle: "Pourquoi nous faire confiance ?",
+                                trust1Title: "Rapidité d'Intervention",
+                                trust1Description: "Des délais optimisés pour que vous retrouviez votre véhicule au plus vite.",
+                                trust2Title: "Transparence et Confiance",
+                                trust2Description: "Une communication claire et honnête à chaque étape du processus.",
+                                trust3Title: "Qualité Garantie",
+                                trust3Description: "Des prestations de haute qualité avec des résultats mesurables.",
+                                trust4Title: "Satisfaction Client",
+                                trust4Description: "Votre plaisir de conduire est notre plus grande réussite.",
+                                teamTitle: "Notre Équipe",
+                                teamDescription: "Notre équipe est composée de professionnels passionnés et expérimentés, dévoués à l'excellence automobile."
+                            },
+                            blog: {
+                                mainTitle: "Notre Blog BRMOTORSPORT",
+                                description: "Découvrez nos dernières actualités, projets et optimisations automobiles.",
+                                posts: [
+                                    { id: 1, image: "IMG_9611.png", title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur", description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime." },
+                                    { id: 2, image: "IMG_9609.png", title: "BMW Série 2 : Reprogrammation et FAP OFF", description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité." },
+                                    { id: 3, image: "IMG_9607.png", title: "VW Golf GTI : Boost de Performance Ultime", description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !" },
+                                    { id: 4, image: "IMG_9608.png", title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini." },
+                                    { id: 5, image: "IMG_9610.png", title: "VW Golf 5 GTI : Mise à Jour Cartographie", description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !" },
+                                    { id: 6, image: "Photopeugeot.png", title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation", description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led)." },
+                                    { id: 7, image: "Seat1.png", title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm." },
+                                    { id: 8, image: "anciennevoiture.png", title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité." },
+                                    { id: 9, image: "audi1.png", title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité." },
+                                    { id: 10, image: "gx.png", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité." },
+                                    { id: 11, image: "mercedes2021.png", title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
+                                ]
+                            },
+                            aboutUs: {
+                                mainTitle: "Qui sommes-nous ?",
+                                description: "BRMOTORSPORT est votre partenaire de confiance pour l'optimisation automobile. Fondée sur la passion de la performance et de la mécanique, notre entreprise s'engage à offrir des services de reprogrammation moteur, de préparation de véhicules et de diagnostics électroniques de pointe.",
+                                historyTitle: "Notre Histoire",
+                                historyParagraph1: "Notre aventure a débuté il y a plusieurs années, animée par une vision : celle de repousser les limites de la performance automobile tout en garantissant une fiabilité et une sécurité optimale. Forts d'une expertise technique approfondie et d'une passion inébranlable pour les voitures, nous avons bâti BRMOTORSPORT sur des valeurs de précision, d'innovation et de dévouement. Chaque véhicule qui passe entre nos mains est traité avec le plus grand soin, comme si c'était le nôtre.",
+                                historyParagraph2: "Au fil des ans, nous avons développé des compétences uniques en reprogrammation sur mesure, en travaillant avec les technologies les plus avancées pour extraire le potentiel caché de chaque moteur. Notre histoire est marquée par des milliers de clients satisfaits, des voitures transformées et une réputation bâtie sur l'excellence. Nous sommes fiers de notre parcours et de l'impact que nous avons sur la performance et le plaisir de conduite de nos clients.",
+                                valuesTitle: "Nos Valeurs",
+                                value1Title: "Expertise Technique",
+                                value1Description: "Une connaissance approfondie des systèmes moteurs et des technologies d'optimisation.",
+                                value2Title: "Innovation Continue",
+                                value2Description: "Veille technologique et développement de solutions toujours plus performantes.",
+                                value3Title: "Qualité et Fiabilité",
+                                value3Description: "Des interventions rigoureuses pour une durabilité et une sécurité maximales.",
+                                value4Title: "Service Client Exceptionnel",
+                                value4Description: "Écoute, conseil personnalisé et accompagnement pour une satisfaction totale."
+                            },
+                            contact: {
+                                mainTitle: "Contactez-nous",
+                                description: "Nous sommes là pour répondre à toutes vos questions et vous accompagner dans vos projets d'optimisation automobile.",
+                                emailTitle: "Email",
+                                email: "contact@brmotorsport.com",
+                                phoneTitle: "Téléphone",
+                                phoneNumber: "06.12.34.56.78",
+                                instagramTitle: "Instagram",
+                                instagramHandle: "@brmotorsport_official"
+                            },
+                            legalMentions: {
+                                mainTitle: "Mentions Légales",
+                                sectionTitle: "Informations Générales",
+                                paragraph1: "Ce site web est édité par BRMOTORSPORT.",
+                                paragraph2: "Adresse : [Votre Adresse Complète]",
+                                list1Item1: "Numéro de téléphone : [Votre Numéro de Téléphone]",
+                                list1Item2: "Adresse e-mail : [Votre E-mail]",
+                                list1Item3: "Numéro d'immatriculation : [Votre Numéro SIRET/RCS]",
+                                paragraph3: "Directeur de la publication : Monsieur [Votre Nom]",
+                                list2Item1: "Hébergeur : GitHub Pages",
+                                list2Item2: "Adresse : [Adresse de GitHub]",
+                                list2Item3: "Site web : https://github.com",
+                                paragraph4: "Propriété intellectuelle : L'ensemble des éléments de ce site (textes, images, graphismes, logos, icônes, etc.) est la propriété exclusive de BRMOTORSPORT, sauf mention contraire. Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de BRMOTORSPORT."
+                            },
+                            privacyPolicy: {
+                                mainTitle: "Politique de Confidentialité",
+                                introTitle: "Introduction",
+                                introText: "La présente politique de confidentialité décrit comment BRMOTORSPORT collecte, utilise et protège vos informations personnelles lorsque vous utilisez notre site web.",
+                                collectionTitle: "Collecte des Informations Personnelles",
+                                collectionText: "Nous collectons des informations lorsque vous nous contactez via le formulaire de contact, lorsque vous naviguez sur notre site, ou lorsque vous interagissez avec nos services. Les informations collectées peuvent inclure votre nom, adresse e-mail, numéro de téléphone, et toute autre information que vous choisissez de nous fournir.",
+                                usageTitle: "Utilisation des Informations",
+                                usageListItem1: "Pour répondre à vos demandes et vous fournir les services que vous avez sollicités.",
+                                usageListItem2: "Pour améliorer notre site web et nos offres de services.",
+                                usageListItem3: "Pour vous envoyer des communications marketing (avec votre consentement).",
+                                protectionTitle: "Protection des Informations",
+                                protectionText: "Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Seuls les employés qui ont besoin d'effectuer un travail spécifique (par exemple, la facturation ou le service client) ont accès aux informations personnelles identifiables.",
+                                rightsTitle: "Vos Droits",
+                                rightsText: "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition au traitement de vos données personnelles. Pour exercer ces droits, veuillez nous contacter à [Votre Adresse E-mail].",
+                                disclaimerText: "Cette politique de confidentialité peut être mise à jour occasionnellement. Nous vous invitons à la consulter régulièrement."
+                            },
+                            showcaseCar: {
+                                mainTitle: "Notre Voiture Vitrine",
+                                description: "Découvrez notre dernière préparation exceptionnelle : une Volkswagen Scirocco R avec une optimisation Stage 3 poussée, développant plus de 500 chevaux.",
+                                preparationTitle: "Détails de la Préparation Stage 3",
+                                preparationDescription: "Ce véhicule a subi une transformation complète pour atteindre des niveaux de performance extrêmes, tout en conservant une fiabilité optimale.",
+                                piston: "Pistons forgés",
+                                bielles: "Bielles forgées",
+                                soupapes: "Soupapes renforcées",
+                                adm: "Admission gros volume",
+                                ressort: "Ressorts de soupapes renforcés",
+                                viserie: "Vis de bielles, vilebrequin et culasse renforcées",
+                                pompeHuile: "Pompe à huile gros débit",
+                                turbo: "Turbo hybride sur mesure",
+                                wastegate: "Wastegate externe",
+                                injecteurs: "Injecteurs gros débit",
+                                pipAdmission: "Pipe d'admission gros volume",
+                                wmi: "Système WMI (Water-Methanol Injection)",
+                                embrayage: "Embrayage renforcé",
+                                finalDescription: "Chaque composant a été soigneusement sélectionné et installé pour garantir une synergie parfaite et une expérience de conduite inégalée sur route comme sur circuit."
+                            }
+                        });
+                    } finally {
+                        setLoadingContent(false);
                     }
                 };
 
-                initFirebaseAndFetchContent();
-            }, [firebaseInitialized]); // Dépend de firebaseInitialized pour ne s'exécuter qu'une fois Firebase chargé
+                fetchContent();
+            }, []); // S'exécute une seule fois au montage du composant
 
-
-            // Fonction pour mettre à jour une partie spécifique du contenu dans Firestore
-            // Cette fonction est utilisée par les composants enfants (ex: AdminPanelPage, EditableText)
-            const updateContentInFirestore = async (keyPath, newValue) => {
-                if (!db) {
-                    console.error("Firestore n'est pas initialisé.");
-                    return;
-                }
-                setLoadingContent(true); // Afficher un état de chargement global pour les mises à jour
-
-                const contentDocRef = window.firebase.doc(db, 'content', 'appContent');
-                try {
-                    // Nous allons toujours obtenir le document actuel avant de le modifier pour éviter d'écraser des données
-                    const docSnap = await window.firebase.getDoc(contentDocRef);
-                    let currentContent = docSnap.exists() ? docSnap.data() : {};
-
-                    // Si keyPath est null, cela signifie que nous passons un objet de contenu complet
-                    if (keyPath === null && typeof newValue === 'object') {
-                        currentContent = newValue;
-                    } else {
-                        // Utiliser setNestedProperty pour mettre à jour localement l'objet avant l'envoi
-                        setNestedProperty(currentContent, keyPath, newValue);
-                    }
-
-                    await window.firebase.setDoc(contentDocRef, currentContent); // setDoc écrase ou crée le document
-                    console.log(`Contenu de "${keyPath || 'l\'ensemble du document'}" mis à jour dans Firestore.`);
-                    setLoadingContent(false);
-                } catch (error) {
-                    console.error(`Erreur lors de la mise à jour de "${keyPath || 'l\'ensemble du document'}" dans Firestore :`, error);
-                    setErrorContent(`Échec de la mise à jour du contenu: ${error.message}`);
-                    setLoadingContent(false);
-                }
+            // Fonction pour mettre à jour une partie spécifique du contenu
+            const updateContent = (keyPath, newValue) => {
+                setContent(prevContent => {
+                    const newContent = JSON.parse(JSON.stringify(prevContent)); // Deep copy
+                    setNestedProperty(newContent, keyPath, newValue);
+                    // console.log(`App: Global content updated via updateContent for ${keyPath}. New content state:`, newContent);
+                    return newContent;
+                });
             };
-
 
             // Fonction de déconnexion de l'administrateur
             const handleLogout = () => {
                 setIsAdminAuthenticated(false);
-                localStorage.removeItem('isAdminAuthenticated');
-                setCurrentPage('accueil');
+                localStorage.removeItem('isAdminAuthenticated'); // Supprime l'état d'authentification de localStorage
+                setCurrentPage('accueil'); // Redirige vers l'accueil après déconnexion
             };
 
             // Ajout d'un effet pour faire défiler la page vers le haut à chaque changement de page
             useEffect(() => {
-                window.scrollTo(0, 0);
-            }, [currentPage]);
+                window.scrollTo(0, 0); // Fait défiler la fenêtre à la position 0, 0 (en haut à gauche)
+            }, [currentPage]); // Se déclenche à chaque fois que `currentPage` change
 
             if (loadingContent) {
                 return (
@@ -2432,26 +2292,27 @@
                 case 'admin-login':
                   return <AdminLoginPage setIsAdminAuthenticated={setIsAdminAuthenticated} setCurrentPage={setCurrentPage} />;
                 case 'admin-panel':
+                  // Si l'utilisateur n'est pas authentifié, le rediriger vers la page de connexion admin
                   if (!isAdminAuthenticated) {
                     setCurrentPage('admin-login');
-                    return null;
+                    return null; // ou un composant de chargement/redirection
                   }
-                  // Passe la fonction de mise à jour Firestore au panneau admin
-                  return <AdminPanelPage setIsAdminAuthenticated={setIsAdminAuthenticated} setCurrentPage={setCurrentPage} updateContent={updateContentInFirestore} />;
+                  return <AdminPanelPage setIsAdminAuthenticated={setIsAdminAuthenticated} setCurrentPage={setCurrentPage} />;
                 default:
                   return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
               }
             };
 
             return (
-                <ContentContext.Provider value={{ content, updateContent: updateContentInFirestore }}>
+                <ContentContext.Provider value={{ content, updateContent }}>
                     <div className="min-h-screen bg-black font-inter">
-                        <ScrollingBanner />
+                        <ScrollingBanner /> {/* Nouvelle bannière défilante */}
+                        {/* Passe isAdminAuthenticated et handleLogout à Navbar */}
                         <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} />
                         <main className="flex-grow">
                             {renderPage()}
                         </main>
-                        <MusicControl />
+                        <MusicControl /> {/* Ajout du contrôle de musique */}
                         <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
                             <div className="container mx-auto px-4">
                                 <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
@@ -2460,6 +2321,7 @@
                                     <span className="text-gray-600">|</span>
                                     <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
                                     <span className="text-gray-600">|</span>
+                                    {/* Lien Admin/Déconnexion conditionnel dans le footer */}
                                     {isAdminAuthenticated ? (
                                         <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="hover:text-red-500 transition duration-300">Déconnexion</a>
                                     ) : (
@@ -2474,6 +2336,16 @@
             );
         };
 
+        // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
+        // Ancien code dans window.onload:
+        // window.onload = function() {
+        //     const container = document.getElementById('root');
+        //     const root = ReactDOM.createRoot(container);
+        //     root.render(<App />);
+        // };
+
+        // Nouveau code de rendu direct après la définition de l'App,
+        // s'assurant que ReactDOM est disponible une fois les scripts chargés et parsés.
         const container = document.getElementById('root');
         const root = ReactDOM.createRoot(container);
         root.render(<App />);
