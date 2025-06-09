@@ -182,7 +182,7 @@
     <!-- Section Audio de fond -->
     <!-- 'autoplay' tente de lancer la lecture automatique, mais peut être bloqué par les navigateurs mobiles. -->
     <!-- 'loop' assure que la musique se répète. -->
-    <!-- 'style="display:none;"' masque les contrôles de lecture par default. -->
+    <!-- 'style="display:none;"' masque les contrôles de lecture par défaut. -->
     <!-- Ajout de l'attribut volume pour réduire le son (valeur de 0.0 à 1.0) -->
     <audio id="background-music" autoplay loop volume="0.01" style="display:none;">
         <!-- L'URL est construite en utilisant votre domaine GitHub Pages et le nom de votre fichier MP3. -->
@@ -376,10 +376,9 @@
         };
 
         // Composant pour l'édition de texte in-situ (utilisé hors du panneau admin pour l'affichage direct)
-        // Ajout de la prop `colorKey` pour récupérer et appliquer la couleur dynamiquement.
-        const EditableText = ({ tag: Tag, contentKey, isAdminAuthenticated, className, colorKey }) => {
+        const EditableText = ({ tag: Tag, contentKey, isAdminAuthenticated, className }) => {
             const { content, updateContent } = useContext(ContentContext);
-            const path = contentKey.split('.');
+            const path = contentKey.split('.'); // Ex: "home.mainTitle" -> ["home", "mainTitle"]
 
             // Fonction récursive pour accéder à la valeur imbriquée
             const getValue = (obj, p) => {
@@ -406,17 +405,13 @@
             };
 
             const textValue = content ? getValue(content, contentKey.split('.')) : `Chargement...`;
-            // Récupère la valeur de la couleur si colorKey est fourni
-            const colorValue = colorKey && content ? getValue(content, colorKey.split('.')) : null;
+
 
             // Gérer le changement du texte (seulement si isAdminAuthenticated)
             const handleChange = (e) => {
                 const newValue = e.target.value;
                 updateContent(contentKey, newValue); // Appelle la fonction de mise à jour du contexte
             };
-
-            // Style dynamique pour la couleur du texte
-            const dynamicStyle = colorValue ? { color: colorValue } : {};
 
             if (isAdminAuthenticated) {
                 // Si c'est un h1 ou h2, utiliser un input, sinon un textarea
@@ -427,7 +422,6 @@
                             value={typeof textValue === 'string' ? textValue : ''} // Assurer que la valeur est une string
                             onChange={handleChange}
                             className={`${className} bg-gray-700 text-white rounded p-2 focus:ring-2 focus:ring-blue-500 w-full`}
-                            style={dynamicStyle} // Applique la couleur dans l'admin input aussi
                         />
                     );
                 }
@@ -437,14 +431,14 @@
                         onChange={handleChange}
                         className={`${className} bg-gray-700 text-white rounded p-2 focus:ring-2 focus:ring-blue-500 w-full min-h-[50px]`}
                         rows={typeof textValue === 'string' ? Math.max(3, textValue.split('\n').length) : 3} // Ajuste le nombre de lignes
-                        style={dynamicStyle} // Applique la couleur dans l'admin textarea aussi
                     />
                 );
             }
 
             // Rendu normal pour les clients
+            // Vérifie si textValue est une chaîne avant de le rendre
             // Utilisation de dangerouslySetInnerHTML pour le rendu HTML
-            return <Tag className={className} dangerouslySetInnerHTML={{ __html: typeof textValue === 'string' ? textValue : '' }} style={dynamicStyle} />;
+            return <Tag className={className} dangerouslySetInnerHTML={{ __html: typeof textValue === 'string' ? textValue : '' }} />;
         };
 
         // Composant de la bannière défilante
@@ -565,7 +559,6 @@
                                 contentKey="home.mainTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
                                 className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate"
-                                colorKey="home.mainTitleColor" // Passe la clé de couleur pour le titre principal
                             />
                             <EditableText
                                 tag="p"
@@ -2235,22 +2228,6 @@
                                     className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
                                 />
                             )}
-                            {/* Input de couleur spécifique pour le titre principal de la page d'accueil */}
-                            {pageKey === 'home' && fieldKey === 'mainTitle' && (
-                                <div className="mt-2">
-                                    <label htmlFor="mainTitleColor" className="block text-gray-300 text-sm font-bold mb-1">
-                                        Couleur du titre principal:
-                                    </label>
-                                    <input
-                                        id="mainTitleColor"
-                                        type="color"
-                                        value={localContent.home.mainTitleColor || '#ffffff'} // Default to white if not set
-                                        onChange={(e) => handleLocalChange('home', 'mainTitleColor', e.target.value)}
-                                        className="w-full h-10 rounded cursor-pointer border border-gray-500"
-                                    />
-                                </div>
-                            )}
-
                             {typeof fieldValue !== 'string' && (
                                 <p className="text-red-400 text-xs mt-1">
                                     Ce champ ({contentPath}) n'est pas une chaîne de caractères ou est manquant.
@@ -2674,7 +2651,6 @@
                         setContent({
                             home: {
                                 mainTitle: "Libérez la <span class=\"text-red-500\">Puissance</span>. Redéfinissez la <span class=\"text-blue-500\">Performance</span>!", // Mise à jour du titre
-                                mainTitleColor: "#FF0000", // Couleur par défaut pour le titre principal
                                 description: "Spécialiste de la reprogrammation moteur et de l'optimisation de véhicules. Performance, fiabilité et satisfaction client sont nos maîtres mots.",
                                 contactMessage: "Contactez-nous dès aujourd'hui pour transformer votre véhicule !",
                                 offerTitle: "Nos Offres",
