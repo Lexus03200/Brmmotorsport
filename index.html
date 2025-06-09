@@ -229,7 +229,7 @@
         // Composant d'icône de clé à molette
         const WrenchIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wrench">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
             <path d="M5.5 12.5l-3-3L12.5 2.5l3 3z"/>
           </svg>
         );
@@ -2176,6 +2176,7 @@
                         updateContent('legalMentions', localContent.legalMentions); // Mettre à jour les Mentions Légales
                         updateContent('privacyPolicy', localContent.privacyPolicy); // Mettre à jour la Politique de Confidentialité
                         updateContent('showcaseCar', localContent.showcaseCar); // Mettre à jour la Voiture Vitrine
+                        updateContent('siteSettings', localContent.siteSettings); // Mettre à jour les paramètres du site
 
                         console.log("AdminPanelPage: Global content update triggered.");
                     } else {
@@ -2224,6 +2225,25 @@
                             </div>
                         );
                     }
+                    // Handle specific types like numbers for volume
+                    if (fieldKey === 'musicVolume' && typeof fieldValue === 'number') {
+                        return (
+                            <div key={contentPath} className="pb-4 border-b border-gray-600 last:border-b-0">
+                                <label className="block text-gray-300 text-sm font-bold mb-2">
+                                    Volume de la musique: ({Math.round(fieldValue * 100)}%)
+                                </label>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="1"
+                                    step="0.01"
+                                    value={fieldValue}
+                                    onChange={(e) => handleLocalChange(pageKey, fieldKey, parseFloat(e.target.value))}
+                                    className="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+                        );
+                    }
 
                     const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
                     const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle')) ? 'text' : 'textarea';
@@ -2249,9 +2269,9 @@
                                     className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
                                 />
                             )}
-                            {typeof fieldValue !== 'string' && (
+                            {typeof fieldValue !== 'string' && typeof fieldValue !== 'number' && (
                                 <p className="text-red-400 text-xs mt-1">
-                                    Ce champ ({contentPath}) n'est pas une chaîne de caractères ou est manquant.
+                                    Ce champ ({contentPath}) n'est pas une chaîne de caractères ou un nombre, ou est manquant.
                                 </p>
                             )}
                         </div>
@@ -2266,7 +2286,8 @@
                 { key: 'contact', label: 'Contact' },
                 { key: 'legalMentions', label: 'Mentions Légales' },
                 { key: 'privacyPolicy', label: 'Politique de Confidentialité' },
-                { key: 'showcaseCar', label: 'Voiture Vitrine' }
+                { key: 'showcaseCar', label: 'Voiture Vitrine' },
+                { key: 'siteSettings', label: 'Paramètres du Site' } // Nouveau tab
             ];
 
             return (
@@ -2528,6 +2549,19 @@
                                             </div>
                                         </div>
                                     )}
+
+                                    {/* Section Paramètres du Site */}
+                                    {activeTab === 'siteSettings' && (
+                                        <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                                            <h2 className="text-3xl font-bold mb-6 text-red-400 capitalize border-b-2 border-red-600 pb-3">
+                                                Paramètres du Site
+                                            </h2>
+                                            <div className="space-y-6">
+                                                {/* Le champ musicVolume est géré par un cas spécifique dans renderEditableFields */}
+                                                {localContent.siteSettings && renderEditableFields(localContent.siteSettings, 'siteSettings')}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
@@ -2559,7 +2593,7 @@
 
 
         // Nouveau composant pour le contrôle de la musique
-        const MusicControl = () => {
+        const MusicControl = ({ volume }) => { // Accepte `volume` comme prop
             const audioRef = useRef(null);
             const [isPlaying, setIsPlaying] = useState(false);
             const [showAutoplayMessage, setShowAutoplayMessage] = useState(false); // Nouvel état pour le message d'autoplay
@@ -2568,6 +2602,9 @@
                 const audio = document.getElementById('background-music');
                 if (audio) {
                     audioRef.current = audio;
+
+                    // Ajuster le volume initial et à chaque changement de la prop `volume`
+                    audio.volume = volume;
 
                     // Tentative de lecture automatique
                     const playPromise = audio.play();
@@ -2601,6 +2638,14 @@
                     };
                 }
             }, []); // S'exécute une seule fois au montage du composant
+
+            // Effet pour mettre à jour le volume lorsque la prop `volume` change
+            useEffect(() => {
+                if (audioRef.current) {
+                    audioRef.current.volume = volume;
+                }
+            }, [volume]);
+
 
             const togglePlayPause = () => {
                 const audio = audioRef.current;
@@ -2826,6 +2871,9 @@
                                 wmi: "Système WMI (Water-Methanol Injection)",
                                 embrayage: "Embrayage renforcé",
                                 finalDescription: "Chaque composant a été soigneusement sélectionné et installé pour garantir une synergie parfaite et une expérience de conduite inégalée sur route comme sur circuit."
+                            },
+                            siteSettings: { // Nouvelle section pour les paramètres du site
+                                musicVolume: 0.05 // Valeur par défaut pour le volume de la musique
                             }
                         });
                     } finally {
@@ -2919,7 +2967,8 @@
                         <main className="flex-grow">
                             {renderPage()}
                         </main>
-                        <MusicControl /> {/* Ajout du contrôle de musique */}
+                        {/* Passe le volume de la musique du content aux contrôles de musique */}
+                        <MusicControl volume={content?.siteSettings?.musicVolume || 0.05} />
                         <ScrollToTopButton /> {/* Ajout du bouton de retour en haut */}
                         <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
                             <div className="container mx-auto px-4">
