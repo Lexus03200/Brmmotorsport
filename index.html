@@ -1893,6 +1893,7 @@
             const [content, setContent] = useState(null); // Initialiser à null, sera chargé depuis le JSON
             const [loadingContent, setLoadingContent] = useState(true); // État de chargement du contenu
             const [errorContent, setErrorContent] = useState(null); // État d'erreur de chargement du contenu
+            const [renderError, setRenderError] = useState(null); // Nouvel état pour les erreurs de rendu
 
             // Fonction pour charger le contenu depuis content.json
             useEffect(() => {
@@ -1901,14 +1902,15 @@
                     try {
                         const response = await fetch('content.json'); // Assurez-vous que content.json est à la racine de votre dépôt
                         if (!response.ok) {
-                            throw new Error(`Erreur HTTP: ${response.status}`);
+                            const errorText = await response.text(); // Try to get more details from the response
+                            throw new Error(`Erreur HTTP: ${response.status}. Réponse: ${errorText.substring(0, 200)}...`);
                         }
                         const data = await response.json();
                         setContent(data);
                         console.log("App: content.json loaded successfully:", data);
                     } catch (error) {
                         console.error("App: Erreur lors du chargement de content.json:", error);
-                        setErrorContent("Impossible de charger le contenu du site. Veuillez réessayer plus tard.");
+                        setErrorContent(`Impossible de charger le contenu du site. Détails: ${error.message}`);
                         // Fallback vers un contenu par défaut si le chargement échoue
                         setContent({
                             home: {
@@ -2042,16 +2044,19 @@
                 );
             }
 
+            // Affiche l'erreur de chargement de contenu (par exemple, si content.json n'existe pas)
             if (errorContent) {
                 return (
                     <div className="min-h-screen flex items-center justify-center bg-red-900 text-white text-xl p-4 text-center">
-                        Erreur: {errorContent}
+                        Erreur de chargement du site : {errorContent}
+                        <br/><br/>
+                        Vérifiez la console du navigateur (F12) pour plus de détails.
                     </div>
                 );
             }
 
             // Fonction de rendu du contenu de la page en fonction de l'état
-            const renderPage = () => {
+            const renderPageContent = () => {
               switch (currentPage) {
                 case 'accueil':
                   return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
@@ -2081,37 +2086,52 @@
               }
             };
 
-            return (
-                <ContentContext.Provider value={{ content, updateContent }}>
-                    <div className="min-h-screen bg-black font-inter">
-                        <ScrollingBanner /> {/* Nouvelle bannière défilante */}
-                        {/* Passe isAdminAuthenticated et handleLogout à Navbar */}
-                        <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} />
-                        <main className="flex-grow">
-                            {renderPage()}
-                        </main>
-                        <MusicControl /> {/* Ajout du contrôle de musique */}
-                        <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
-                            <div className="container mx-auto px-4">
-                                <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
-                                <div className="flex justify-center space-x-4 mt-3">
-                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
-                                    <span className="text-gray-600">|</span>
-                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
-                                    <span className="text-gray-600">|</span>
-                                    {/* Lien Admin/Déconnexion conditionnel dans le footer */}
-                                    {isAdminAuthenticated ? (
-                                        <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="hover:text-red-500 transition duration-300">Déconnexion</a>
-                                    ) : (
-                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin-login'); }} className="hover:text-red-500 transition duration-300">Admin</a>
-                                    )}
+            // Capture les erreurs de rendu React
+            try {
+                return (
+                    <ContentContext.Provider value={{ content, updateContent }}>
+                        <div className="min-h-screen bg-black font-inter">
+                            <ScrollingBanner /> {/* Nouvelle bannière défilante */}
+                            {/* Passe isAdminAuthenticated et handleLogout à Navbar */}
+                            <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} />
+                            <main className="flex-grow">
+                                {renderPageContent()} {/* Appelle la fonction de rendu de page */}
+                            </main>
+                            <MusicControl /> {/* Ajout du contrôle de musique */}
+                            <footer className="bg-gray-900 bg-opacity-90 backdrop-blur-sm text-gray-400 py-6 text-center shadow-inner rounded-t-lg">
+                                <div className="container mx-auto px-4">
+                                    <p>&copy; {new Date().getFullYear()} BRMOTORSPORT. Tous droits réservés.</p>
+                                    <div className="flex justify-center space-x-4 mt-3">
+                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
+                                        <span className="text-gray-600">|</span>
+                                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
+                                        <span className="text-gray-600">|</span>
+                                        {/* Lien Admin/Déconnexion conditionnel dans le footer */}
+                                        {isAdminAuthenticated ? (
+                                            <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="hover:text-red-500 transition duration-300">Déconnexion</a>
+                                        ) : (
+                                            <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin-login'); }} className="hover:text-red-500 transition duration-300">Admin</a>
+                                        )}
+                                    </div>
+                                    <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
                                 </div>
-                                <p className="text-sm mt-2">Réalisé avec passion par Viremot Giovanni</p>
-                            </div>
-                        </footer>
+                            </footer>
+                        </div>
+                    </ContentContext.Provider>
+                );
+            } catch (e) {
+                // Si une erreur se produit pendant le rendu de l'interface utilisateur, affichez-la
+                console.error("Erreur de rendu de l'application:", e);
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-red-900 text-white text-xl p-4 text-center">
+                        Une erreur inattendue s'est produite lors de l'affichage du site.
+                        <br/><br/>
+                        Détails : {e.message}
+                        <br/><br/>
+                        Vérifiez la console du navigateur (F12) pour plus d'informations.
                     </div>
-                </ContentContext.Provider>
-            );
+                );
+            }
         };
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
