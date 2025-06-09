@@ -145,7 +145,7 @@
             border-radius: 9999px; /* fully rounded */
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify: center;
             transition: background-color 0.2s ease-in-out;
             cursor: pointer;
             position: absolute;
@@ -1484,6 +1484,9 @@
             const [saveMessage, setSaveMessage] = useState(''); // Message pour la sauvegarde
             const [isSaving, setIsSaving] = useState(false); // État pour le chargement de la sauvegarde
 
+            // Gérer la catégorie actuellement sélectionnée pour l'édition
+            const [selectedCategory, setSelectedCategory] = useState('home'); // Par défaut, 'home'
+
             // Met à jour l'état local quand le contenu global change (par exemple, après un rafraîchissement)
             useEffect(() => {
                 setLocalContent(JSON.parse(JSON.stringify(content || {})));
@@ -1608,6 +1611,17 @@
                 setCurrentPage('accueil'); // Redirige vers l'accueil après déconnexion
             };
 
+            // Définir les catégories et leur affichage (titre convivial)
+            const categories = {
+                home: "Accueil",
+                blog: "Blog",
+                quiSommesNous: "Qui Sommes-nous",
+                contact: "Contact",
+                legalMentions: "Mentions Légales",
+                privacyPolicy: "Politique de Confidentialité",
+                showcaseCar: "Voiture Vitrine"
+            };
+
             return (
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-40 pb-12 font-inter">
                     <div className="container mx-auto px-6 max-w-6xl">
@@ -1618,31 +1632,104 @@
                             Bienvenue, administrateur. Ici, vous pouvez gérer le contenu du site.
                         </p>
 
-                        <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
-                            {Object.keys(localContent).map(pageKey => {
-                                // Ne pas afficher les pages Admin Login/Panel ici
-                                if (pageKey === 'adminLogin' || pageKey === 'adminPanel') {
-                                    return null;
-                                }
-
-                                return (
-                                    <div key={pageKey} className="mb-8 p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
+                        {/* Navigation des catégories */}
+                        <div className="flex flex-wrap justify-center gap-4 mb-8 p-4 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
+                            {Object.keys(categories).map(categoryKey => (
+                                <button
+                                    key={categoryKey}
+                                    onClick={() => setSelectedCategory(categoryKey)}
+                                    className={`py-2 px-5 rounded-full font-semibold transition-all duration-300 ease-in-out
+                                                ${selectedCategory === categoryKey
+                                                    ? 'bg-blue-600 text-white shadow-md transform scale-105'
+                                                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'
+                                                }`}
+                                >
+                                    {categories[categoryKey]}
+                                </button>
+                            ))}
+                        </div>
+                        {/* Fragment React pour envelopper les éléments adjacents */}
+                        <>
+                            <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
+                                {/* Affichage du contenu de la catégorie sélectionnée */}
+                                {localContent[selectedCategory] && (
+                                    <div className="mb-8 p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
                                         <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3">
-                                            {pageKey.replace(/([A-Z])/g, ' $1')}
+                                            {categories[selectedCategory]} (Modification)
                                         </h2>
                                         <div className="space-y-6">
-                                            {/* Rendu des champs simples de la page */}
-                                            {Object.keys(localContent[pageKey]).map(fieldKey => {
-                                                const fieldValue = localContent[pageKey][fieldKey];
-                                                const contentPath = `${pageKey}.${fieldKey}`;
+                                            {Object.keys(localContent[selectedCategory]).map(fieldKey => {
+                                                const fieldValue = localContent[selectedCategory][fieldKey];
+                                                const contentPath = `${selectedCategory}.${fieldKey}`;
 
-                                                // Ne pas afficher les 'posts' du blog ici, ils seront gérés séparément
-                                                if (fieldKey === 'posts' && Array.isArray(fieldValue)) {
-                                                    return null;
+                                                // Gérer la section des posts du blog séparément
+                                                if (selectedCategory === 'blog' && fieldKey === 'posts' && Array.isArray(fieldValue)) {
+                                                    return (
+                                                        <div key={contentPath} className="mt-8 pt-6 border-t-2 border-green-600">
+                                                            <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
+                                                            <button
+                                                                onClick={handleAddBlogPost}
+                                                                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mb-6"
+                                                            >
+                                                                Ajouter un nouvel article
+                                                            </button>
+                                                            <div className="space-y-8 mt-4">
+                                                                {localContent.blog.posts.map((post, index) => (
+                                                                    <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
+                                                                        <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
+                                                                        <button
+                                                                            onClick={() => handleRemoveBlogPost(post.id)}
+                                                                            className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
+                                                                            aria-label="Supprimer l'article"
+                                                                        >
+                                                                            <XIcon className="w-4 h-4"/>
+                                                                        </button>
+                                                                        <div className="space-y-4">
+                                                                            <div>
+                                                                                <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    value={post.title || ''}
+                                                                                    onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
+                                                                                    className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                                />
+                                                                            </div>
+                                                                            <div>
+                                                                                <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
+                                                                                <textarea
+                                                                                    value={post.description || ''}
+                                                                                    onChange={(e) => {
+                                                                                        const newValue = e.target.value;
+                                                                                        console.log(`Blog Description Change: Index: ${index}, New Value: "${newValue}"`);
+                                                                                        handleLocalChange('blog', `posts.${index}.description`, newValue);
+                                                                                    }}
+                                                                                    rows={Math.max(3, (post.description || '').split('\n').length)}
+                                                                                    className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
+                                                                                />
+                                                                            </div>
+                                                                            <div>
+                                                                                <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    value={post.image || ''}
+                                                                                    onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
+                                                                                    className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
+                                                                                />
+                                                                                <p className="text-gray-400 text-xs mt-1">
+                                                                                    Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    );
                                                 }
 
+                                                // Rendu des autres champs
                                                 const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
-                                                const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram')) ? 'text' : 'textarea';
+                                                const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle')) ? 'text' : 'textarea';
                                                 const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
 
                                                 return (
@@ -1654,13 +1741,13 @@
                                                             <input
                                                                 type="text"
                                                                 value={valueToDisplay}
-                                                                onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                                                onChange={(e) => handleLocalChange(selectedCategory, fieldKey, e.target.value)}
                                                                 className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
                                                             />
                                                         ) : (
                                                             <textarea
                                                                 value={valueToDisplay}
-                                                                onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
+                                                                onChange={(e) => handleLocalChange(selectedCategory, fieldKey, e.target.value)}
                                                                 rows={rows}
                                                                 className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
                                                             />
@@ -1673,94 +1760,39 @@
                                                     </div>
                                                 );
                                             })}
-
-                                            {/* Section spécifique pour les articles de blog */}
-                                            {pageKey === 'blog' && localContent.blog && Array.isArray(localContent.blog.posts) && (
-                                                <div className="mt-8 pt-6 border-t-2 border-green-600">
-                                                    <h3 className="text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
-                                                    <button
-                                                        onClick={handleAddBlogPost}
-                                                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mb-6"
-                                                    >
-                                                        Ajouter un nouvel article
-                                                    </button>
-                                                    <div className="space-y-8 mt-4">
-                                                        {localContent.blog.posts.map((post, index) => (
-                                                            <div key={post.id || `blog-edit-${index}`} className="p-5 bg-gray-600 rounded-lg shadow-md border border-gray-500 relative">
-                                                                <h4 className="text-xl font-semibold mb-3 text-white">Article #{index + 1}</h4>
-                                                                <button
-                                                                    onClick={() => handleRemoveBlogPost(post.id)}
-                                                                    className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm"
-                                                                    aria-label="Supprimer l'article"
-                                                                >
-                                                                    <XIcon className="w-4 h-4"/>
-                                                                </button>
-                                                                <div className="space-y-4">
-                                                                    <div>
-                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Titre de l'article:</label>
-                                                                        <input
-                                                                            type="text"
-                                                                            value={post.title || ''}
-                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.title`, e.target.value)}
-                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                                                        />
-                                                                    </div>
-                                                                    <div>
-                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Description de l'article:</label>
-                                                                        <textarea
-                                                                            value={post.description || ''}
-                                                                            onChange={(e) => {
-                                                                                const newValue = e.target.value;
-                                                                                console.log(`Blog Description Change: Index: ${index}, New Value: "${newValue}"`);
-                                                                                handleLocalChange('blog', `posts.${index}.description`, newValue);
-                                                                            }}
-                                                                            rows={Math.max(3, (post.description || '').split('\n').length)}
-                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
-                                                                        />
-                                                                    </div>
-                                                                    <div>
-                                                                        <label className="block text-gray-300 text-sm font-bold mb-2">Nom de fichier image (ex: IMG_9611.png):</label>
-                                                                        <input
-                                                                            type="text"
-                                                                            value={post.image || ''}
-                                                                            onChange={(e) => handleLocalChange('blog', `posts.${index}.image`, e.target.value)}
-                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                                                        />
-                                                                        <p className="text-gray-400 text-xs mt-1">
-                                                                            Assurez-vous que l'image est téléversée dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
                                         </div>
                                     </div>
-                                );
-                            })}
-                            <div className="flex justify-center space-x-4 mt-8">
-                                <button
-                                    onClick={handleSaveChanges}
-                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    disabled={isSaving} // Désactiver le bouton pendant la sauvegarde
-                                >
-                                    {isSaving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
-                                </button>
-                                <button
-                                    onClick={handleLogout}
-                                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-                                >
-                                    Déconnexion
-                                </button>
+                                )}
+
+                                {/* Message si aucune catégorie n'est sélectionnée ou si le contenu est vide */}
+                                {!selectedCategory || !localContent[selectedCategory] && (
+                                    <p className="text-center text-gray-400 text-xl mt-10">
+                                        Veuillez sélectionner une catégorie à modifier ci-dessus.
+                                    </p>
+                                )}
                             </div>
-                            {saveMessage && (
-                                <p className="text-center text-yellow-400 mt-4 text-md animate-fade-in">
-                                    {saveMessage}
-                                </p>
-                            )}
-                        </div>
+
+                            <div className="flex justify-center space-x-4 mt-8">
+                                    <button
+                                        onClick={handleSaveChanges}
+                                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        disabled={isSaving} // Désactiver le bouton pendant la sauvegarde
+                                    >
+                                        {isSaving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
+                                    </button>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                                    >
+                                        Déconnexion
+                                    </button>
+                                </div>
+                                {saveMessage && (
+                                    <p className="text-center text-yellow-400 mt-4 text-md animate-fade-in">
+                                        {saveMessage}
+                                    </p>
+                                )}
+                        </>
                     </div>
                 </div>
             );
@@ -1897,7 +1929,7 @@
                                     { id: 7, image: "Seat1.png", title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm." },
                                     { id: 8, image: "anciennevoiture.png", title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité." },
                                     { id: 9, image: "audi1.png", title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité." },
-                                    { id: 10, image: "gx.png", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité." },
+                                    { id: 10, image: "gx.png", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité."l },
                                     { id: 11, image: "mercedes2021.png", title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
                                 ]
                             },
@@ -2083,18 +2115,17 @@
         };
 
         // Rendu de l'application React dans l'élément HTML avec l'ID 'root'
-        // Ancien code dans window.onload:
-        // window.onload = function() {
-        //     const container = document.getElementById('root');
-        //     const root = ReactDOM.createRoot(container);
-        //     root.render(<App />);
-        // };
-
-        // Nouveau code de rendu direct après la définition de l'App,
-        // s'assurant que ReactDOM est disponible une fois les scripts chargés et parsés.
-        const container = document.getElementById('root');
-        const root = ReactDOM.createRoot(container);
-        root.render(<App />);
+        // ENVELOPPEZ L'APP DANS DOMContentLoaded POUR ASSURER QUE LE DOM EST PRÊT
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('root');
+            // Vérifiez si le conteneur existe avant de créer la racine
+            if (container) {
+                const root = ReactDOM.createRoot(container);
+                root.render(<App />);
+            } else {
+                console.error("L'élément avec l'ID 'root' n'a pas été trouvé dans le DOM.");
+            }
+        });
     </script>
 </body>
 </html>
