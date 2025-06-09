@@ -104,7 +104,10 @@
         "id": 1749496186270,
         "image": "Flyer.png",
         "title": "Nouveau Flyer ! ",
-        "description": "🔥 BRMotorsport est fier de vous dévoiler son tout nouveau flyer et ses cartes de visite ! Restez connectés : casquettes, tee-shirts et stickers seront bientôt dispo à la vente ! 🧢👕🚗💨scription d'article."
+        "description": "🔥 BRMotorsport est fier de vous dévoiler son tout nouveau flyer et ses cartes de visite ! Restez connectés : casquettes, tee-shirts et stickers seront bientôt dispo à la vente ! 🧢👕🚗💨scription d'article.",
+        "images": [
+          "Flyer.png"
+        ]
       }
     ]
   },
