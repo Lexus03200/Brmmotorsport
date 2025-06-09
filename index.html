@@ -223,7 +223,7 @@
 
         const WrenchIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wrench">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
             <path d="M5.5 12.5l-3-3L12.5 2.5l3 3z"/>
           </svg>
         );
@@ -2155,12 +2155,140 @@
                 // measurementId: "G-7GDLE3WVJ7" // measurementId n'est pas utilisé dans le SDK Firebase JS pour le web initialisation simple
             };
 
+            // Contenu par défaut de l'application
+            const defaultContent = {
+                home: {
+                    mainTitle: "BRMOTORSPORT",
+                    description: "Spécialiste de la reprogrammation moteur et de l'optimisation de véhicules. Performance, fiabilité et satisfaction client sont nos maîtres mots.",
+                    contactMessage: "Contactez-nous dès aujourd'hui pour transformer votre véhicule !",
+                    offerTitle: "Nos Offres",
+                    offer1Title: "Reprogrammation Moteur",
+                    offer1Description: "Optimisation des performances et de la consommation de votre véhicule.",
+                    offer2Title: "Diagnostic Électronique",
+                    offer2Description: "Identification précise des problèmes moteur et électroniques.",
+                    offer3Title: "Préparation de Véhicule",
+                    offer3Description: "Solutions complètes pour piste et route, du châssis au moteur.",
+                    offer4Title: "Conseil Personnalisé",
+                    offer4Description: "Accompagnement expert pour tous vos projets automobiles.",
+                    trustTitle: "Pourquoi nous faire confiance ?",
+                    trust1Title: "Rapidité d'Intervention",
+                    trust1Description: "Des délais optimisés pour que vous retrouviez votre véhicule au plus vite.",
+                    trust2Title: "Transparence et Confiance",
+                    trust2Description: "Une communication claire et honnête à chaque étape du processus.",
+                    trust3Title: "Qualité Garantie",
+                    trust3Description: "Des prestations de haute qualité avec des résultats mesurables.",
+                    trust4Title: "Satisfaction Client",
+                    trust4Description: "Votre plaisir de conduire est notre plus grande réussite.",
+                    teamTitle: "Notre Équipe",
+                    teamDescription: "Notre équipe est composée de professionnels passionnés et expérimentés, dévoués à l'excellence automobile."
+                },
+                blog: {
+                    mainTitle: "Notre Blog BRMOTORSPORT",
+                    description: "Découvrez nos dernières actualités, projets et optimisations automobiles.",
+                    posts: [
+                        { id: 1, image: "https://placehold.co/600x400/000/FFF?text=Porsche_Cayenne", title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur", description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime." },
+                        { id: 2, image: "https://placehold.co/600x400/000/FFF?text=BMW_Serie2", title: "BMW Série 2 : Reprogrammation et FAP OFF", description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité." },
+                        { id: 3, image: "https://placehold.co/600x400/000/FFF?text=VW_Golf_GTI", title: "VW Golf GTI : Boost de Performance Ultime", description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !" },
+                        { id: 4, image: "https://placehold.co/600x400/000/FFF?text=Seat_Ibiza", title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini." },
+                        { id: 5, image: "https://placehold.co/600x400/000/FFF?text=VW_Golf_5_GTI", title: "VW Golf 5 GTI : Mise à Jour Cartographie", description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !" },
+                        { id: 6, image: "https://placehold.co/600x400/000/FFF?text=Peugeot_206_HDi", title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation", description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led)." },
+                        { id: 7, image: "https://placehold.co/600x400/000/FFF?text=Seat_Leon", title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm." },
+                        { id: 8, image: "https://placehold.co/600x400/000/FFF?text=Ancienne_Voiture", title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité." },
+                        { id: 9, image: "https://placehold.co/600x400/000/FFF?text=Audi_TFSI", title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité." },
+                        { id: 10, image: "https://placehold.co/600x400/000/FFF?text=Triumph_TR3", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité." },
+                        { id: 11, image: "https://placehold.co/600x400/000/FFF?text=Mercedes_2021", title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
+                    ]
+                },
+                aboutUs: {
+                    mainTitle: "Qui sommes-nous ?",
+                    description: "BRMOTORSPORT est votre partenaire de confiance pour l'optimisation automobile. Fondée sur la passion de la performance et de la mécanique, notre entreprise s'engage à offrir des services de reprogrammation moteur, de préparation de véhicules et de diagnostics électroniques de pointe.",
+                    historyTitle: "Notre Histoire",
+                    historyParagraph1: "Notre aventure a débuté il y a plusieurs années, animée par une vision : celle de repousser les limites de la performance automobile tout en garantissant une fiabilité et une sécurité optimale. Forts d'une expertise technique approfondie et d'une passion inébranlable pour les voitures, nous avons bâti BRMOTORSPORT sur des valeurs de précision, d'innovation et de dévouement. Chaque véhicule qui passe entre nos mains est traité avec le plus grand soin, comme si c'était le nôtre.",
+                    historyParagraph2: "Au fil des ans, nous avons développé des compétences uniques en reprogrammation sur mesure, en travaillant avec les technologies les plus avancées pour extraire le potentiel caché de chaque moteur. Notre histoire est marquée par des milliers de clients satisfaits, des voitures transformées et une réputation bâtie sur l'excellence. Nous sommes fiers de notre parcours et de l'impact que nous avons sur la performance et le plaisir de conduite de nos clients.",
+                    valuesTitle: "Nos Valeurs",
+                    value1Title: "Expertise Technique",
+                    value1Description: "Une connaissance approfondie des systèmes moteurs et des technologies d'optimisation.",
+                    value2Title: "Innovation Continue",
+                    value2Description: "Veille technologique et développement de solutions toujours plus performantes.",
+                    value3Title: "Qualité et Fiabilité",
+                    value3Description: "Des interventions rigoureuses pour une durabilité et une sécurité maximales.",
+                    value4Title: "Service Client Exceptionnel",
+                    value4Description: "Écoute, conseil personnalisé et accompagnement pour une satisfaction totale."
+                },
+                contact: {
+                    mainTitle: "Contactez-nous",
+                    description: "Nous sommes là pour répondre à toutes vos questions et vous accompagner dans vos projets d'optimisation automobile.",
+                    emailTitle: "Email",
+                    email: "contact@brmotorsport.com",
+                    phoneTitle: "Téléphone",
+                    phoneNumber: "06.12.34.56.78",
+                    instagramTitle: "Instagram",
+                    instagramHandle: "@brmotorsport_official"
+                },
+                legalMentions: {
+                    mainTitle: "Mentions Légales",
+                    sectionTitle: "Informations Générales",
+                    paragraph1: "Ce site web est édité par BRMOTORSPORT.",
+                    paragraph2: "Adresse : [Votre Adresse Complète]",
+                    list1Item1: "Numéro de téléphone : [Votre Numéro de Téléphone]",
+                    list1Item2: "Adresse e-mail : [Votre E-mail]",
+                    list1Item3: "Numéro d'immatriculation : [Votre Numéro SIRET/RCS]",
+                    paragraph3: "Directeur de la publication : Monsieur [Votre Nom]",
+                    list2Item1: "Hébergeur : GitHub Pages",
+                    list2Item2: "Adresse : [Adresse de GitHub]",
+                    list2Item3: "Site web : https://github.com",
+                    paragraph4: "Propriété intellectuelle : L'ensemble des éléments de ce site (textes, images, graphismes, logos, icônes, etc.) est la propriété exclusive de BRMOTORSPORT, sauf mention contraire. Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de BRMOTORSPORT."
+                },
+                privacyPolicy: {
+                    mainTitle: "Politique de Confidentialité",
+                    introTitle: "Introduction",
+                    introText: "La présente politique de confidentialité décrit comment BRMOTORSPORT collecte, utilise et protège vos informations personnelles lorsque vous utilisez notre site web.",
+                    collectionTitle: "Collecte des Informations Personnelles",
+                    collectionText: "Nous collectons des informations lorsque vous nous contactez via le formulaire de contact, lorsque vous naviguez sur notre site, ou lorsque vous interagissez avec nos services. Les informations collectées peuvent inclure votre nom, adresse e-mail, numéro de téléphone, et toute autre information que vous choisissez de nous fournir.",
+                    usageTitle: "Utilisation des Informations",
+                    usageListItem1: "Pour répondre à vos demandes et vous fournir les services que vous avez sollicités.",
+                    usageListItem2: "Pour améliorer notre site web et nos offres de services.",
+                    usageListItem3: "Pour vous envoyer des communications marketing (avec votre consentement).",
+                    protectionTitle: "Protection des Informations",
+                    protectionText: "Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Seuls les employés qui ont besoin d'effectuer un travail spécifique (par exemple, la facturation ou le service client) ont accès aux informations personnelles identifiables.",
+                    rightsTitle: "Vos Droits",
+                    rightsText: "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition au traitement de vos données personnelles. Pour exercer ces droits, veuillez nous contacter à [Votre Adresse E-mail].",
+                    disclaimerText: "Cette politique de confidentialité peut être mise à jour occasionnellement. Nous vous invitons à la consulter régulièrement."
+                },
+                showcaseCar: {
+                    mainTitle: "Notre Voiture Vitrine",
+                    description: "Découvrez notre dernière préparation exceptionnelle : une Volkswagen Scirocco R avec une optimisation Stage 3 poussée, développant plus de 500 chevaux.",
+                    preparationTitle: "Détails de la Préparation Stage 3",
+                    preparationDescription: "Ce véhicule a subi une transformation complète pour atteindre des niveaux de performance extrêmes, tout en conservant une fiabilité optimale.",
+                    piston: "Pistons forgés",
+                    bielles: "Bielles forgées",
+                    soupapes: "Soupapes renforcées",
+                    adm: "Admission gros volume",
+                    ressort: "Ressorts de soupapes renforcés",
+                    viserie: "Vis de bielles, vilebrequin et culasse renforcées",
+                    pompeHuile: "Pompe à huile gros débit",
+                    turbo: "Turbo hybride sur mesure",
+                    wastegate: "Wastegate externe",
+                    injecteurs: "Injecteurs gros débit",
+                    pipAdmission: "Pipe d'admission gros volume",
+                    wmi: "Système WMI (Water-Methanol Injection)",
+                    embrayage: "Embrayage renforcé",
+                    finalDescription: "Chaque composant a été soigneusement sélectionné et installé pour garantir une synergie parfaite et une expérience de conduite inégalée sur route comme sur circuit.",
+                    images: [ // AJOUT DE CE TABLEAU D'IMAGES
+                        "https://placehold.co/800x500/FF0000/FFFFFF?text=Scirocco+R+1",
+                        "https://placehold.co/800x500/00FF00/FFFFFF?text=Scirocco+R+2",
+                        "https://placehold.co/800x500/0000FF/FFFFFF?text=Scirocco+R+3"
+                    ]
+                }
+            };
+
             // Initialise isAdminAuthenticated en lisant depuis localStorage
             const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(
                 localStorage.getItem('isAdminAuthenticated') === 'true'
             );
             const [currentPage, setCurrentPage] = useState('accueil');
-            const [content, setContent] = useState(null); // Initialiser à null, sera chargé depuis Firebase/JSON
+            // Initialiser le contenu avec les données par défaut avant le chargement de Firebase
+            const [content, setContent] = useState(defaultContent); 
             const [loadingContent, setLoadingContent] = useState(true);
             const [errorContent, setErrorContent] = useState(null);
             const [firebaseInitialized, setFirebaseInitialized] = useState(false);
@@ -2182,143 +2310,28 @@
                             window.firebase.onSnapshot(contentDocRef, (docSnap) => {
                                 if (docSnap.exists()) {
                                     const fetchedContent = docSnap.data();
-                                    setContent(fetchedContent);
-                                    console.log("Contenu de Firestore mis à jour :", fetchedContent);
+                                    // Vérifie si le contenu récupéré est "vide" ou incomplet, sauf la clé 'version'
+                                    const hasContentKeys = Object.keys(fetchedContent).some(key => key !== 'version');
+                                    if (!hasContentKeys) { // Si le document existe mais ne contient pas les clés de contenu principales
+                                        console.log("Document 'appContent' trouvé mais vide/incomplet. Remplissage avec le contenu par défaut.");
+                                        setContent(defaultContent); // Mettre à jour l'état avec le contenu par défaut
+                                        // Tente de créer le document par défaut dans Firestore (cela l'écrasera s'il existe)
+                                        window.firebase.setDoc(contentDocRef, defaultContent)
+                                            .then(() => console.log("Document de contenu par défaut créé/mis à jour dans Firestore."))
+                                            .catch(err => console.error("Erreur lors de la création/mise à jour du document par défaut dans Firestore:", err));
+                                    } else {
+                                        setContent(fetchedContent);
+                                        console.log("Contenu de Firestore mis à jour :", fetchedContent);
+                                    }
                                     setLoadingContent(false);
                                 } else {
-                                    console.log("Document 'appContent' introuvable dans Firestore. Utilisation du contenu par défaut.");
-                                    // Si le document n'existe pas, utilisez le contenu par défaut et tentez de le créer
-                                    const defaultContent = {
-                                        home: {
-                                            mainTitle: "BRMOTORSPORT",
-                                            description: "Spécialiste de la reprogrammation moteur et de l'optimisation de véhicules. Performance, fiabilité et satisfaction client sont nos maîtres mots.",
-                                            contactMessage: "Contactez-nous dès aujourd'hui pour transformer votre véhicule !",
-                                            offerTitle: "Nos Offres",
-                                            offer1Title: "Reprogrammation Moteur",
-                                            offer1Description: "Optimisation des performances et de la consommation de votre véhicule.",
-                                            offer2Title: "Diagnostic Électronique",
-                                            offer2Description: "Identification précise des problèmes moteur et électroniques.",
-                                            offer3Title: "Préparation de Véhicule",
-                                            offer3Description: "Solutions complètes pour piste et route, du châssis au moteur.",
-                                            offer4Title: "Conseil Personnalisé",
-                                            offer4Description: "Accompagnement expert pour tous vos projets automobiles.",
-                                            trustTitle: "Pourquoi nous faire confiance ?",
-                                            trust1Title: "Rapidité d'Intervention",
-                                            trust1Description: "Des délais optimisés pour que vous retrouviez votre véhicule au plus vite.",
-                                            trust2Title: "Transparence et Confiance",
-                                            trust2Description: "Une communication claire et honnête à chaque étape du processus.",
-                                            trust3Title: "Qualité Garantie",
-                                            trust3Description: "Des prestations de haute qualité avec des résultats mesurables.",
-                                            trust4Title: "Satisfaction Client",
-                                            trust4Description: "Votre plaisir de conduire est notre plus grande réussite.",
-                                            teamTitle: "Notre Équipe",
-                                            teamDescription: "Notre équipe est composée de professionnels passionnés et expérimentés, dévoués à l'excellence automobile."
-                                        },
-                                        blog: {
-                                            mainTitle: "Notre Blog BRMOTORSPORT",
-                                            description: "Découvrez nos dernières actualités, projets et optimisations automobiles.",
-                                            posts: [
-                                                { id: 1, image: "https://placehold.co/600x400/000/FFF?text=Porsche_Cayenne", title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur", description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime." },
-                                                { id: 2, image: "https://placehold.co/600x400/000/FFF?text=BMW_Serie2", title: "BMW Série 2 : Reprogrammation et FAP OFF", description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité." },
-                                                { id: 3, image: "https://placehold.co/600x400/000/FFF?text=VW_Golf_GTI", title: "VW Golf GTI : Boost de Performance Ultime", description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !" },
-                                                { id: 4, image: "https://placehold.co/600x400/000/FFF?text=Seat_Ibiza", title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini." },
-                                                { id: 5, image: "https://placehold.co/600x400/000/FFF?text=VW_Golf_5_GTI", title: "VW Golf 5 GTI : Mise à Jour Cartographie", description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !" },
-                                                { id: 6, image: "https://placehold.co/600x400/000/FFF?text=Peugeot_206_HDi", title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation", description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led)." },
-                                                { id: 7, image: "https://placehold.co/600x400/000/FFF?text=Seat_Leon", title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm." },
-                                                { id: 8, image: "https://placehold.co/600x400/000/FFF?text=Ancienne_Voiture", title: "Ancienne Voiture : Dépannage Express et Remplacement Bobine", description: "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité." },
-                                                { id: 9, image: "https://placehold.co/600x400/000/FFF?text=Audi_TFSI", title: "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU", description: "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité." },
-                                                { id: 10, image: "https://placehold.co/600x400/000/FFF?text=Triumph_TR3", title: "Triumph TR3 : Check-up Complet et Optimisation", description: "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité." },
-                                                { id: 11, image: "https://placehold.co/600x400/000/FFF?text=Mercedes_2021", title: "Mercedes (2021) : Solution ADBLUE", description: "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système." }
-                                            ]
-                                        },
-                                        aboutUs: {
-                                            mainTitle: "Qui sommes-nous ?",
-                                            description: "BRMOTORSPORT est votre partenaire de confiance pour l'optimisation automobile. Fondée sur la passion de la performance et de la mécanique, notre entreprise s'engage à offrir des services de reprogrammation moteur, de préparation de véhicules et de diagnostics électroniques de pointe.",
-                                            historyTitle: "Notre Histoire",
-                                            historyParagraph1: "Notre aventure a débuté il y a plusieurs années, animée par une vision : celle de repousser les limites de la performance automobile tout en garantissant une fiabilité et une sécurité optimale. Forts d'une expertise technique approfondie et d'une passion inébranlable pour les voitures, nous avons bâti BRMOTORSPORT sur des valeurs de précision, d'innovation et de dévouement. Chaque véhicule qui passe entre nos mains est traité avec le plus grand soin, comme si c'était le nôtre.",
-                                            historyParagraph2: "Au fil des ans, nous avons développé des compétences uniques en reprogrammation sur mesure, en travaillant avec les technologies les plus avancées pour extraire le potentiel caché de chaque moteur. Notre histoire est marquée par des milliers de clients satisfaits, des voitures transformées et une réputation bâtie sur l'excellence. Nous sommes fiers de notre parcours et de l'impact que nous avons sur la performance et le plaisir de conduite de nos clients.",
-                                            valuesTitle: "Nos Valeurs",
-                                            value1Title: "Expertise Technique",
-                                            value1Description: "Une connaissance approfondie des systèmes moteurs et des technologies d'optimisation.",
-                                            value2Title: "Innovation Continue",
-                                            value2Description: "Veille technologique et développement de solutions toujours plus performantes.",
-                                            value3Title: "Qualité et Fiabilité",
-                                            value3Description: "Des interventions rigoureuses pour une durabilité et une sécurité maximales.",
-                                            value4Title: "Service Client Exceptionnel",
-                                            value4Description: "Écoute, conseil personnalisé et accompagnement pour une satisfaction totale."
-                                        },
-                                        contact: {
-                                            mainTitle: "Contactez-nous",
-                                            description: "Nous sommes là pour répondre à toutes vos questions et vous accompagner dans vos projets d'optimisation automobile.",
-                                            emailTitle: "Email",
-                                            email: "contact@brmotorsport.com",
-                                            phoneTitle: "Téléphone",
-                                            phoneNumber: "06.12.34.56.78",
-                                            instagramTitle: "Instagram",
-                                            instagramHandle: "@brmotorsport_official"
-                                        },
-                                        legalMentions: {
-                                            mainTitle: "Mentions Légales",
-                                            sectionTitle: "Informations Générales",
-                                            paragraph1: "Ce site web est édité par BRMOTORSPORT.",
-                                            paragraph2: "Adresse : [Votre Adresse Complète]",
-                                            list1Item1: "Numéro de téléphone : [Votre Numéro de Téléphone]",
-                                            list1Item2: "Adresse e-mail : [Votre E-mail]",
-                                            list1Item3: "Numéro d'immatriculation : [Votre Numéro SIRET/RCS]",
-                                            paragraph3: "Directeur de la publication : Monsieur [Votre Nom]",
-                                            list2Item1: "Hébergeur : GitHub Pages",
-                                            list2Item2: "Adresse : [Adresse de GitHub]",
-                                            list2Item3: "Site web : https://github.com",
-                                            paragraph4: "Propriété intellectuelle : L'ensemble des éléments de ce site (textes, images, graphismes, logos, icônes, etc.) est la propriété exclusive de BRMOTORSPORT, sauf mention contraire. Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de BRMOTORSPORT."
-                                        },
-                                        privacyPolicy: {
-                                            mainTitle: "Politique de Confidentialité",
-                                            introTitle: "Introduction",
-                                            introText: "La présente politique de confidentialité décrit comment BRMOTORSPORT collecte, utilise et protège vos informations personnelles lorsque vous utilisez notre site web.",
-                                            collectionTitle: "Collecte des Informations Personnelles",
-                                            collectionText: "Nous collectons des informations lorsque vous nous contactez via le formulaire de contact, lorsque vous naviguez sur notre site, ou lorsque vous interagissez avec nos services. Les informations collectées peuvent inclure votre nom, adresse e-mail, numéro de téléphone, et toute autre information que vous choisissez de nous fournir.",
-                                            usageTitle: "Utilisation des Informations",
-                                            usageListItem1: "Pour répondre à vos demandes et vous fournir les services que vous avez sollicités.",
-                                            usageListItem2: "Pour améliorer notre site web et nos offres de services.",
-                                            usageListItem3: "Pour vous envoyer des communications marketing (avec votre consentement).",
-                                            protectionTitle: "Protection des Informations",
-                                            protectionText: "Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Seuls les employés qui ont besoin d'effectuer un travail spécifique (par exemple, la facturation ou le service client) ont accès aux informations personnelles identifiables.",
-                                            rightsTitle: "Vos Droits",
-                                            rightsText: "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition au traitement de vos données personnelles. Pour exercer ces droits, veuillez nous contacter à [Votre Adresse E-mail].",
-                                            disclaimerText: "Cette politique de confidentialité peut être mise à jour occasionnellement. Nous vous invitons à la consulter régulièrement."
-                                        },
-                                        showcaseCar: {
-                                            mainTitle: "Notre Voiture Vitrine",
-                                            description: "Découvrez notre dernière préparation exceptionnelle : une Volkswagen Scirocco R avec une optimisation Stage 3 poussée, développant plus de 500 chevaux.",
-                                            preparationTitle: "Détails de la Préparation Stage 3",
-                                            preparationDescription: "Ce véhicule a subi une transformation complète pour atteindre des niveaux de performance extrêmes, tout en conservant une fiabilité optimale.",
-                                            piston: "Pistons forgés",
-                                            bielles: "Bielles forgées",
-                                            soupapes: "Soupapes renforcées",
-                                            adm: "Admission gros volume",
-                                            ressort: "Ressorts de soupapes renforcés",
-                                            viserie: "Vis de bielles, vilebrequin et culasse renforcées",
-                                            pompeHuile: "Pompe à huile gros débit",
-                                            turbo: "Turbo hybride sur mesure",
-                                            wastegate: "Wastegate externe",
-                                            injecteurs: "Injecteurs gros débit",
-                                            pipAdmission: "Pipe d'admission gros volume",
-                                            wmi: "Système WMI (Water-Methanol Injection)",
-                                            embrayage: "Embrayage renforcé",
-                                            finalDescription: "Chaque composant a été soigneusement sélectionné et installé pour garantir une synergie parfaite et une expérience de conduite inégalée sur route comme sur circuit.",
-                                            images: [ // AJOUT DE CE TABLEAU D'IMAGES
-                                                "https://placehold.co/800x500/FF0000/FFFFFF?text=Scirocco+R+1",
-                                                "https://placehold.co/800x500/00FF00/FFFFFF?text=Scirocco+R+2",
-                                                "https://placehold.co/800x500/0000FF/FFFFFF?text=Scirocco+R+3"
-                                            ]
-                                        }
-                                    };
-                                    setContent(defaultContent);
-                                    setLoadingContent(false);
+                                    console.log("Document 'appContent' introuvable dans Firestore. Utilisation et création du contenu par défaut.");
+                                    setContent(defaultContent); // Mettre à jour l'état avec le contenu par défaut
                                     // Tente de créer le document par défaut dans Firestore
                                     window.firebase.setDoc(contentDocRef, defaultContent)
                                         .then(() => console.log("Document de contenu par défaut créé dans Firestore."))
                                         .catch(err => console.error("Erreur lors de la création du document par défaut dans Firestore:", err));
+                                    setLoadingContent(false);
                                 }
                             }, (error) => {
                                 console.error("Erreur lors de l'écoute des changements Firestore :", error);
@@ -2338,6 +2351,7 @@
 
 
             // Fonction pour mettre à jour une partie spécifique du contenu dans Firestore
+            // Cette fonction est utilisée par les composants enfants (ex: AdminPanelPage, EditableText)
             const updateContentInFirestore = async (keyPath, newValue) => {
                 if (!db) {
                     console.error("Firestore n'est pas initialisé.");
@@ -2347,18 +2361,23 @@
 
                 const contentDocRef = window.firebase.doc(db, 'content', 'appContent');
                 try {
+                    // Nous allons toujours obtenir le document actuel avant de le modifier pour éviter d'écraser des données
                     const docSnap = await window.firebase.getDoc(contentDocRef);
                     let currentContent = docSnap.exists() ? docSnap.data() : {};
 
-                    // Utiliser setNestedProperty pour mettre à jour localement l'objet avant l'envoi
-                    const updatedContent = JSON.parse(JSON.stringify(currentContent));
-                    setNestedProperty(updatedContent, keyPath, newValue);
+                    // Si keyPath est null, cela signifie que nous passons un objet de contenu complet
+                    if (keyPath === null && typeof newValue === 'object') {
+                        currentContent = newValue;
+                    } else {
+                        // Utiliser setNestedProperty pour mettre à jour localement l'objet avant l'envoi
+                        setNestedProperty(currentContent, keyPath, newValue);
+                    }
 
-                    await window.firebase.setDoc(contentDocRef, updatedContent);
-                    console.log(`Contenu de "${keyPath}" mis à jour dans Firestore.`);
+                    await window.firebase.setDoc(contentDocRef, currentContent); // setDoc écrase ou crée le document
+                    console.log(`Contenu de "${keyPath || 'l\'ensemble du document'}" mis à jour dans Firestore.`);
                     setLoadingContent(false);
                 } catch (error) {
-                    console.error(`Erreur lors de la mise à jour de "${keyPath}" dans Firestore :`, error);
+                    console.error(`Erreur lors de la mise à jour de "${keyPath || 'l\'ensemble du document'}" dans Firestore :`, error);
                     setErrorContent(`Échec de la mise à jour du contenu: ${error.message}`);
                     setLoadingContent(false);
                 }
