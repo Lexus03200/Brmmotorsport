@@ -19,7 +19,7 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            overflow-x: hidden; /* Empêche le défilement horizontal */
+            /* overflow-x: hidden; /* Déplacé vers #root pour une meilleure portée avec React */
         }
         h1, h2, h3 {
             font-family: 'Montserrat', sans-serif; /* Nouvelle police pour les titres */
@@ -215,7 +215,7 @@
         Votre navigateur ne supporte pas l'élément audio.
     </audio>
 
-    <div id="root"></div>
+    <div id="root" class="overflow-x-hidden"></div>
 
     <!-- Le type du script a été changé en "text/babel" pour le transpiler -->
     <script type="text/babel">
@@ -504,7 +504,7 @@
             <nav className={`bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 fixed w-full z-50 shadow-lg rounded-b-lg top-[40px] navbar-transition ${isVisible ? 'navbar-visible' : 'navbar-hidden'}`}>
               <div className="container mx-auto flex justify-between items-center px-4">
                 {/* Titre BRMOTORSPORT avec un style amélioré et des couleurs et l'animation de coulissement */}
-                <div className="text-3xl md:text-4xl font-extrabold tracking-widest drop-shadow-lg opacity-0 animate-slide-in-left">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-widest drop-shadow-lg opacity-0 animate-slide-in-left"> {/* Ajusté pour mobile */}
                   <span className="text-red-500">BR</span>
                   <span className="text-white">MOTOR</span>
                   {/* Titre classique sans icône pour SPORT */}
@@ -575,9 +575,9 @@
         // Composant Page d'Accueil
         const HomePage = ({ setCurrentPage, isAdminAuthenticated }) => {
             return (
-                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
+                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter relative"> {/* Ajout de 'relative' ici */}
                     {/* Effets visuels de fond (blobs animés) */}
-                    <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                    <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden"> {/* Utilise inset-0 et overflow-hidden */}
                         <div className="absolute w-64 h-64 bg-red-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob top-10 left-1/4"></div>
                         <div className="absolute w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 top-1/2 right-1/4"></div>
                         <div className="absolute w-80 h-80 bg-green-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 bottom-10 left-1/2"></div>
@@ -590,7 +590,7 @@
                                 tag="h1"
                                 contentKey="home.mainTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-6xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate"
+                                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */
                             />
                             <EditableText
                                 tag="p"
@@ -637,7 +637,7 @@
                                 tag="h2"
                                 contentKey="home.offerTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-5xl font-bold text-center mb-12 text-red-400 animate-fade-in"
+                                className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-12 text-red-400 animate-fade-in" /* Ajusté pour mobile */
                             />
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                                 {[
@@ -664,7 +664,7 @@
                                 tag="h2"
                                 contentKey="home.trustTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-5xl font-bold text-center mb-12 text-blue-400 animate-fade-in"
+                                className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-12 text-blue-400 animate-fade-in" /* Ajusté pour mobile */
                             />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {[
@@ -691,7 +691,7 @@
                                 tag="h2"
                                 contentKey="home.teamTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-4xl font-bold mb-6 text-orange-400 animate-fade-in"
+                                className="text-3xl sm:text-4xl font-bold mb-6 text-orange-400 animate-fade-in" /* Ajusté pour mobile */
                             />
                             <EditableText
                                 tag="p"
@@ -731,7 +731,7 @@
                 tag="h3"
                 contentKey={titleKey}
                 isAdminAuthenticated={isAdminAuthenticated}
-                className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-red-200"
+                className="text-xl sm:text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-red-200" /* Ajusté pour mobile */
             />
             <EditableText
                 tag="p"
@@ -750,7 +750,7 @@
                 tag="h3"
                 contentKey={titleKey}
                 isAdminAuthenticated={isAdminAuthenticated}
-                className="text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-blue-200"
+                className="text-xl sm:text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-blue-200" /* Ajusté pour mobile */
             />
             <EditableText
                 tag="p"
@@ -897,7 +897,7 @@
                     )}
                 </div>
                 <div className="p-6">
-                  <h3 className="text-2xl font-bold mb-3 text-white leading-tight">{post.title}</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-3 text-white leading-tight">{post.title}</h3> {/* Ajusté pour mobile */}
                   <p className="text-gray-300 mb-4">{post.description}</p>
                   <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold py-2 px-6 rounded-full hover:from-green-600 hover:to-teal-600 transition duration-300 ease-in-out shadow-md">
                     Lire la suite
@@ -941,7 +941,7 @@
                     tag="h1"
                     contentKey="blog.mainTitle"
                     isAdminAuthenticated={isAdminAuthenticated}
-                    className="text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down animate-vibrate"
+                    className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */
                 />
                 <EditableText
                     tag="p"
@@ -1028,7 +1028,7 @@
                             tag="h1"
                             contentKey="aboutUs.mainTitle"
                             isAdminAuthenticated={isAdminAuthenticated}
-                            className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down animate-vibrate"
+                            className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */
                         />
                         <EditableText
                             tag="p"
@@ -1042,7 +1042,7 @@
                                 tag="h2"
                                 contentKey="aboutUs.historyTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-4xl font-bold mb-6 text-yellow-300 text-center"
+                                className="text-3xl sm:text-4xl font-bold mb-6 text-yellow-300 text-center" /* Ajusté pour mobile */
                             />
                             <EditableText
                                 tag="p"
@@ -1063,7 +1063,7 @@
                                 tag="h2"
                                 contentKey="aboutUs.valuesTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-4xl font-bold mb-6 text-yellow-300 text-center"
+                                className="text-3xl sm:text-4xl font-bold mb-6 text-yellow-300 text-center" /* Ajusté pour mobile */
                             />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <ValueCard
@@ -1106,7 +1106,7 @@
                 tag="h3"
                 contentKey={titleKey}
                 isAdminAuthenticated={isAdminAuthenticated}
-                className="text-2xl font-semibold mb-2 text-white transition-colors duration-300 group-hover:text-yellow-100"
+                className="text-xl sm:text-2xl font-semibold mb-2 text-white transition-colors duration-300 group-hover:text-yellow-100" /* Ajusté pour mobile */
               />
               <EditableText
                 tag="p"
@@ -1128,7 +1128,7 @@
                             tag="h1"
                             contentKey="contact.mainTitle"
                             isAdminAuthenticated={isAdminAuthenticated}
-                            className="text-5xl font-extrabold text-center mb-12 text-pink-400 animate-fade-in-down animate-vibrate"
+                            className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-pink-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */
                         />
                         <EditableText
                             tag="p"
@@ -1144,7 +1144,7 @@
                                     tag="h3"
                                     contentKey="contact.emailTitle"
                                     isAdminAuthenticated={isAdminAuthenticated}
-                                    className="text-2xl font-semibold mb-2 text-white"
+                                    className="text-xl sm:text-2xl font-semibold mb-2 text-white" /* Ajusté pour mobile */
                                 />
                                 <a href={`mailto:${content.contact.email}`} className="text-blue-400 hover:underline text-lg transition duration-300">
                                     <EditableText
@@ -1162,7 +1162,7 @@
                                     tag="h3"
                                     contentKey="contact.phoneTitle"
                                     isAdminAuthenticated={isAdminAuthenticated}
-                                    className="text-2xl font-semibold mb-2 text-white"
+                                    className="text-xl sm:text-2xl font-semibold mb-2 text-white" /* Ajusté pour mobile */
                                 />
                                 <a href={`tel:${content.contact.phoneNumber.replace(/\./g, '')}`} className="text-blue-400 hover:underline text-lg transition duration-300">
                                     <EditableText
@@ -1180,7 +1180,7 @@
                                     tag="h3"
                                     contentKey="contact.instagramTitle"
                                     isAdminAuthenticated={isAdminAuthenticated}
-                                    className="text-2xl font-semibold mb-2 text-white"
+                                    className="text-xl sm:text-2xl font-semibold mb-2 text-white" /* Ajusté pour mobile */
                                 />
                                 <a href={`https://www.instagram.com/${content.contact.instagramHandle.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline text-lg transition duration-300">
                                     <EditableText
@@ -1206,14 +1206,14 @@
                             tag="h1"
                             contentKey="legalMentions.mainTitle"
                             isAdminAuthenticated={isAdminAuthenticated}
-                            className="text-5xl font-extrabold text-center mb-12 text-teal-400 animate-fade-in-down animate-vibrate"
+                            className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-teal-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */
                         />
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-6">
                             <EditableText
                                 tag="h2"
                                 contentKey="legalMentions.sectionTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-3xl font-bold mb-4 text-white"
+                                className="text-2xl sm:text-3xl font-bold mb-4 text-white" /* Ajusté pour mobile */
                             />
                             <EditableText
                                 tag="p"
@@ -1306,14 +1306,14 @@
                             tag="h1"
                             contentKey="privacyPolicy.mainTitle"
                             isAdminAuthenticated={isAdminAuthenticated}
-                            className="text-5xl font-extrabold text-center mb-12 text-purple-400 animate-fade-in-down animate-vibrate"
+                            className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-purple-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */
                         />
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-6">
                             <EditableText
                                 tag="h2"
                                 contentKey="privacyPolicy.introTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-3xl font-bold mb-4 text-white"
+                                className="text-2xl sm:text-3xl font-bold mb-4 text-white" /* Ajusté pour mobile */
                             />
                             <EditableText
                                 tag="p"
@@ -1326,7 +1326,7 @@
                                 tag="h2"
                                 contentKey="privacyPolicy.collectionTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-3xl font-bold mb-4 text-white"
+                                className="text-2xl sm:text-3xl font-bold mb-4 text-white" /* Ajusté pour mobile */
                             />
                             <EditableText
                                 tag="p"
@@ -1339,7 +1339,7 @@
                                 tag="h2"
                                 contentKey="privacyPolicy.usageTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-3xl font-bold mb-4 text-white"
+                                className="text-2xl sm:text-3xl font-bold mb-4 text-white" /* Ajusté pour mobile */
                             />
                             <ul className="list-disc list-inside text-lg text-gray-300 pl-4 space-y-2">
                                 <li>
@@ -1372,7 +1372,7 @@
                                 tag="h2"
                                 contentKey="privacyPolicy.protectionTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-3xl font-bold mb-4 text-white"
+                                className="text-2xl sm:text-3xl font-bold mb-4 text-white" /* Ajusté pour mobile */
                             />
                             <EditableText
                                 tag="p"
@@ -1385,7 +1385,7 @@
                                 tag="h2"
                                 contentKey="privacyPolicy.rightsTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-3xl font-bold mb-4 text-white"
+                                className="text-2xl sm:text-3xl font-bold mb-4 text-white" /* Ajusté pour mobile */
                             />
                             <EditableText
                                 tag="p"
@@ -1494,7 +1494,7 @@
                             tag="h1"
                             contentKey="showcaseCar.mainTitle"
                             isAdminAuthenticated={isAdminAuthenticated}
-                            className="text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down animate-vibrate"
+                            className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-yellow-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */
                         />
                         <EditableText
                             tag="p"
@@ -1571,7 +1571,7 @@
                                 tag="h2"
                                 contentKey="showcaseCar.preparationTitle"
                                 isAdminAuthenticated={isAdminAuthenticated}
-                                className="text-3xl font-bold mb-4 text-white"
+                                className="text-2xl sm:text-3xl font-bold mb-4 text-white" /* Ajusté pour mobile */
                             />
                             <EditableText
                                 tag="p"
@@ -1731,7 +1731,7 @@
             return (
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-40 pb-12 font-inter flex items-center justify-center">
                     <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 w-full max-w-md animate-fade-in-up">
-                        <h1 className="text-4xl font-extrabold text-center mb-4 text-orange-400">Accès Administrateur</h1>
+                        <h1 className="text-3xl sm:text-4xl font-extrabold text-center mb-4 text-orange-400">Accès Administrateur</h1> {/* Ajusté pour mobile */}
                         {/* Nouvelle phrase ajoutée ici */}
                         <p className="text-center text-sm text-gray-400 mb-6 italic">Giovanni te souhaite la bienvenue et un bon courage !</p>
                         <form onSubmit={handleSubmit} className="space-y-6">
@@ -2304,7 +2304,7 @@
             return (
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white pt-40 pb-12 font-inter">
                     <div className="container mx-auto px-6 max-w-6xl">
-                        <h1 className="text-5xl font-extrabold text-center mb-12 text-orange-400 animate-fade-in-down animate-vibrate">
+                        <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-orange-400 animate-fade-in-down animate-vibrate"> {/* Ajusté pour mobile */}
                             Panneau d'Administration
                         </h1>
                         <p className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up">
@@ -2343,7 +2343,7 @@
                                                 {renderEditableFields(localContent.home, 'home')}
                                                 {localContent.home.offerTitle && (
                                                     <div className="mt-8 pt-6 border-t-2 border-red-600">
-                                                        <h3 className="text-2xl font-bold mb-4 text-red-300">Nos Offres</h3>
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-red-300">Nos Offres</h3> {/* Ajusté pour mobile */}
                                                         {renderEditableFields({
                                                             offer1Title: localContent.home.offer1Title,
                                                             offer1Description: localContent.home.offer1Description,
@@ -2358,7 +2358,7 @@
                                                 )}
                                                 {localContent.home.trustTitle && (
                                                     <div className="mt-8 pt-6 border-t-2 border-blue-600">
-                                                        <h3 className="text-2xl font-bold mb-4 text-blue-300">Pourquoi nous faire confiance</h3>
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-blue-300">Pourquoi nous faire confiance</h3> {/* Ajusté pour mobile */}
                                                         {renderEditableFields({
                                                             trust1Title: localContent.home.trust1Title,
                                                             trust1Description: localContent.home.trust1Description,
@@ -2426,7 +2426,7 @@
                                                 {renderEditableFields(localContent.aboutUs, 'aboutUs')}
                                                 {localContent.aboutUs.historyTitle && (
                                                     <div className="mt-8 pt-6 border-t-2 border-yellow-600">
-                                                        <h3 className="text-2xl font-bold mb-4 text-yellow-300">Notre Histoire</h3>
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-yellow-300">Notre Histoire</h3> {/* Ajusté pour mobile */}
                                                         {renderEditableFields({
                                                             historyTitle: localContent.aboutUs.historyTitle,
                                                             historyParagraph1: localContent.aboutUs.historyParagraph1,
@@ -2436,7 +2436,7 @@
                                                 )}
                                                 {localContent.aboutUs.valuesTitle && (
                                                     <div className="mt-8 pt-6 border-t-2 border-yellow-600">
-                                                        <h3 className="text-2xl font-bold mb-4 text-yellow-300">Nos Valeurs</h3>
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-yellow-300">Nos Valeurs</h3> {/* Ajusté pour mobile */}
                                                         {renderEditableFields({
                                                             value1Title: localContent.aboutUs.value1Title,
                                                             value1Description: localContent.aboutUs.value1Description,
@@ -2476,7 +2476,7 @@
                                                 {renderEditableFields(localContent.legalMentions, 'legalMentions')}
                                                 {localContent.legalMentions.list1Item1 && (
                                                     <div className="mt-8 pt-6 border-t-2 border-teal-600">
-                                                        <h3 className="text-2xl font-bold mb-4 text-teal-300">Liste 1</h3>
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-teal-300">Liste 1</h3> {/* Ajusté pour mobile */}
                                                         {renderEditableFields({
                                                             list1Item1: localContent.legalMentions.list1Item1,
                                                             list1Item2: localContent.legalMentions.list1Item2,
@@ -2486,7 +2486,7 @@
                                                 )}
                                                 {localContent.legalMentions.list2Item1 && (
                                                     <div className="mt-8 pt-6 border-t-2 border-teal-600">
-                                                        <h3 className="text-2xl font-bold mb-4 text-teal-300">Liste 2</h3>
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-teal-300">Liste 2</h3> {/* Ajusté pour mobile */}
                                                         {renderEditableFields({
                                                             list2Item1: localContent.legalMentions.list2Item1,
                                                             list2Item2: localContent.legalMentions.list2Item2,
@@ -2508,7 +2508,7 @@
                                                 {renderEditableFields(localContent.privacyPolicy, 'privacyPolicy')}
                                                 {localContent.privacyPolicy.usageListItem1 && (
                                                     <div className="mt-8 pt-6 border-t-2 border-purple-600">
-                                                        <h3 className="text-2xl font-bold mb-4 text-purple-300">Utilisation des informations</h3>
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-purple-300">Utilisation des informations</h3> {/* Ajusté pour mobile */}
                                                         {renderEditableFields({
                                                             usageListItem1: localContent.privacyPolicy.usageListItem1,
                                                             usageListItem2: localContent.privacyPolicy.usageListItem2,
@@ -2530,7 +2530,7 @@
                                                 {renderEditableFields(localContent.showcaseCar, 'showcaseCar')}
                                                 {localContent.showcaseCar.piston && (
                                                     <div className="mt-8 pt-6 border-t-2 border-yellow-600">
-                                                        <h3 className="text-2xl font-bold mb-4 text-yellow-300">Détails de la Préparation</h3>
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-yellow-300">Détails de la Préparation</h3> {/* Ajusté pour mobile */}
                                                         {renderEditableFields({
                                                             piston: localContent.showcaseCar.piston,
                                                             bielles: localContent.showcaseCar.bielles,
@@ -2997,7 +2997,8 @@
 
             return (
                 <ContentContext.Provider value={{ content, updateContent }}>
-                    <div className="min-h-screen bg-black font-inter">
+                    {/* Ajout de overflow-x-hidden sur le div racine de l'application React */}
+                    <div className="min-h-screen bg-black font-inter overflow-x-hidden">
                         <ScrollingBanner /> {/* Nouvelle bannière défilante */}
                         {/* Passe isAdminAuthenticated et handleLogout à Navbar, ainsi que la nouvelle prop isVisible */}
                         <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} isVisible={isNavbarVisible} />
