@@ -38,6 +38,14 @@
         ]
       },
       {
+        "id": 1749660183084,
+        "images": [
+          "Voitureyoucef.png"
+        ],
+        "title": "Notre équipe de BR Motorsport est fière de vous présenter cette préparation sur-mesure réalisée dans nos ateliers !",
+        "description": "✅ Stage 2 effectué : Optimisation des performances moteur avec reprogrammation spécifique pour un gain significatif en puissance et en couple, tout en respectant la fiabilité mécanique.\n\n✅ Soudure complète de la ligne d’échappement : Travail de précision réalisé par nos techniciens afin d’améliorer le flux des gaz d’échappement, offrir une sonorité plus sportive et maximiser le rendement du moteur.\n\nChaque intervention est réalisée avec soin et expertise, dans le respect des normes de qualité qui font la réputation de BR Motorsport.\n\n➡ Pour vos projets de préparation moteur ou d’amélioration de performance, n’hésitez pas à nous contacter !"
+      },
+      {
         "id": 1,
         "image": "IMG_9611.png",
         "title": "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur",
@@ -119,21 +127,21 @@
         ]
       },
       {
-        "id": 10,
-        "image": "gx.png",
-        "title": "Triumph TR3 : Check-up Complet et Optimisation",
-        "description": "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité.✅",
-        "images": [
-          "gx.png"
-        ]
-      },
-      {
         "id": 11,
         "image": "mercedes2021.png",
         "title": "Mercedes (2021) : Solution ADBLUE",
         "description": "✅ Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système.✅",
         "images": [
           "mercedes2021.png"
+        ]
+      },
+      {
+        "id": 10,
+        "image": "gx.png",
+        "title": "Triumph TR3 : Check-up Complet et Optimisation",
+        "description": "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité.✅",
+        "images": [
+          "gx.png"
         ]
       },
       {
@@ -144,14 +152,6 @@
         "images": [
           "Audi2.png"
         ]
-      },
-      {
-        "id": 1749660183084,
-        "images": [
-          "Voitureyoucef.png"
-        ],
-        "title": "Notre équipe de BR Motorsport est fière de vous présenter cette préparation sur-mesure réalisée dans nos ateliers !",
-        "description": "✅ Stage 2 effectué : Optimisation des performances moteur avec reprogrammation spécifique pour un gain significatif en puissance et en couple, tout en respectant la fiabilité mécanique.\n\n✅ Soudure complète de la ligne d’échappement : Travail de précision réalisé par nos techniciens afin d’améliorer le flux des gaz d’échappement, offrir une sonorité plus sportive et maximiser le rendement du moteur.\n\nChaque intervention est réalisée avec soin et expertise, dans le respect des normes de qualité qui font la réputation de BR Motorsport.\n\n➡ Pour vos projets de préparation moteur ou d’amélioration de performance, n’hésitez pas à nous contacter !"
       }
     ]
   },
