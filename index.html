@@ -240,7 +240,7 @@
         // Composant d'icône de clé à molette
         const WrenchIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wrench">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 [Circular Object]"/>
             <path d="M5.5 12.5l-3-3L12.5 2.5l3 3z"/>
           </svg>
         );
@@ -565,7 +565,7 @@
               if (onClick) onClick(); // Appelle onClick pour fermer le menu si fourni
             }}
             className="flex items-center text-gray-300 hover:text-red-500 transition duration-300 ease-in-out transform hover:scale-105
-                       px-3 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                       px-3 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity50"
           >
             {icon && <span className="mr-2 text-xl">{icon}</span>}
             {text}
@@ -1409,18 +1409,8 @@
         // Composant pour la page Voiture Vitrine
         const ShowcaseCarPage = ({ isAdminAuthenticated }) => {
             const { content } = useContext(ContentContext);
-            const images = [
-                `Photo1.png`,
-                `photo2.png`,
-                `photo3.png`,
-                `photo4.png`,
-                `photo5.png`,
-                `photo6.png`,
-                `photo7.png`,
-                `photo8.png`,
-                `photo9.png`,
-                `photo10.png`
-            ];
+            // Les images sont maintenant chargées depuis le contexte global (content.json)
+            const images = content?.showcaseCar?.images || [];
 
             const [currentImageIndex, setCurrentImageIndex] = useState(0);
             const [isPlaying, setIsPlaying] = useState(true); // Auto-play by default
@@ -1453,7 +1443,7 @@
             // Gère la lecture automatique du diaporama
             useEffect(() => {
                 let interval;
-                if (isPlaying) {
+                if (isPlaying && images.length > 1) { // Vérifie qu'il y a plus d'une image pour le diaporama
                     interval = setInterval(() => {
                         setCurrentImageIndex((prevIndex) =>
                             (prevIndex + 1) % images.length
@@ -1466,6 +1456,7 @@
             // Fonction pour passer à l'image précédente
             const goToPrevious = (e) => {
                 e.stopPropagation(); // Prevent opening lightbox
+                if (images.length === 0) return;
                 setCurrentImageIndex((prevIndex) =>
                     prevIndex === 0 ? images.length - 1 : prevIndex - 1
                 );
@@ -1475,6 +1466,7 @@
             // Fonction pour passer à l'image suivante
             const goToNext = (e) => {
                 e.stopPropagation(); // Prevent opening lightbox
+                if (images.length === 0) return;
                 setCurrentImageIndex((prevIndex) =>
                     (prevIndex + 1) % images.length
                 );
@@ -1507,64 +1499,73 @@
                             {/* Conteneur du carrousel avec centrage flexbox */}
                             <div
                                 className="relative w-full h-96 md:h-[500px] overflow-hidden rounded-lg shadow-2xl border-4 border-red-700 group flex items-center justify-center cursor-pointer"
-                                onClick={() => openLightbox(images, currentImageIndex)}
+                                onClick={() => images.length > 0 && openLightbox(images, currentImageIndex)}
                             >
                                 {/* Image actuelle du diaporama - Utilise object-contain pour afficher l'image entière */}
-                                <img
-                                    src={images[currentImageIndex]}
-                                    alt={`Volkswagen Scirocco R - Image ${currentImageIndex + 1}`}
-                                    className="w-full h-full object-contain object-center animate-fade-in transition-opacity duration-700"
-                                    onError={(e) => {
-                                        console.error(
-                                            `ERREUR DE CHARGEMENT D'IMAGE dans le diaporama:
-                                            Vérifiez l'URL exacte affichée ci-dessous dans votre navigateur.
-                                            Vérifiez la CASSE (majuscules/minuscules) et l'EXTENSION du nom de fichier sur votre dépôt GitHub.
-                                            URL échouée: ${e.target.src}`,
-                                            e
-                                        );
-                                        e.target.onerror = null;
-                                        e.target.src="https://placehold.co/800x500/FF0000/FFFFFF?text=Erreur+chargement+image";
-                                    }}
-                                />
+                                {images.length > 0 ? (
+                                    <img
+                                        src={images[currentImageIndex]}
+                                        alt={`Volkswagen Scirocco R - Image ${currentImageIndex + 1}`}
+                                        className="w-full h-full object-contain object-center animate-fade-in transition-opacity duration-700"
+                                        onError={(e) => {
+                                            console.error(
+                                                `ERREUR DE CHARGEMENT D'IMAGE dans le diaporama:
+                                                Vérifiez l'URL exacte affichée ci-dessous dans votre navigateur.
+                                                Vérifiez la CASSE (majuscules/minuscules) et l'EXTENSION du nom de fichier sur votre dépôt GitHub.
+                                                URL échouée: ${e.target.src}`,
+                                                e
+                                            );
+                                            e.target.onerror = null;
+                                            e.target.src="https://placehold.co/800x500/FF0000/FFFFFF?text=Erreur+chargement+image";
+                                        }}
+                                    />
+                                ) : (
+                                    <p className="text-gray-400">Aucune image à afficher pour la voiture vitrine.</p>
+                                )}
+
 
                                 {/* Boutons de navigation (précédent/suivant) */}
-                                <button
-                                    onClick={goToPrevious}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 opacity-0 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white"
-                                    aria-label="Image précédente"
-                                >
-                                    <ArrowLeftIcon />
-                                </button>
-                                <button
-                                    onClick={goToNext}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 opacity-0 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white"
-                                    aria-label="Image suivante"
-                                >
-                                    <ArrowRightIcon />
-                                </button>
-
-                                {/* Bouton Play/Pause pour le diaporama automatique */}
-                                <button
-                                    onClick={togglePlayPause}
-                                    className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black bg-opacity50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none focus:ring-2 focus:ring-white"
-                                    aria-label={isPlaying ? "Mettre en pause le diaporama" : "Lancer le diaporama"}
-                                >
-                                    {isPlaying ? <PauseIcon /> : <PlayIcon />}
-                                </button>
-
-                                {/* Indicateurs de pagination (points) */}
-                                <div className="absolute bottom-4 flex justify-center w-full space-x-2">
-                                    {images.map((_, index) => (
+                                {images.length > 1 && (
+                                    <>
                                         <button
-                                            key={index}
-                                            onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(index); setIsPlaying(false); }}
-                                            className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                                                index === currentImageIndex ? 'bg-red-500' : 'bg-gray-400 hover:bg-gray-300'
-                                            }`}
-                                            aria-label={`Voir l'image ${index + 1}`}
-                                        />
-                                    ))}
-                                </div>
+                                            onClick={goToPrevious}
+                                            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 opacity-0 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white"
+                                            aria-label="Image précédente"
+                                        >
+                                            <ArrowLeftIcon />
+                                        </button>
+                                        <button
+                                            onClick={goToNext}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 opacity-0 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white"
+                                            aria-label="Image suivante"
+                                        >
+                                            <ArrowRightIcon />
+                                        </button>
+
+                                        {/* Bouton Play/Pause pour le diaporama automatique */}
+                                        <button
+                                            onClick={togglePlayPause}
+                                            className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black bg-opacity50 text-white p-3 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none focus:ring-2 focus:ring-white"
+                                            aria-label={isPlaying ? "Mettre en pause le diaporama" : "Lancer le diaporama"}
+                                        >
+                                            {isPlaying ? <PauseIcon /> : <PlayIcon />}
+                                        </button>
+
+                                        {/* Indicateurs de pagination (points) */}
+                                        <div className="absolute bottom-4 flex justify-center w-full space-x-2">
+                                            {images.map((_, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(index); setIsPlaying(false); }}
+                                                    className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                                                        index === currentImageIndex ? 'bg-red-500' : 'bg-gray-400 hover:bg-gray-300'
+                                                    }`}
+                                                    aria-label={`Voir l'image ${index + 1}`}
+                                                />
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
                             </div>
 
                             <EditableText
@@ -1757,38 +1758,35 @@
             );
         };
 
-        // Composant d'édition d'article de blog pour le panneau d'administration
-        const AdminBlogPostCard = ({ post, index, handleLocalChange, handleRemoveBlogPost, handleAddImageToPost, handleRemoveImageFromPost, handleDragStart, handleDragEnd, handleDragOver, handleDrop }) => {
-            const [isDraggingOver, setIsDraggingOver] = useState(false);
-            const [zoom, setZoom] = useState(1); // État du zoom
-            const [offsetX, setOffsetX] = useState(0); // Décalage X
-            const [offsetY, setOffsetY] = useState(0); // Décalage Y
-            const [isPanDragging, setIsPanDragging] = useState(false); // État de glisser-déposer pour le pan
-            const [startX, setStartX] = useState(0); // Position de départ pour le glisser-déposer (pan)
-            const [startY, setStartY] = useState(0); // Position de départ pour le glisser-déposer (pan)
-            const [newImageUrl, setNewImageUrl] = useState(''); // Pour le champ d'ajout d'image
-
+        // Composant réutilisable pour la gestion d'un tableau d'images (ajout, suppression, aperçu)
+        const AdminImageArrayEditor = ({ label, imagesArray, onAddImage, onRemoveImage }) => {
+            const [newImageUrl, setNewImageUrl] = useState('');
             const [currentPreviewImageIndex, setCurrentPreviewImageIndex] = useState(0);
-            const [isPlaying, setIsPlaying] = useState(true); // Autoplay for admin preview
+            const [isPlaying, setIsPlaying] = useState(true);
+            const [zoom, setZoom] = useState(1);
+            const [offsetX, setOffsetX] = useState(0);
+            const [offsetY, setOffsetY] = useState(0);
+            const [isPanDragging, setIsPanDragging] = useState(false);
+            const [startX, setStartX] = useState(0);
+            const [startY, setStartY] = useState(0);
 
             // Reset zoom/pan when the image changes
             useEffect(() => {
                 resetImage();
             }, [currentPreviewImageIndex]);
 
-            // Autoplay for the admin preview carousel
+            // Autoplay for the carousel preview
             useEffect(() => {
                 let interval;
-                // Only autoplay if there's more than one image
-                if (isPlaying && post.images && post.images.length > 1) {
+                if (isPlaying && imagesArray && imagesArray.length > 1) {
                     interval = setInterval(() => {
-                        setCurrentImageIndex((prevIndex) =>
-                            (prevIndex + 1) % post.images.length
+                        setCurrentPreviewImageIndex((prevIndex) =>
+                            (prevIndex + 1) % imagesArray.length
                         );
-                    }, 3000); // Change image every 3 seconds
+                    }, 3000);
                 }
                 return () => clearInterval(interval);
-            }, [isPlaying, post.images]);
+            }, [isPlaying, imagesArray]);
 
             // Réinitialise le zoom et la position
             const resetImage = () => {
@@ -1805,14 +1803,13 @@
 
             // Gère le zoom
             const handleZoom = (factor) => {
-                setZoom(prevZoom => Math.max(0.5, prevZoom + factor)); // Empêche le dézoom sous 0.5
+                setZoom(prevZoom => Math.max(0.5, prevZoom + factor));
             };
 
             // Gère le début du glisser-déposer (pan)
             const handlePanStart = (e) => {
-                // Only allow panning if zoomed in
                 if (zoom <= 1) return;
-                e.preventDefault(); // Empêche le drag native de l'image
+                e.preventDefault();
                 setIsPanDragging(true);
                 setStartX(e.clientX - offsetX);
                 setStartY(e.clientY - offsetY);
@@ -1831,17 +1828,17 @@
             };
 
             const goToPreviousImage = () => {
-                if (!post.images || post.images.length === 0) return;
+                if (!imagesArray || imagesArray.length === 0) return;
                 setCurrentPreviewImageIndex((prevIndex) =>
-                    prevIndex === 0 ? post.images.length - 1 : prevIndex - 1
+                    prevIndex === 0 ? imagesArray.length - 1 : prevIndex - 1
                 );
                 setIsPlaying(false);
             };
 
             const goToNextImage = () => {
-                if (!post.images || post.images.length === 0) return;
+                if (!imagesArray || imagesArray.length === 0) return;
                 setCurrentPreviewImageIndex((prevIndex) =>
-                    (prevIndex + 1) % post.images.length
+                    (prevIndex + 1) % imagesArray.length
                 );
                 setIsPlaying(false);
             };
@@ -1850,7 +1847,159 @@
                 setIsPlaying(!isPlaying);
             };
 
-            // Fonctions de glisser-déposer pour la réorganisation des cartes
+            const displayImage = imagesArray && imagesArray.length > 0 ? imagesArray[currentPreviewImageIndex] : "https://placehold.co/600x400/000/FFF?text=Image+non+trouvée";
+
+            const handleFileSelect = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    // Simuler l'upload: dans une vraie application, vous enverriez ce fichier à un serveur
+                    // et le serveur vous retournerait l'URL de l'image stockée.
+                    // Ici, nous utilisons une URL de placeholder pour la démonstration.
+                    const simulatedImageUrl = `https://placehold.co/600x400/FFF/000?text=${encodeURIComponent(file.name)}`;
+                    onAddImage(simulatedImageUrl);
+                    setNewImageUrl(''); // Clear input after "upload"
+                    e.target.value = ''; // Clear file input
+                }
+            };
+
+            return (
+                <div className="mt-4 border-t border-gray-500 pt-4">
+                    <label className="block text-gray-300 text-sm font-bold mb-2">{label}:</label>
+                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mb-2">
+                        {/* Simuler l'upload via un champ fichier */}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileSelect}
+                            className="flex-grow p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-blue-500 focus:border-blue-500 cursor-pointer text-sm"
+                        />
+                        {/* Option pour ajouter une URL manuellement */}
+                        <input
+                            type="text"
+                            placeholder="Ou collez une URL d'image existante"
+                            value={newImageUrl}
+                            onChange={(e) => setNewImageUrl(e.target.value)}
+                            className="flex-grow p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        <button
+                            onClick={() => {
+                                if (newImageUrl.trim()) {
+                                    onAddImage(newImageUrl.trim());
+                                    setNewImageUrl('');
+                                }
+                            }}
+                            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg text-sm transition-all duration-200 flex-shrink-0"
+                        >
+                            Ajouter URL
+                        </button>
+                    </div>
+                    <p className="text-gray-400 text-xs mt-1 mb-2">
+                        Pour un véritable upload, un backend est nécessaire. Ici, l'upload simule l'ajout d'un nom de fichier (ou une URL).
+                    </p>
+                    <ul className="space-y-2 max-h-40 overflow-y-auto pr-2">
+                        {imagesArray && imagesArray.map((imgUrl, imgIdx) => (
+                            <li key={imgIdx} className="flex items-center justify-between bg-gray-700 p-2 rounded">
+                                <span className="text-gray-300 text-sm truncate mr-2">{imgUrl}</span>
+                                <button
+                                    onClick={() => onRemoveImage(imgIdx)}
+                                    className="bg-red-500 hover:bg-red-600 text-white p-1 rounded-full text-xs"
+                                    aria-label={`Supprimer l'image ${imgUrl}`}
+                                >
+                                    <XIcon className="w-3 h-3"/>
+                                </button>
+                            </li>
+                        ))}
+                        {(!imagesArray || imagesArray.length === 0) && (
+                            <p className="text-gray-400 text-sm italic">Aucune image ajoutée.</p>
+                        )}
+                    </ul>
+
+                    {/* Aperçu de l'image (carrousel avec zoom/pan) */}
+                    <div className="mt-4 border-t border-gray-500 pt-4">
+                        <label className="block text-gray-300 text-sm font-bold mb-2">Aperçu de l'image:</label>
+                        <div className="relative w-full h-48 bg-gray-700 flex items-center justify-center overflow-hidden rounded-lg border-2 border-gray-400">
+                            {imagesArray && imagesArray.length > 0 ? (
+                                <>
+                                    <img
+                                        src={displayImage}
+                                        alt="Aperçu de l'image"
+                                        className="object-contain max-w-full max-h-full transition-transform duration-100 ease-out"
+                                        style={{
+                                            transform: `scale(${zoom}) translate(${offsetX}px, ${offsetY}px)`,
+                                            cursor: zoom > 1 ? (isPanDragging ? 'grabbing' : 'grab') : 'default',
+                                        }}
+                                        onMouseDown={handlePanStart}
+                                        onMouseMove={handlePanMove}
+                                        onMouseUp={handlePanEnd}
+                                        onMouseLeave={handlePanEnd}
+                                        onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }}
+                                    />
+                                    {imagesArray.length > 1 && (
+                                        <>
+                                            <button
+                                                onClick={goToPreviousImage}
+                                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
+                                                aria-label="Image précédente"
+                                            ><ArrowLeftIcon className="w-5 h-5"/></button>
+                                            <button
+                                                onClick={goToNextImage}
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
+                                                aria-label="Image suivante"
+                                            ><ArrowRightIcon className="w-5 h-5"/></button>
+                                            <button
+                                                onClick={togglePreviewPlayPause}
+                                                className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
+                                                aria-label={isPlaying ? "Mettre en pause le diaporama" : "Lancer le diaporama"}
+                                            >
+                                                {isPlaying ? <PauseIcon className="w-5 h-5"/> : <PlayIcon className="w-5 h-5"/>}
+                                            </button>
+                                            <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                                                {currentPreviewImageIndex + 1} / {imagesArray.length}
+                                            </div>
+                                        </>
+                                    )}
+                                </>
+                            ) : (
+                                <p className="text-gray-400">Pas d'image à prévisualiser.</p>
+                            )}
+                            {zoom > 1 && (
+                                <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                                    Zoom: {Math.round(zoom * 100)}%
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex justify-center space-x-2 mt-3">
+                            <button
+                                onClick={() => handleZoom(0.1)}
+                                className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
+                                title="Zoomer"
+                            ><PlusIcon className="w-4 h-4"/></button>
+                            <button
+                                onClick={() => handleZoom(-0.1)}
+                                className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
+                                title="Dézoomer"
+                            ><MinusIcon className="w-4 h-4"/></button>
+                            <button
+                                onClick={centerImage}
+                                className="bg-purple-500 hover:bg-purple-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
+                                title="Centrer l'image"
+                            ><TargetIcon className="w-4 h-4"/></button>
+                            <button
+                                onClick={resetImage}
+                                className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
+                                title="Réinitialiser le zoom et la position"
+                            ><RotateCcwIcon className="w-4 h-4"/></button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Composant d'édition d'article de blog pour le panneau d'administration
+        const AdminBlogPostCard = ({ post, index, handleLocalChange, handleRemoveBlogPost, handleDragStart, handleDragEnd, handleDragOver, handleDrop }) => {
+            const [isDraggingOver, setIsDraggingOver] = useState(false);
+
+            // Fonctions pour le glisser-déposer de la carte d'article
             const onDragEnter = (e) => {
                 e.preventDefault();
                 setIsDraggingOver(true);
@@ -1860,8 +2009,15 @@
                 setIsDraggingOver(false);
             };
 
-            const displayImage = post.images && post.images.length > 0 ? post.images[currentPreviewImageIndex] : "https://placehold.co/600x400/000/FFF?text=Image+non+trouvée";
+            // Fonctions d'ajout et de suppression d'images spécifiques à cet article
+            const handleAddImage = (imageUrl) => {
+                handleLocalChange('blog', `posts.${index}.images`, [...(post.images || []), imageUrl]);
+            };
 
+            const handleRemoveImage = (imageIdx) => {
+                const newImages = (post.images || []).filter((_, idx) => idx !== imageIdx);
+                handleLocalChange('blog', `posts.${index}.images`, newImages);
+            };
 
             return (
                 <div
@@ -1901,128 +2057,13 @@
                                 className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500 resize-y"
                             />
                         </div>
-                        {/* Section de gestion des images */}
-                        <div className="mt-4 border-t border-gray-500 pt-4">
-                            <label className="block text-gray-300 text-sm font-bold mb-2">Gérer les images du blog:</label>
-                            <div className="flex space-x-2 mb-2">
-                                <input
-                                    type="text"
-                                    placeholder="Nom de fichier image (ex: image.png)"
-                                    value={newImageUrl}
-                                    onChange={(e) => setNewImageUrl(e.target.value)}
-                                    className="flex-grow p-2 rounded bg-gray-500 text-white border border-gray-400 focus:ring-green-500 focus:border-green-500"
-                                />
-                                <button
-                                    onClick={() => {
-                                        if (newImageUrl.trim()) {
-                                            handleAddImageToPost(index, newImageUrl.trim());
-                                            setNewImageUrl('');
-                                        }
-                                    }}
-                                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg text-sm transition-all duration-200"
-                                >
-                                    Ajouter
-                                </button>
-                            </div>
-                            <p className="text-gray-400 text-xs mt-1 mb-2">
-                                Assurez-vous que les images sont téléversées dans votre dépôt GitHub à la racine. Seul le nom du fichier est requis ici.
-                            </p>
-                            <ul className="space-y-2">
-                                {post.images && post.images.map((imgUrl, imgIdx) => (
-                                    <li key={imgIdx} className="flex items-center justify-between bg-gray-700 p-2 rounded">
-                                        <span className="text-gray-300 text-sm truncate mr-2">{imgUrl}</span>
-                                        <button
-                                            onClick={() => handleRemoveImageFromPost(index, imgIdx)}
-                                            className="bg-red-500 hover:bg-red-600 text-white p-1 rounded-full text-xs"
-                                            aria-label={`Supprimer l'image ${imgUrl}`}
-                                        >
-                                            <XIcon className="w-3 h-3"/>
-                                        </button>
-                                    </li>
-                                ))}
-                                {(!post.images || post.images.length === 0) && (
-                                    <p className="text-gray-400 text-sm italic">Aucune image ajoutée pour cet article.</p>
-                                )}
-                            </ul>
-                        </div>
-
-                        {/* Aperçu de l'image (carrousel avec zoom/pan) */}
-                        <div className="mt-4 border-t border-gray-500 pt-4">
-                            <label className="block text-gray-300 text-sm font-bold mb-2">Aperçu de l'image (pour l'édition):</label>
-                            <div className="relative w-full h-48 bg-gray-700 flex items-center justify-center overflow-hidden rounded-lg border-2 border-gray-400">
-                                {post.images && post.images.length > 0 ? (
-                                    <>
-                                        <img
-                                            src={displayImage}
-                                            alt={post.title}
-                                            className="object-contain max-w-full max-h-full transition-transform duration-100 ease-out"
-                                            style={{
-                                                transform: `scale(${zoom}) translate(${offsetX}px, ${offsetY}px)`,
-                                                cursor: zoom > 1 ? (isPanDragging ? 'grabbing' : 'grab') : 'default',
-                                            }}
-                                            onMouseDown={handlePanStart} // Always allow pan start if zoom > 1
-                                            onMouseMove={handlePanMove}
-                                            onMouseUp={handlePanEnd}
-                                            onMouseLeave={handlePanEnd}
-                                            onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }}
-                                        />
-                                        {post.images.length > 1 && (
-                                            <>
-                                                <button
-                                                    onClick={goToPreviousImage}
-                                                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
-                                                    aria-label="Image précédente"
-                                                ><ArrowLeftIcon className="w-5 h-5"/></button>
-                                                <button
-                                                    onClick={goToNextImage}
-                                                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
-                                                    aria-label="Image suivante"
-                                                ><ArrowRightIcon className="w-5 h-5"/></button>
-                                                <button
-                                                    onClick={togglePreviewPlayPause}
-                                                    className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none"
-                                                    aria-label={isPlaying ? "Mettre en pause le diaporama" : "Lancer le diaporama"}
-                                                >
-                                                    {isPlaying ? <PauseIcon className="w-5 h-5"/> : <PlayIcon className="w-5 h-5"/>}
-                                                </button>
-                                                <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                                                    {currentPreviewImageIndex + 1} / {post.images.length}
-                                                </div>
-                                            </>
-                                        )}
-                                    </>
-                                ) : (
-                                    <p className="text-gray-400">Pas d'image à prévisualiser.</p>
-                                )}
-                                {zoom > 1 && (
-                                    <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                                        Zoom: {Math.round(zoom * 100)}%
-                                    </div>
-                                )}
-                            </div>
-                            <div className="flex justify-center space-x-2 mt-3">
-                                <button
-                                    onClick={() => handleZoom(0.1)}
-                                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
-                                    title="Zoomer"
-                                ><PlusIcon className="w-4 h-4"/></button>
-                                <button
-                                    onClick={() => handleZoom(-0.1)}
-                                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
-                                    title="Dézoomer"
-                                ><MinusIcon className="w-4 h-4"/></button>
-                                <button
-                                    onClick={centerImage}
-                                    className="bg-purple-500 hover:bg-purple-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
-                                    title="Centrer l'image"
-                                ><TargetIcon className="w-4 h-4"/></button>
-                                <button
-                                    onClick={resetImage}
-                                    className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-sm flex items-center justify-center transition-all duration-200"
-                                    title="Réinitialiser le zoom et la position"
-                                ><RotateCcwIcon className="w-4 h-4"/></button>
-                            </div>
-                        </div>
+                        {/* Utilisation du composant AdminImageArrayEditor pour les images du blog */}
+                        <AdminImageArrayEditor
+                            label="Gérer les images du blog"
+                            imagesArray={post.images}
+                            onAddImage={handleAddImage}
+                            onRemoveImage={handleRemoveImage}
+                        />
                     </div>
                 </div>
             );
@@ -2086,36 +2127,10 @@
                 });
             };
 
-            const handleAddImageToPost = (postIndex, imageUrl) => {
-                setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    const targetPost = newContent.blog.posts[postIndex];
-                    if (targetPost) {
-                        if (!targetPost.images) {
-                            targetPost.images = [];
-                        }
-                        targetPost.images.push(imageUrl);
-                    }
-                    return newContent;
-                });
-            };
-
-            const handleRemoveImageFromPost = (postIndex, imageIndex) => {
-                setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    const targetPost = newContent.blog.posts[postIndex];
-                    if (targetPost && targetPost.images && Array.isArray(targetPost.images)) {
-                        targetPost.images.splice(imageIndex, 1);
-                    }
-                    return newContent;
-                });
-            };
-
-            // Fonctions pour le glisser-déposer
+            // Fonctions pour le glisser-déposer des articles de blog
             const handleDragStart = (e, index) => {
                 setDraggedIndex(index);
                 e.dataTransfer.effectAllowed = 'move';
-                // e.dataTransfer.setData('text/html', e.currentTarget); // Pas nécessaire pour reorder array
                 e.currentTarget.classList.add('opacity-50', 'border-dashed', 'border-4', 'border-blue-400'); // Feedback visuel
             };
 
@@ -2131,22 +2146,16 @@
 
             const handleDrop = (e, targetIndex) => {
                 e.preventDefault();
-                // console.log(`handleDrop: draggedIndex=${draggedIndex}, targetIndex=${targetIndex}`);
-
                 if (draggedIndex === null || draggedIndex === targetIndex) {
                     return;
                 }
 
                 setLocalContent(prevContent => {
                     const newContent = JSON.parse(JSON.stringify(prevContent));
-                    const newPosts = [...newContent.blog.posts]; // Copie pour éviter la mutation directe
+                    const newPosts = [...newContent.blog.posts];
                     
                     const [reorderedItem] = newPosts.splice(draggedIndex, 1);
                     newPosts.splice(targetIndex, 0, reorderedItem);
-
-                    // Reconstruire les IDs si nécessaire ou simplement mettre à jour le tableau
-                    // Pour cet exemple, on ne change pas les IDs des objets existants, juste leur ordre.
-                    // Ici, l'ID est un timestamp, donc il reste stable.
 
                     return {
                         ...newContent,
@@ -2159,6 +2168,26 @@
                 setDraggedIndex(null); // Réinitialiser l'index de l'élément glissé
             };
 
+            // Fonctions de gestion des images pour la voiture vitrine
+            const handleAddShowcaseImage = (imageUrl) => {
+                setLocalContent(prevContent => {
+                    const newContent = JSON.parse(JSON.stringify(prevContent));
+                    if (!newContent.showcaseCar) newContent.showcaseCar = {};
+                    if (!newContent.showcaseCar.images) newContent.showcaseCar.images = [];
+                    newContent.showcaseCar.images.push(imageUrl);
+                    return newContent;
+                });
+            };
+
+            const handleRemoveShowcaseImage = (imageIndex) => {
+                setLocalContent(prevContent => {
+                    const newContent = JSON.parse(JSON.stringify(prevContent));
+                    if (newContent.showcaseCar && Array.isArray(newContent.showcaseCar.images)) {
+                        newContent.showcaseCar.images.splice(imageIndex, 1);
+                    }
+                    return newContent;
+                });
+            };
 
             const handleSaveChanges = async () => {
                 setIsSaving(true);
@@ -2180,14 +2209,14 @@
                         setSaveMessage(`Modifications sauvegardées avec succès sur GitHub ! ${data.commitUrl ? `Voir le commit: ${data.commitUrl}` : ''}`);
                         console.log("AdminPanelPage: Save successful. Response from backend:", data);
                         // Mettre à jour le contenu global après une sauvegarde réussie
-                        updateContent('home', localContent.home); // Mettre à jour la page d'accueil
-                        updateContent('blog', localContent.blog); // Mettre à jour la page de blog (inclut l'ordre des posts)
-                        updateContent('aboutUs', localContent.aboutUs); // Mettre à jour la page Qui sommes-nous
-                        updateContent('contact', localContent.contact); // Mettre à jour la page Contact
-                        updateContent('legalMentions', localContent.legalMentions); // Mettre à jour les Mentions Légales
-                        updateContent('privacyPolicy', localContent.privacyPolicy); // Mettre à jour la Politique de Confidentialité
-                        updateContent('showcaseCar', localContent.showcaseCar); // Mettre à jour la Voiture Vitrine
-                        updateContent('siteSettings', localContent.siteSettings); // Mettre à jour les paramètres du site
+                        updateContent('home', localContent.home);
+                        updateContent('blog', localContent.blog);
+                        updateContent('aboutUs', localContent.aboutUs);
+                        updateContent('contact', localContent.contact);
+                        updateContent('legalMentions', localContent.legalMentions);
+                        updateContent('privacyPolicy', localContent.privacyPolicy);
+                        updateContent('showcaseCar', localContent.showcaseCar);
+                        updateContent('siteSettings', localContent.siteSettings);
 
                         console.log("AdminPanelPage: Global content update triggered.");
                     } else {
@@ -2221,12 +2250,11 @@
                     const fieldValue = pageData[fieldKey];
                     const contentPath = `${pageKey}.${fieldKey}`;
 
-                    if (fieldKey === 'posts' && Array.isArray(fieldValue)) {
-                        return null; // Géré par une section spécifique du blog
+                    // Exclure les tableaux d'images qui seront gérés par AdminImageArrayEditor
+                    if ((pageKey === 'blog' && fieldKey === 'posts') || (pageKey === 'showcaseCar' && fieldKey === 'images')) {
+                        return null;
                     }
-                    if (fieldKey === 'images' && Array.isArray(fieldValue)) {
-                        return null; // Géré par une section spécifique dans AdminBlogPostCard
-                    }
+
                      if (typeof fieldValue === 'object' && fieldValue !== null && !Array.isArray(fieldValue)) {
                         // If it's a nested object that's not an array, render its fields recursively
                         return (
@@ -2298,7 +2326,7 @@
                 { key: 'legalMentions', label: 'Mentions Légales' },
                 { key: 'privacyPolicy', label: 'Politique de Confidentialité' },
                 { key: 'showcaseCar', label: 'Voiture Vitrine' },
-                { key: 'siteSettings', label: 'Paramètres du Site' } // Nouveau tab
+                { key: 'siteSettings', label: 'Paramètres du Site' }
             ];
 
             return (
@@ -2338,12 +2366,11 @@
                                             <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3">
                                                 Page Accueil
                                             </h2>
-                                            {/* Wrap adjacent elements in a fragment */}
                                             <div className="space-y-6">
                                                 {renderEditableFields(localContent.home, 'home')}
                                                 {localContent.home.offerTitle && (
                                                     <div className="mt-8 pt-6 border-t-2 border-red-600">
-                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-red-300">Nos Offres</h3> {/* Ajusté pour mobile */}
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-red-300">Nos Offres</h3>
                                                         {renderEditableFields({
                                                             offer1Title: localContent.home.offer1Title,
                                                             offer1Description: localContent.home.offer1Description,
@@ -2358,7 +2385,7 @@
                                                 )}
                                                 {localContent.home.trustTitle && (
                                                     <div className="mt-8 pt-6 border-t-2 border-blue-600">
-                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-blue-300">Pourquoi nous faire confiance</h3> {/* Ajusté pour mobile */}
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-blue-300">Pourquoi nous faire confiance</h3>
                                                         {renderEditableFields({
                                                             trust1Title: localContent.home.trust1Title,
                                                             trust1Description: localContent.home.trust1Description,
@@ -2402,8 +2429,6 @@
                                                                 index={index}
                                                                 handleLocalChange={handleLocalChange}
                                                                 handleRemoveBlogPost={handleRemoveBlogPost}
-                                                                handleAddImageToPost={handleAddImageToPost}
-                                                                handleRemoveImageFromPost={handleRemoveImageFromPost}
                                                                 handleDragStart={handleDragStart}
                                                                 handleDragEnd={handleDragEnd}
                                                                 handleDragOver={handleDragOver}
@@ -2426,7 +2451,7 @@
                                                 {renderEditableFields(localContent.aboutUs, 'aboutUs')}
                                                 {localContent.aboutUs.historyTitle && (
                                                     <div className="mt-8 pt-6 border-t-2 border-yellow-600">
-                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-yellow-300">Notre Histoire</h3> {/* Ajusté pour mobile */}
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-yellow-300">Notre Histoire</h3>
                                                         {renderEditableFields({
                                                             historyTitle: localContent.aboutUs.historyTitle,
                                                             historyParagraph1: localContent.aboutUs.historyParagraph1,
@@ -2436,7 +2461,7 @@
                                                 )}
                                                 {localContent.aboutUs.valuesTitle && (
                                                     <div className="mt-8 pt-6 border-t-2 border-yellow-600">
-                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-yellow-300">Nos Valeurs</h3> {/* Ajusté pour mobile */}
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-yellow-300">Nos Valeurs</h3>
                                                         {renderEditableFields({
                                                             value1Title: localContent.aboutUs.value1Title,
                                                             value1Description: localContent.aboutUs.value1Description,
@@ -2459,7 +2484,6 @@
                                             <h2 className="text-3xl font-bold mb-6 text-pink-400 capitalize border-b-2 border-pink-600 pb-3">
                                                 Page Contact
                                             </h2>
-                                            {/* Wrap adjacent elements in a fragment */}
                                             <React.Fragment>
                                                 {renderEditableFields(localContent.contact, 'contact')}
                                             </React.Fragment>
@@ -2476,7 +2500,7 @@
                                                 {renderEditableFields(localContent.legalMentions, 'legalMentions')}
                                                 {localContent.legalMentions.list1Item1 && (
                                                     <div className="mt-8 pt-6 border-t-2 border-teal-600">
-                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-teal-300">Liste 1</h3> {/* Ajusté pour mobile */}
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-teal-300">Liste 1</h3>
                                                         {renderEditableFields({
                                                             list1Item1: localContent.legalMentions.list1Item1,
                                                             list1Item2: localContent.legalMentions.list1Item2,
@@ -2486,7 +2510,7 @@
                                                 )}
                                                 {localContent.legalMentions.list2Item1 && (
                                                     <div className="mt-8 pt-6 border-t-2 border-teal-600">
-                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-teal-300">Liste 2</h3> {/* Ajusté pour mobile */}
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-teal-300">Liste 2</h3>
                                                         {renderEditableFields({
                                                             list2Item1: localContent.legalMentions.list2Item1,
                                                             list2Item2: localContent.legalMentions.list2Item2,
@@ -2508,7 +2532,7 @@
                                                 {renderEditableFields(localContent.privacyPolicy, 'privacyPolicy')}
                                                 {localContent.privacyPolicy.usageListItem1 && (
                                                     <div className="mt-8 pt-6 border-t-2 border-purple-600">
-                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-purple-300">Utilisation des informations</h3> {/* Ajusté pour mobile */}
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-purple-300">Utilisation des informations</h3>
                                                         {renderEditableFields({
                                                             usageListItem1: localContent.privacyPolicy.usageListItem1,
                                                             usageListItem2: localContent.privacyPolicy.usageListItem2,
@@ -2530,7 +2554,7 @@
                                                 {renderEditableFields(localContent.showcaseCar, 'showcaseCar')}
                                                 {localContent.showcaseCar.piston && (
                                                     <div className="mt-8 pt-6 border-t-2 border-yellow-600">
-                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-yellow-300">Détails de la Préparation</h3> {/* Ajusté pour mobile */}
+                                                        <h3 className="text-xl sm:text-2xl font-bold mb-4 text-yellow-300">Détails de la Préparation</h3>
                                                         {renderEditableFields({
                                                             piston: localContent.showcaseCar.piston,
                                                             bielles: localContent.showcaseCar.bielles,
@@ -2548,6 +2572,13 @@
                                                         }, 'showcaseCar')}
                                                     </div>
                                                 )}
+                                                {/* Gestion des images de la voiture vitrine */}
+                                                <AdminImageArrayEditor
+                                                    label="Gérer les images de la voiture vitrine"
+                                                    imagesArray={localContent.showcaseCar?.images || []}
+                                                    onAddImage={handleAddShowcaseImage}
+                                                    onRemoveImage={handleRemoveShowcaseImage}
+                                                />
                                             </div>
                                         </div>
                                     )}
@@ -2559,7 +2590,6 @@
                                                 Paramètres du Site
                                             </h2>
                                             <div className="space-y-6">
-                                                {/* Le champ musicVolume est géré par un cas spécifique dans renderEditableFields */}
                                                 {localContent.siteSettings && renderEditableFields(localContent.siteSettings, 'siteSettings')}
                                             </div>
                                         </div>
@@ -2751,6 +2781,17 @@
                             throw new Error(`Erreur HTTP: ${response.status}`);
                         }
                         const data = await response.json();
+                        // Assurez-vous que les structures d'images existent avec des valeurs par défaut si absentes
+                        if (!data.blog) data.blog = {};
+                        if (!data.blog.posts) data.blog.posts = [];
+                        data.blog.posts = data.blog.posts.map(post => ({
+                            ...post,
+                            images: post.images || []
+                        }));
+
+                        if (!data.showcaseCar) data.showcaseCar = {};
+                        if (!data.showcaseCar.images) data.showcaseCar.images = [];
+
                         setContent(data);
                         console.log("App: content.json loaded successfully:", data);
                     } catch (error) {
@@ -2790,7 +2831,7 @@
                                     { id: 1, images: ["IMG_9611.png", "Photo1.png"], title: "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur", description: "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime." },
                                     { id: 2, images: ["IMG_9609.png"], title: "BMW Série 2 : Reprogrammation et FAP OFF", description: "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité." },
                                     { id: 3, images: ["IMG_9607.png"], title: "VW Golf GTI : Boost de Performance Ultime", description: "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !" },
-                                    { id: 4, images: ["IMG_9608.png"], title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini." },
+                                    { id: 4, images: ["Seat1.png"], title: "Seat Ibiza : Amélioration de la Réactivité Moteur", description: "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini." },
                                     { id: 5, images: ["IMG_9610.png"], title: "VW Golf 5 GTI : Mise à Jour Cartographie", description: "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !" },
                                     { id: 6, images: ["Photopeugeot.png", "anciennevoiture.png"], title: "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation", description: "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf, esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led)." },
                                     { id: 7, images: ["Seat1.png"], title: "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)", description: "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm." },
@@ -2859,6 +2900,18 @@
                             showcaseCar: {
                                 mainTitle: "Notre Voiture Vitrine",
                                 description: "Découvrez notre dernière préparation exceptionnelle : une Volkswagen Scirocco R avec une optimisation Stage 3 poussée, développant plus de 500 chevaux.",
+                                images: [ // Ajoutez cette structure d'images si elle n'existe pas
+                                    "Photo1.png",
+                                    "photo2.png",
+                                    "photo3.png",
+                                    "photo4.png",
+                                    "photo5.png",
+                                    "photo6.png",
+                                    "photo7.png",
+                                    "photo8.png",
+                                    "photo9.png",
+                                    "photo10.png"
+                                ],
                                 preparationTitle: "Détails de la Préparation Stage 3",
                                 preparationDescription: "Ce véhicule a subi une transformation complète pour atteindre des niveaux de performance extrêmes, tout en conservant une fiabilité optimale.",
                                 piston: "Pistons forgés",
