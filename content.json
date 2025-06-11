@@ -144,6 +144,14 @@
         "images": [
           "Audi2.png"
         ]
+      },
+      {
+        "id": 1749659168133,
+        "images": [
+          "https://placehold.co/600x400/000/FFF?text=Nouvelle+image"
+        ],
+        "title": "Admin",
+        "description": "jjhgg"
       }
     ]
   },
@@ -222,6 +230,18 @@
     "pipAdmission": "**Pip admission :** Optimisation du conduit d'admission pour un flux d'air maximal.",
     "wmi": "**WMI (Water Methanol Injection) :** Système d'injection eau-méthanol pour refroidir l'admission et augmenter la puissance.",
     "embrayage": "**Embrayage 880 nm :** Installation d'un embrayage renforcé capable de supporter un couple moteur de 880 Nm.",
-    "finalDescription": "Cette préparation complète garantit non seulement une performance époustouflante sur piste, mais aussi une fiabilité à toute épreuve pour un usage sportif.\nUne préparation qui sors de l'ordinaire."
+    "finalDescription": "Cette préparation complète garantit non seulement une performance époustouflante sur piste, mais aussi une fiabilité à toute épreuve pour un usage sportif.\nUne préparation qui sors de l'ordinaire.",
+    "images": [
+      "Photo1.png",
+      "photo2.png",
+      "photo3.png",
+      "photo4.png",
+      "photo5.png",
+      "photo6.png",
+      "photo7.png",
+      "photo8.png",
+      "photo9.png",
+      "photo10.png"
+    ]
   }
 }
