@@ -2781,7 +2781,8 @@
                             throw new Error(`Erreur HTTP: ${response.status}`);
                         }
                         const data = await response.json();
-                        // Assurez-vous que les structures d'images existent avec des valeurs par défaut si absentes
+
+                        // Assurez-vous que les structures d'images du blog existent avec des valeurs par défaut si absentes
                         if (!data.blog) data.blog = {};
                         if (!data.blog.posts) data.blog.posts = [];
                         data.blog.posts = data.blog.posts.map(post => ({
@@ -2789,8 +2790,27 @@
                             images: post.images || []
                         }));
 
-                        if (!data.showcaseCar) data.showcaseCar = {};
-                        if (!data.showcaseCar.images) data.showcaseCar.images = [];
+                        // --- Nouvelle logique pour les images de la voiture vitrine ---
+                        // S'assurer que data.showcaseCar existe
+                        if (!data.showcaseCar) {
+                            data.showcaseCar = {};
+                        }
+                        // Si le tableau d'images est manquant ou vide, le remplir avec les images par défaut
+                        if (!Array.isArray(data.showcaseCar.images) || data.showcaseCar.images.length === 0) {
+                            data.showcaseCar.images = [
+                                "Photo1.png",
+                                "photo2.png",
+                                "photo3.png",
+                                "photo4.png",
+                                "photo5.png",
+                                "photo6.png",
+                                "photo7.png",
+                                "photo8.png",
+                                "photo9.png",
+                                "photo10.png"
+                            ];
+                        }
+                        // --- Fin de la nouvelle logique ---
 
                         setContent(data);
                         console.log("App: content.json loaded successfully:", data);
