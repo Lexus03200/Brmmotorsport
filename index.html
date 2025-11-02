@@ -200,7 +200,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-black font-inter">
+<body class="min-h-screen bg-white text-gray-900 font-inter">
     <audio id="background-music" autoplay loop volume="0.01" style="display:none;">
         <source src="musique.mp3" type="audio/mpeg"> Votre navigateur ne supporte pas l'élément audio.
     </audio>
@@ -209,7 +209,7 @@
 
     <script type="text/babel">
         // Récupère les hooks React depuis l'objet global React
-        const { useState, useEffect, useRef, useLayoutEffect, createContext, useContext } = React;
+        const { useState, useEffect, useRef, createContext, useContext } = React;
 
         // --- Icônes Lucide React ---
         // Composant d'icône de voiture
@@ -229,7 +229,7 @@
         // Composant d'icône de clé à molette
         const WrenchIcon = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wrench">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1 7.94-7.94l-3.77 3.77z"/>
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1 7.94-7.94l-3.77-3.77a1 1 0 0 0-1.4 0l-1.6 1.6a1 1 0 0 0 0 1.4Z"/>
             <path d="M5.5 12.5l-3-3L12.5 2.5l3 3z"/>
           </svg>
         );
@@ -356,6 +356,63 @@
 
         // --- Contexte pour la gestion du contenu éditable ---
         const ContentContext = createContext();
+
+        // --- Objet de contenu initial pour éviter les messages [Contenu manquant] ---
+        const initialContent = {
+            home: {
+                mainTitle: "Révolutionnez Votre Conduite.",
+                subTitle: "Spécialistes de la reprogrammation moteur et de la performance automobile. Libérez le potentiel de votre véhicule.",
+                aboutTitle: "À Propos de BRMOTORSPORT",
+                aboutText: "Chez BRMOTORSPORT, nous sommes passionnés par la mécanique et l'optimisation automobile. Forts de notre expertise en **reprogrammation moteur**, nous offrons des solutions sur mesure pour améliorer la puissance, le couple et l'efficacité de votre voiture. Nous travaillons avec précision et professionnalisme pour garantir des résultats optimaux et la fiabilité de votre véhicule. Notre engagement : la performance et votre satisfaction.",
+                service: [
+                    {
+                        title: "Reprogrammation Moteur (Stage 1/2)",
+                        text: "Augmentation de la puissance et du couple par optimisation de la cartographie électronique. Gains garantis et personnalisés.",
+                    },
+                    {
+                        title: "Diagnostic Électronique Avancé",
+                        text: "Identification précise des pannes et des dysfonctionnements électroniques pour une réparation ciblée et efficace.",
+                    },
+                    {
+                        title: "Entretien et Réparation Générales",
+                        text: "Services d'entretien régulier, de vidange, de freins et de réparations mécaniques pour maintenir votre véhicule en parfait état.",
+                    },
+                ],
+                team: {
+                    title: "Notre Équipe d'Experts",
+                    subtitle: "Des professionnels qualifiés et passionnés au service de votre performance.",
+                }
+            },
+            blog: {
+                mainTitle: "Actualités et Conseils Automobile",
+                mainSubtitle: "Nos dernières publications, tutoriels et nouveautés dans le monde du tuning et de l'optimisation moteur.",
+            },
+            contact: {
+                mainTitle: "Contactez l'Équipe BRMOTORSPORT",
+                subTitle: "Prêt à optimiser votre véhicule ? Prenez rendez-vous ou demandez un devis personnalisé.",
+                contactText: "N'hésitez pas à nous appeler ou à nous envoyer un email pour toute question ou demande spécifique. Nous vous répondrons dans les plus brefs délais. Vous pouvez également utiliser notre formulaire ci-dessous.",
+                email: "contact@brmotorsport.fr",
+                phone: "06 12 34 56 78",
+            },
+            about: {
+                mainTitle: "Qui Sommes-nous ?",
+                subTitle: "Notre histoire, notre mission et nos valeurs au cœur de la performance.",
+                historyTitle: "Notre Histoire : Nés de la Passion",
+                historyText: "Fondé il y a 5 ans par un passionné de sport automobile, BRMOTORSPORT est né d'une volonté simple : rendre la performance accessible sans compromettre la fiabilité. Notre garage a rapidement évolué pour devenir une référence locale en reprogrammation moteur, grâce à notre rigueur et l'utilisation d'outils de pointe.",
+                missionTitle: "Notre Mission : Votre Satisfaction",
+                missionText: "Notre mission est d'offrir le meilleur service possible à nos clients, en fournissant des solutions de performance et d'entretien sur mesure, transparentes et professionnelles. Chaque voiture est traitée avec le plus grand soin, comme si c'était la nôtre.",
+            },
+            legal: {
+                title: "Mentions Légales",
+                content: "<h2>Propriétaire du site</h2><p>BRMOTORSPORT</p><h2>Hébergeur</h2><p>Ce site est hébergé par...</p><h2>Conditions Générales d'Utilisation</h2><p>L'utilisation de ce site implique l'acceptation pleine et entière des conditions générales d'utilisation...</p>",
+            },
+            showcase: {
+                mainTitle: "Voiture Vitrine",
+                subTitle: "Découvrez nos projets les plus remarquables et les préparations moteur exceptionnelles réalisées par notre équipe.",
+                description: "Chaque véhicule présenté ici est le fruit d'une optimisation minutieuse, que ce soit pour le circuit ou pour un usage routier quotidien. Nous mettons en lumière les gains de performance et les modifications techniques apportées.",
+            }
+        };
+
 
         // Fonction utilitaire pour définir une propriété imbriquée par un chemin (similaire à lodash.set)
         const setNestedProperty = (obj, path, value) => {
@@ -561,126 +618,6 @@
           </button>
         );
 
-        // Composant du Header (ou la section qui contient l'offre)
-        const Header = ({ content, currentPage, setCurrentPage, adminContent }) => {
-            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-            const contentRef = useRef(null);
-
-            // Ceci est le hook qui corrige le problème de page blanche (vérification if (content))
-            useLayoutEffect(() => {
-                if (content) { // CORRECTION: Ajouter cette vérification pour éviter l'erreur si 'content' est null
-                    const computedStyles = window.getComputedStyle(content);
-                    const contentHeight = content.offsetHeight + parseInt(computedStyles.marginBottom);
-
-                    if (contentHeight > 550) {
-                        content.style.maxHeight = '550px';
-                    }
-                }
-            }, [content]);
-
-            return (
-                <section className="text-center mb-20 bg-gray-800 p-12 rounded-2xl shadow-xl transform transition duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-orange-500/50">
-                    <EditableText tag="h2" contentKey="home.offerTitle" isAdminAuthenticated={adminContent} className="text-4xl sm:text-5xl font-extrabold mb-8 text-orange-500 animate-bounce-in" /* Ajusté pour mobile */ />
-                    <EditableText tag="p" contentKey="home.offerSubtitle" isAdminAuthenticated={adminContent} className="text-xl text-gray-300 mb-12 animate-fade-in animation-delay-2000" />
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <OfferCard
-                            icon={<CarIcon />}
-                            titleKey="home.offer1Title"
-                            descriptionKey="home.offer1Description"
-                            adminContent={adminContent}
-                            style={{ '--delay-factor': '0ms' }}
-                        />
-                        <OfferCard
-                            icon={<WrenchIcon />}
-                            titleKey="home.offer2Title"
-                            descriptionKey="home.offer2Description"
-                            adminContent={adminContent}
-                            style={{ '--delay-factor': '150ms' }}
-                        />
-                        <OfferCard
-                            icon={<HandshakeIcon />}
-                            titleKey="home.offer3Title"
-                            descriptionKey="home.offer3Description"
-                            adminContent={adminContent}
-                            style={{ '--delay-factor': '300ms' }}
-                        />
-                        <OfferCard
-                            icon={<CalendarIcon />}
-                            titleKey="home.offer4Title"
-                            descriptionKey="home.offer4Description"
-                            adminContent={adminContent}
-                            style={{ '--delay-factor': '450ms' }}
-                        />
-                    </div>
-                    <div className="mt-12">
-                        <button
-                            onClick={() => setCurrentPage('contact')}
-                            className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg
-                                       transition duration-300 ease-in-out transform hover:scale-110 active:scale-95 animate-fade-in animation-delay-4000
-                                       flex items-center justify-center mx-auto"
-                        >
-                            <PhoneIcon className="mr-2"/> Contactez-nous pour un devis
-                        </button>
-                    </div>
-                </section>
-            );
-        };
-
-        // Composant Carte d'Offre
-        const OfferCard = ({ icon, titleKey, descriptionKey, adminContent, style }) => (
-            <div className="group bg-gray-900 p-6 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-red-500 animate-fade-in-up delay-animation" style={style}>
-                <div className="text-red-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-red-400">{icon}</div>
-                <EditableText tag="h3" contentKey={titleKey} isAdminAuthenticated={adminContent} className="text-xl sm:text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-red-200" /* Ajusté pour mobile */ />
-                <EditableText tag="p" contentKey={descriptionKey} isAdminAuthenticated={adminContent} className="text-gray-300" />
-            </div>
-        );
-
-        // Composant Pourquoi nous faire confiance
-        const TrustSection = ({ isAdminAuthenticated }) => (
-            <section className="text-center mb-20">
-                <EditableText tag="h2" contentKey="home.trustTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl sm:text-5xl font-extrabold mb-12 text-blue-500 animate-fade-in-down" /* Ajusté pour mobile */ />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <TrustCard
-                        titleKey="home.trust1Title"
-                        descriptionKey="home.trust1Description"
-                        icon="⏱️"
-                        isAdminAuthenticated={isAdminAuthenticated}
-                        style={{ '--delay-factor': '0ms' }}
-                    />
-                    <TrustCard
-                        titleKey="home.trust2Title"
-                        descriptionKey="home.trust2Description"
-                        icon="🏆"
-                        isAdminAuthenticated={isAdminAuthenticated}
-                        style={{ '--delay-factor': '150ms' }}
-                    />
-                    <TrustCard
-                        titleKey="home.trust3Title"
-                        descriptionKey="home.trust3Description"
-                        icon="⭐"
-                        isAdminAuthenticated={isAdminAuthenticated}
-                        style={{ '--delay-factor': '300ms' }}
-                    />
-                    <TrustCard
-                        titleKey="home.trust4Title"
-                        descriptionKey="home.trust4Description"
-                        icon="🤝"
-                        isAdminAuthenticated={isAdminAuthenticated}
-                        style={{ '--delay-factor': '450ms' }}
-                    />
-                </div>
-            </section>
-        );
-
-        // Composant Carte de Confiance
-        const TrustCard = ({ icon, titleKey, descriptionKey, isAdminAuthenticated, style }) => (
-            <div className="group bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700 border border-gray-700 hover:border-blue-500 animate-fade-in-up delay-animation" style={style}>
-                <div className="text-blue-500 mb-4 text-5xl transition-colors duration-300 group-hover:text-blue-400">{icon}</div>
-                <EditableText tag="h3" contentKey={titleKey} isAdminAuthenticated={isAdminAuthenticated} className="text-xl sm:text-2xl font-semibold mb-3 text-white transition-colors duration-300 group-hover:text-blue-200" /* Ajusté pour mobile */ />
-                <EditableText tag="p" contentKey={descriptionKey} isAdminAuthenticated={isAdminAuthenticated} className="text-gray-300" />
-            </div>
-        );
-
         // Nouveau composant Logo pour la page d'accueil
         const Logo = ({ className }) => {
             const imageUrl = "logo.png"; // Correction: Utilisez logo.png
@@ -701,1634 +638,764 @@
         const HomePage = ({ setCurrentPage, isAdminAuthenticated }) => {
             const { content } = useContext(ContentContext);
 
-            // Ref pour le conteneur de contenu principal (utile si on veut mesurer sa taille)
-            const contentRef = useRef(null);
-            
-            // J'ai vérifié le code précédent et déplacé la correction ici (même si la correction dans Header résout le problème principal, il vaut mieux le laisser dans la composante qui en a besoin, si nécessaire)
-            // Laissez ce useLayoutEffect vide ou commentez-le si vous n'avez pas de ref 'content' ici
-            // Correction: Si vous n'avez plus besoin de ce hook, supprimez-le, sinon assurez-vous qu'il utilise contentRef.current et non 'content'
-            /*
-            useLayoutEffect(() => {
-                if (contentRef.current) { // Utiliser la Ref du composant pour la mesure
-                    const computedStyles = window.getComputedStyle(contentRef.current);
-                    const contentHeight = contentRef.current.offsetHeight + parseInt(computedStyles.marginBottom);
+            // Données des services pour l'itération
+            const services = content.home && content.home.service ? content.home.service : initialContent.home.service;
 
-                    if (contentHeight > 550) {
-                        contentRef.current.style.maxHeight = '550px';
-                    }
-                }
-            }, [contentRef]);
-            */
+            // Images des services (placeholders, à adapter)
+            const serviceImages = [
+                "service_reprogrammation.jpg", // Image 1
+                "service_diagnostic.jpg",      // Image 2
+                "service_entretien.jpg",      // Image 3
+            ];
 
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter relative"> {/* Ajout de 'relative' ici */}
-                    {/* Effets visuels de fond (blobs animés) */}
-                    <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden"> {/* Utilise inset-0 et overflow-hidden */}
-                        <div className="absolute w-64 h-64 bg-red-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 top-1/4 left-1/4 animate-blob"></div>
-                        <div className="absolute w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 bottom-1/4 right-1/4 animate-blob animation-delay-2000"></div>
-                        <div className="absolute w-72 h-72 bg-orange-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 top-1/3 right-1/4 animate-blob animation-delay-4000"></div>
+            // Composant de carte de service
+            const ServiceCard = ({ titleKey, textKey, imageSrc, index }) => (
+                <div className="bg-gray-800 bg-opacity-95 p-6 rounded-xl shadow-2xl transform transition duration-500 hover:scale-[1.03] hover:shadow-red-500/50 flex flex-col items-center text-center border-t-4 border-red-600 animate-fade-in-up" style={{ '--delay-factor': `${0.2 * index}s`, animationDelay: `${0.2 * index}s` }}>
+                    <div className="w-full h-48 mb-4 overflow-hidden rounded-lg shadow-lg">
+                        <img src={imageSrc} alt={`Illustration ${titleKey}`} className="w-full h-full object-cover transition duration-500 hover:scale-110" />
                     </div>
-
-                    <div className="container mx-auto px-4 relative z-10"> {/* Contenu principal au-dessus des blobs */}
-                        {/* Section Introduction / Hero */}
-                        <section className="text-center mb-20 pt-10">
-                            <Logo className="w-40 h-40 mx-auto mb-6 drop-shadow-lg transform transition duration-500 hover:scale-110" />
-                            <EditableText tag="h1" contentKey="home.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-5xl sm:text-7xl font-extrabold mb-4 text-white animate-slide-in-left drop-shadow-lg" /* Ajusté pour mobile */ />
-                            <EditableText tag="p" contentKey="home.tagline" isAdminAuthenticated={isAdminAuthenticated} className="text-2xl sm:text-3xl text-red-400 mb-10 animate-fade-in animation-delay-2000" /* Ajusté pour mobile */ />
-                            <div className="space-x-4 animate-fade-in-up animation-delay-4000">
-                                <button
-                                    onClick={() => setCurrentPage('blog')}
-                                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg
-                                               transition duration-300 ease-in-out transform hover:scale-110 active:scale-95"
-                                >
-                                    Découvrez notre blog
-                                </button>
-                                <button
-                                    onClick={() => setCurrentPage('voiture-vitrine')}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg
-                                               transition duration-300 ease-in-out transform hover:scale-110 active:scale-95 mt-4 sm:mt-0"
-                                >
-                                    Découvrez également notre voiture vitrine
-                                </button>
-                            </div>
-                        </section>
-
-                        {/* Section Nos Offres (Header) */}
-                        <Header setCurrentPage={setCurrentPage} content={contentRef.current} adminContent={isAdminAuthenticated} />
-
-                        {/* Section Pourquoi nous faire confiance */}
-                        <TrustSection isAdminAuthenticated={isAdminAuthenticated} />
-
-                        {/* Section Témoignages (Non implémentée dans le JSON de base, à ajouter si besoin) */}
-                        <section className="text-center mb-12">
-                            <EditableText tag="h2" contentKey="home.testimonialTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl sm:text-5xl font-extrabold mb-12 text-orange-500 animate-fade-in-down" /* Ajusté pour mobile */ />
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                <TestimonialCard
-                                    textKey="home.testimonial1Text"
-                                    authorKey="home.testimonial1Author"
-                                    isAdminAuthenticated={isAdminAuthenticated}
-                                    style={{ '--delay-factor': '0ms' }}
-                                />
-                                <TestimonialCard
-                                    textKey="home.testimonial2Text"
-                                    authorKey="home.testimonial2Author"
-                                    isAdminAuthenticated={isAdminAuthenticated}
-                                    style={{ '--delay-factor': '150ms' }}
-                                />
-                                <TestimonialCard
-                                    textKey="home.testimonial3Text"
-                                    authorKey="home.testimonial3Author"
-                                    isAdminAuthenticated={isAdminAuthenticated}
-                                    style={{ '--delay-factor': '300ms' }}
-                                />
-                            </div>
-                        </section>
-                    </div>
+                    <EditableText tag="h3" contentKey={titleKey} isAdminAuthenticated={isAdminAuthenticated} className="text-2xl font-extrabold text-red-500 mb-3" />
+                    <EditableText tag="p" contentKey={textKey} isAdminAuthenticated={isAdminAuthenticated} className="text-gray-300 leading-relaxed" />
                 </div>
             );
-        };
-
-        // Composant Carte de Témoignage
-        const TestimonialCard = ({ textKey, authorKey, isAdminAuthenticated, style }) => (
-            <div className="bg-gray-800 p-6 rounded-xl shadow-xl border-l-4 border-red-500 text-left transform transition duration-300 hover:scale-[1.03] animate-fade-in-up delay-animation" style={style}>
-                <div className="text-red-500 text-3xl mb-4">"</div>
-                <EditableText tag="p" contentKey={textKey} isAdminAuthenticated={isAdminAuthenticated} className="text-lg italic text-gray-300 mb-4" />
-                <div className="text-right">
-                    <EditableText tag="p" contentKey={authorKey} isAdminAuthenticated={isAdminAuthenticated} className="font-semibold text-white" />
-                </div>
-            </div>
-        );
-
-        // Composant d'article de blog
-        const BlogPostCard = ({ post, style, openLightbox }) => {
-            const [currentPreviewImageIndex, setCurrentPreviewImageIndex] = useState(0);
-            const [isPlaying, setIsPlaying] = useState(false); // Diaporama en pause par défaut
-            const [zoom, setZoom] = useState(1);
-            const [pan, setPan] = useState({ x: 0, y: 0 });
-            const [isPanDragging, setIsPanDragging] = useState(false);
-            const panStart = useRef({ x: 0, y: 0, panX: 0, panY: 0 });
-            const imageRef = useRef(null);
-
-            // Gestion du défilement automatique
-            useEffect(() => {
-                let interval;
-                if (isPlaying && post.images && post.images.length > 1) {
-                    interval = setInterval(() => {
-                        setCurrentPreviewImageIndex(prevIndex => (prevIndex + 1) % post.images.length);
-                    }, 3000); // Change toutes les 3 secondes
-                }
-                return () => clearInterval(interval);
-            }, [isPlaying, post.images]);
-
-            const togglePreviewPlayPause = (e) => {
-                e.stopPropagation(); // Empêche l'ouverture du lightbox
-                setIsPlaying(prev => !prev);
-            };
-
-            const goToPreviousImage = (e) => {
-                e.stopPropagation();
-                setCurrentPreviewImageIndex(prevIndex => (prevIndex - 1 + post.images.length) % post.images.length);
-            };
-
-            const goToNextImage = (e) => {
-                e.stopPropagation();
-                setCurrentPreviewImageIndex(prevIndex => (prevIndex + 1) % post.images.length);
-            };
-
-            // Gestion du zoom et du déplacement (pan)
-            const handleZoom = (amount) => {
-                const newZoom = Math.max(1, Math.min(3, zoom + amount));
-                setZoom(newZoom);
-                // Si on dézoome complètement, réinitialiser le pan
-                if (newZoom === 1) {
-                    setPan({ x: 0, y: 0 });
-                }
-            };
-
-            const handlePanStart = (e) => {
-                if (zoom > 1) {
-                    e.preventDefault();
-                    setIsPanDragging(true);
-                    panStart.current = {
-                        x: e.clientX,
-                        y: e.clientY,
-                        panX: pan.x,
-                        panY: pan.y,
-                    };
-                }
-            };
-
-            const handlePanMove = (e) => {
-                if (!isPanDragging || zoom <= 1) return;
-                e.preventDefault();
-
-                const dx = e.clientX - panStart.current.x;
-                const dy = e.clientY - panStart.current.y;
-
-                const newX = panStart.current.panX + dx;
-                const newY = panStart.current.panY + dy;
-
-                // Limiter le déplacement pour qu'il ne déborde pas de l'image (logique simplifiée)
-                const maxPan = ((zoom - 1) / 2) * 100; // max translation based on zoom level
-                const limitedX = Math.max(-maxPan, Math.min(maxPan, newX));
-                const limitedY = Math.max(-maxPan, Math.min(maxPan, newY));
-
-                setPan({ x: limitedX, y: limitedY });
-            };
-
-            const handlePanEnd = () => {
-                setIsPanDragging(false);
-            };
-
-            const resetZoomAndPan = () => {
-                setZoom(1);
-                setPan({ x: 0, y: 0 });
-            };
-
-            const handleImageClick = () => {
-                if (post.images && post.images.length > 0) {
-                    openLightbox(post.images, currentPreviewImageIndex);
-                }
-            };
 
 
-            return (
-                <div
-                    className="group bg-gray-800 p-4 rounded-xl shadow-xl transform transition duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-green-500/50 flex flex-col animate-fade-in-up delay-animation"
-                    style={style}
-                    onClick={handleImageClick}
-                >
-                    <div className="relative mb-4 overflow-hidden rounded-lg cursor-pointer aspect-w-4 aspect-h-3" style={{ paddingBottom: '75%' /* Ratio 4:3 */}}>
-                        {post.images && post.images.length > 0 ? (
-                            <>
-                                <img
-                                    ref={imageRef}
-                                    src={post.images[currentPreviewImageIndex]}
-                                    alt={`Image ${currentPreviewImageIndex + 1} de ${post.title}`}
-                                    className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ${zoom > 1 ? 'z-10' : ''}`}
-                                    style={{
-                                        transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
-                                        cursor: zoom > 1 ? (isPanDragging ? 'grabbing' : 'grab') : 'default',
-                                    }}
-                                    onMouseDown={handlePanStart} // Always allow pan start if zoom > 1
-                                    onMouseMove={handlePanMove}
-                                    onMouseUp={handlePanEnd}
-                                    onMouseLeave={handlePanEnd}
-                                    onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/000/FFF?text=Image+non+trouvée`; }}
-                                />
-                                {post.images.length > 1 && (
-                                    <>
-                                        <button onClick={goToPreviousImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none" aria-label="Image précédente" ><ArrowLeftIcon className="w-5 h-5"/></button>
-                                        <button onClick={goToNextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none" aria-label="Image suivante" ><ArrowRightIcon className="w-5 h-5"/></button>
-                                        <button onClick={togglePreviewPlayPause} className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-80 transition duration-300 focus:outline-none" aria-label={isPlaying ? "Mettre en pause le diaporama" : "Lancer le diaporama"} >
-                                            {isPlaying ? <PauseIcon className="w-5 h-5"/> : <PlayIcon className="w-5 h-5"/>}
-                                        </button>
-                                        <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                                            {currentPreviewImageIndex + 1} / {post.images.length}
-                                        </div>
-                                    </>
-                                )}
-                                {zoom > 1 && (
-                                    <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded flex space-x-2">
-                                        <button onClick={(e) => { e.stopPropagation(); handleZoom(0.2); }} aria-label="Zoomer" className="hover:text-green-400"><PlusIcon className="w-4 h-4" /></button>
-                                        <button onClick={(e) => { e.stopPropagation(); handleZoom(-0.2); }} aria-label="Dézoomer" className="hover:text-red-400"><MinusIcon className="w-4 h-4" /></button>
-                                        <button onClick={(e) => { e.stopPropagation(); resetZoomAndPan(); }} aria-label="Réinitialiser la vue" className="hover:text-blue-400"><TargetIcon className="w-4 h-4" /></button>
-                                    </div>
-                                )}
-                            </>
-                        ) : (
-                            <p className="text-gray-400">Pas d'image à prévisualiser.</p>
-                        )}
+            // Composant de carte de membre de l'équipe (Placeholder)
+            const TeamMemberCard = ({ name, role, photoSrc, index }) => (
+                <div className="bg-white p-6 rounded-xl shadow-2xl flex flex-col items-center text-center transform transition duration-500 hover:shadow-blue-500/50 animate-fade-in" style={{ '--delay-factor': `${0.1 * index}s`, animationDelay: `${0.1 * index}s` }}>
+                    <div className="w-32 h-32 mb-4 overflow-hidden rounded-full border-4 border-red-600">
+                        <img src={photoSrc} alt={name} className="w-full h-full object-cover" />
                     </div>
-                    <EditableText tag="h3" contentKey={`blog.posts.${post.id}.title`} isAdminAuthenticated={false} className="text-2xl font-bold text-green-400 mb-2 transition-colors duration-300 group-hover:text-green-200" />
-                    <EditableText tag="p" contentKey={`blog.posts.${post.id}.description`} isAdminAuthenticated={false} className="text-gray-300 flex-grow" />
-                    {/* Liens pour la navigation (à masquer si la page est cliquable pour Lightbox ou si on est en admin) */}
-                    <div className="mt-4 text-sm text-right">
-                        <span className="text-gray-500">Posté le : {new Date(post.id).toLocaleDateString()}</span>
-                    </div>
+                    <h4 className="text-xl font-extrabold text-gray-900">{name}</h4>
+                    <p className="text-red-600 font-semibold">{role}</p>
                 </div>
             );
-        };
 
-
-        // Composant Lightbox (visionneuse d'images)
-        const Lightbox = ({ images, currentIndex, onClose, onNavigate }) => {
-            const [zoom, setZoom] = useState(1);
-            const [pan, setPan] = useState({ x: 0, y: 0 });
-            const [isPanDragging, setIsPanDragging] = useState(false);
-            const panStart = useRef({ x: 0, y: 0, panX: 0, panY: 0 });
-            const imageRef = useRef(null);
-
-            useEffect(() => {
-                // Réinitialiser le zoom et le pan à chaque changement d'image
-                setZoom(1);
-                setPan({ x: 0, y: 0 });
-            }, [currentIndex]);
-
-            // Gestion des événements clavier pour la navigation et la fermeture
-            useEffect(() => {
-                const handleKeyDown = (e) => {
-                    if (e.key === 'Escape') {
-                        onClose();
-                    } else if (e.key === 'ArrowLeft') {
-                        onNavigate('prev');
-                    } else if (e.key === 'ArrowRight') {
-                        onNavigate('next');
-                    }
-                };
-                window.addEventListener('keydown', handleKeyDown);
-                return () => window.removeEventListener('keydown', handleKeyDown);
-            }, [onClose, onNavigate]);
-
-            const handleZoom = (amount) => {
-                const newZoom = Math.max(1, Math.min(4, zoom + amount)); // Max zoom 4x
-                setZoom(newZoom);
-                if (newZoom === 1) {
-                    setPan({ x: 0, y: 0 });
-                }
-            };
-
-            const resetZoomAndPan = () => {
-                setZoom(1);
-                setPan({ x: 0, y: 0 });
-            };
-
-            const handlePanStart = (e) => {
-                if (zoom > 1) {
-                    e.preventDefault();
-                    setIsPanDragging(true);
-                    panStart.current = {
-                        x: e.clientX,
-                        y: e.clientY,
-                        panX: pan.x,
-                        panY: pan.y,
-                    };
-                }
-            };
-
-            const handlePanMove = (e) => {
-                if (!isPanDragging || zoom <= 1) return;
-                e.preventDefault();
-
-                const dx = e.clientX - panStart.current.x;
-                const dy = e.clientY - panStart.current.y;
-
-                // Calcul des limites de déplacement
-                const maxPan = ((zoom - 1) / 2) * 100; // max translation based on zoom level
-                
-                const newX = panStart.current.panX + dx * (1 / zoom);
-                const newY = panStart.current.panY + dy * (1 / zoom);
-
-                // Limiter le déplacement
-                const limitedX = Math.max(-maxPan, Math.min(maxPan, newX));
-                const limitedY = Math.max(-maxPan, Math.min(maxPan, newY));
-
-                setPan({ x: limitedX, y: limitedY });
-            };
-
-            const handlePanEnd = () => {
-                setIsPanDragging(false);
-            };
-
-            // Empêche la propagation du clic sur l'image pour ne pas fermer la Lightbox
-            const handleImageClick = (e) => {
-                e.stopPropagation();
-            };
-
-            const currentImage = images[currentIndex];
+            // Données de l'équipe (placeholders, à personnaliser)
+            const teamMembers = [
+                { name: "Bryan R.", role: "Fondateur & Expert Reprogrammation", photoSrc: "team_bryan.jpg" },
+                { name: "Manon T.", role: "Responsable Clientèle & Devis", photoSrc: "team_manon.jpg" },
+                { name: "Giovanni V.", role: "Technicien Diagnostic", photoSrc: "team_giovanni.jpg" },
+            ];
 
             return (
-                <div className="lightbox-overlay" onClick={onClose}>
-                    {/* Bouton Fermer */}
-                    <button
-                        className="lightbox-button lightbox-close-button text-3xl p-3"
-                        onClick={onClose}
-                        aria-label="Fermer la visionneuse"
-                    >
-                        <XIcon className="w-8 h-8"/>
-                    </button>
-
-                    <div className="lightbox-content" onClick={handleImageClick}>
-                        {/* Boutons de navigation (si plus d'une image) */}
-                        {images.length > 1 && (
-                            <>
-                                <button
-                                    className="lightbox-button lightbox-prev-button text-2xl p-4"
-                                    onClick={(e) => { e.stopPropagation(); onNavigate('prev'); }}
-                                    aria-label="Image précédente"
-                                >
-                                    <ArrowLeftIcon className="w-6 h-6"/>
-                                </button>
-                                <button
-                                    className="lightbox-button lightbox-next-button text-2xl p-4"
-                                    onClick={(e) => { e.stopPropagation(); onNavigate('next'); }}
-                                    aria-label="Image suivante"
-                                >
-                                    <ArrowRightIcon className="w-6 h-6"/>
-                                </button>
-                            </>
-                        )}
-
-                        {/* Image affichée */}
-                        <img
-                            ref={imageRef}
-                            src={currentImage}
-                            alt={`Image ${currentIndex + 1} de la galerie`}
-                            className="lightbox-image transition-transform duration-300"
-                            style={{
-                                transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
-                                cursor: zoom > 1 ? (isPanDragging ? 'grabbing' : 'grab') : 'zoom-in',
-                                maxWidth: '100%',
-                                maxHeight: '100%',
-                            }}
-                            onDoubleClick={() => handleZoom(zoom === 1 ? 1.5 : -0.5)} // Double-clic pour zoomer/dézoomer
-                            onMouseDown={handlePanStart}
-                            onMouseMove={handlePanMove}
-                            onMouseUp={handlePanEnd}
-                            onMouseLeave={handlePanEnd}
-                            onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/800x600/000/FFF?text=Image+non+trouvée`; }}
-                        />
-                        
-                        {/* Contrôles de Zoom et Pan */}
-                        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 p-3 rounded-full shadow-xl flex space-x-4 text-white z-101">
-                            <button
-                                onClick={(e) => { e.stopPropagation(); handleZoom(0.25); }}
-                                aria-label="Zoomer"
-                                className="hover:text-green-400 p-1"
-                            >
-                                <PlusIcon className="w-6 h-6" />
-                            </button>
-                            <button
-                                onClick={(e) => { e.stopPropagation(); handleZoom(-0.25); }}
-                                aria-label="Dézoomer"
-                                className="hover:text-red-400 p-1"
-                            >
-                                <MinusIcon className="w-6 h-6" />
-                            </button>
-                            {zoom > 1 && (
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); resetZoomAndPan(); }}
-                                    aria-label="Réinitialiser la vue"
-                                    className="hover:text-blue-400 p-1"
-                                >
-                                    <TargetIcon className="w-6 h-6" />
-                                </button>
-                            )}
+                <div className="min-h-screen bg-white">
+                    {/* Section Héros - Grand Visuel et Slogan */}
+                    <header className="relative h-screen flex items-center justify-center text-white overflow-hidden pt-[80px] md:pt-[100px]"> {/* Ajustement du padding top pour la navbar */}
+                        {/* Image de fond avec effet de zoom subtil */}
+                        <div className="absolute inset-0 bg-cover bg-center transition duration-1000 transform scale-105" style={{ backgroundImage: "url('background_hero.jpg')" }}>
+                            {/* Overlay sombre pour la lisibilité */}
+                            <div className="absolute inset-0 bg-gray-900 opacity-60"></div>
                         </div>
 
-                        {/* Compteur d'image */}
-                        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white text-lg px-4 py-2 rounded-full z-101">
-                            {currentIndex + 1} / {images.length}
+                        {/* Contenu du Héros */}
+                        <div className="relative text-center max-w-4xl px-6 z-10 animate-fade-in-down">
+                            <h1 className="text-5xl sm:text-7xl md:text-8xl font-black mb-4 tracking-tight uppercase leading-tight text-shadow-lg opacity-0 animate-slide-in-left">
+                                <EditableText tag="h1" contentKey="home.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-white inline" />
+                            </h1>
+                            <h2 className="text-xl sm:text-2xl md:text-3xl font-light mb-8 text-red-400 drop-shadow-md opacity-0 animate-fade-in-up animation-delay-4000" style={{ animationDelay: '0.4s' }}>
+                                <EditableText tag="h2" contentKey="home.subTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-red-400 inline" />
+                            </h2>
+                            <button
+                                onClick={() => setCurrentPage('contact')}
+                                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full text-lg uppercase tracking-wider shadow-lg transition duration-300 transform hover:scale-105 hover:animate-vibrate opacity-0 animate-fade-in-up animation-delay-2000" style={{ animationDelay: '0.8s' }}
+                            >
+                                Demander un Devis Gratuit
+                            </button>
                         </div>
-                    </div>
+                    </header>
+
+                    {/* Section À Propos - Texte d'introduction */}
+                    <section className="py-20 bg-gray-50 text-gray-900">
+                        <div className="container mx-auto px-6 max-w-6xl">
+                            <div className="grid md:grid-cols-2 gap-12 items-center">
+                                {/* Bloc de texte à propos */}
+                                <div>
+                                    <p className="text-red-600 font-bold mb-3 uppercase tracking-wider">Qui sommes-nous</p>
+                                    <EditableText tag="h2" contentKey="home.aboutTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl font-extrabold mb-6 leading-tight text-gray-900" />
+                                    <EditableText tag="p" contentKey="home.aboutText" isAdminAuthenticated={isAdminAuthenticated} className="text-lg leading-relaxed text-gray-700" />
+                                    <button
+                                        onClick={() => setCurrentPage('qui-sommes-nous')}
+                                        className="mt-8 text-red-600 hover:text-red-700 font-semibold flex items-center transition duration-300 group"
+                                    >
+                                        En savoir plus sur notre histoire
+                                        <ArrowRightIcon className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+                                    </button>
+                                </div>
+                                {/* Image à propos de nous */}
+                                <div className="hidden md:block">
+                                    <img src="about_us_image.jpg" alt="Atelier BRMOTORSPORT" className="rounded-xl shadow-3xl transform rotate-3 hover:rotate-0 transition duration-500" />
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Section Services - Cartes de Services */}
+                    <section className="py-20 bg-gray-900 text-white">
+                        <div className="container mx-auto px-6 max-w-6xl text-center">
+                            <p className="text-red-600 font-bold mb-2 uppercase tracking-wider">Nos Expertises</p>
+                            <h2 className="text-4xl font-extrabold mb-12">Des Services de Performance</h2>
+
+                            <div className="grid md:grid-cols-3 gap-8">
+                                {services.map((service, index) => (
+                                    <ServiceCard
+                                        key={index}
+                                        titleKey={`home.service.${index}.title`}
+                                        textKey={`home.service.${index}.text`}
+                                        imageSrc={serviceImages[index]}
+                                        index={index}
+                                    />
+                                ))}
+                            </div>
+                            <button
+                                onClick={() => setCurrentPage('contact')}
+                                className="mt-12 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg uppercase tracking-wider shadow-xl transition duration-300 transform hover:scale-105"
+                            >
+                                Réserver Votre Service
+                            </button>
+                        </div>
+                    </section>
+
+                    {/* Section Équipe - Meet the Team */}
+                    <section className="py-20 bg-gray-50 text-gray-900">
+                        <div className="container mx-auto px-6 max-w-6xl text-center">
+                            <EditableText tag="h2" contentKey="home.team.title" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl font-extrabold mb-4 text-gray-900" />
+                            <EditableText tag="p" contentKey="home.team.subtitle" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-700 mb-12" />
+
+                            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-10">
+                                {teamMembers.map((member, index) => (
+                                    <TeamMemberCard
+                                        key={index}
+                                        name={member.name}
+                                        role={member.role}
+                                        photoSrc={member.photoSrc}
+                                        index={index}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </section>
                 </div>
             );
         };
 
-
-        // Composant Page Blog
+        // Composant de la Page Blog
         const BlogPage = ({ isAdminAuthenticated }) => {
             const { content } = useContext(ContentContext);
-            const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-            const [lightboxImages, setLightboxImages] = useState([]);
-            const [currentLightboxImageIndex, setCurrentLightboxImageIndex] = useState(0);
 
-            // Triez les articles par ID (le plus récent en premier)
-            const blogPosts = content.blog?.posts?.sort((a, b) => b.id - a.id) || [];
+            // Données d'articles de blog (placeholders, à adapter)
+            const blogArticles = [
+                {
+                    id: 1,
+                    title: "Comprendre le Stage 1 : Gains et Fiabilité",
+                    excerpt: "La reprogrammation Stage 1 est le moyen le plus simple d'augmenter la puissance de votre moteur sans modifications mécaniques...",
+                    date: "12 Octobre 2024",
+                    image: "blog_stage1.jpg",
+                },
+                {
+                    id: 2,
+                    title: "Les 5 Signes d'un Moteur Malade : Quand consulter ?",
+                    excerpt: "Un bruit étrange, une perte de puissance ou une surconsommation de carburant ? Ne tardez pas à faire diagnostiquer votre véhicule...",
+                    date: "01 Septembre 2024",
+                    image: "blog_diagnostic.jpg",
+                },
+                {
+                    id: 3,
+                    title: "Entretien Saisonnier : Préparer votre voiture pour l'hiver",
+                    excerpt: "Un guide complet pour vous assurer que votre voiture est prête à affronter les conditions hivernales...",
+                    date: "20 Août 2024",
+                    image: "blog_hiver.jpg",
+                },
+            ];
 
-            const openLightbox = (images, index) => {
-                setLightboxImages(images);
-                setCurrentLightboxImageIndex(index);
-                setIsLightboxOpen(true);
-            };
-
-            const closeLightbox = () => {
-                setIsLightboxOpen(false);
-                setLightboxImages([]);
-                setCurrentLightboxImageIndex(0);
-            };
-
-            const navigateLightbox = (direction) => {
-                const total = lightboxImages.length;
-                if (total === 0) return;
-
-                setCurrentLightboxImageIndex(prevIndex => {
-                    if (direction === 'next') {
-                        return (prevIndex + 1) % total;
-                    } else if (direction === 'prev') {
-                        return (prevIndex - 1 + total) % total;
-                    }
-                    return prevIndex;
-                });
-            };
+            // Composant de carte d'article
+            const ArticleCard = ({ article }) => (
+                <div className="bg-white rounded-xl shadow-xl overflow-hidden transform transition duration-500 hover:shadow-red-500/50 hover:-translate-y-1">
+                    <img src={article.image} alt={`Image de l'article : ${article.title}`} className="w-full h-56 object-cover" />
+                    <div className="p-6">
+                        <p className="text-sm font-semibold text-red-600 mb-2">{article.date}</p>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-3">{article.title}</h3>
+                        <p className="text-gray-700 mb-4">{article.excerpt}</p>
+                        <a href={`#article-${article.id}`} className="text-blue-600 font-semibold hover:text-blue-800 transition duration-300 flex items-center">
+                            Lire la suite
+                            <ArrowRightIcon className="w-4 h-4 ml-1" />
+                        </a>
+                    </div>
+                </div>
+            );
 
             return (
-                <div className="min-h-screen bg-gray-900 text-white pt-[96px] pb-12 font-inter">
-                    <div className="container mx-auto px-4 py-12">
-                        <EditableText tag="h1" contentKey="blog.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-green-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */ />
-                        <EditableText tag="p" contentKey="blog.description" isAdminAuthenticated={isAdminAuthenticated} className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up" />
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                            {blogPosts.length > 0 ? (
-                                blogPosts.map((post, index) => (
-                                    <BlogPostCard
-                                        key={post.id || `blog-post-${index}`}
-                                        post={post}
-                                        style={{ '--delay-factor': `${index * 150}ms` }}
-                                        openLightbox={openLightbox} // Pass openLightbox function
-                                    />
-                                ))
-                            ) : (
-                                <p className="col-span-full text-center text-gray-400 text-2xl mt-10">
-                                    Aucun article de blog à afficher pour le moment.
-                                </p>
-                            )}
+                <div className="min-h-screen pt-[120px] bg-white"> {/* Ajustement pour la navbar */}
+                    {/* Section Entête Blog */}
+                    <header className="bg-gray-900 text-white py-16 mb-12">
+                        <div className="container mx-auto px-6 max-w-6xl text-center">
+                            <EditableText tag="h1" contentKey="blog.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-5xl font-extrabold mb-3" />
+                            <EditableText tag="p" contentKey="blog.mainSubtitle" isAdminAuthenticated={isAdminAuthenticated} className="text-xl text-gray-400" />
                         </div>
-                    </div>
-                    {isLightboxOpen && (
-                        <Lightbox
-                            images={lightboxImages}
-                            currentIndex={currentLightboxImageIndex}
-                            onClose={closeLightbox}
-                            onNavigate={navigateLightbox}
-                        />
-                    )}
+                    </header>
+
+                    {/* Grille d'Articles */}
+                    <section className="container mx-auto px-6 max-w-6xl pb-20">
+                        <div className="grid md:grid-cols-3 gap-10">
+                            {blogArticles.map(article => (
+                                <ArticleCard key={article.id} article={article} />
+                            ))}
+                        </div>
+                        {/* Bouton de pagination ou de chargement */}
+                        <div className="text-center mt-12">
+                            <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full text-lg uppercase tracking-wider shadow-lg transition duration-300 transform hover:scale-105">
+                                Charger Plus d'Articles
+                            </button>
+                        </div>
+                    </section>
                 </div>
             );
         };
 
-
-        // Composant Input Field (réutilisable)
-        const InputField = ({ label, type, placeholder, required = false, value, onChange, name }) => (
-            <div>
-                <label htmlFor={name || label} className="block text-gray-300 text-sm font-bold mb-2"> {/* Utilise name comme id si fourni */}
-                    {label} {required && <span className="text-red-500">*</span>}
-                </label>
-                <input
-                    id={name || label} // Utilise name comme id si fourni
-                    type={type}
-                    name={name} // Ajout de l'attribut name
-                    placeholder={placeholder}
-                    required={required}
-                    value={value}
-                    onChange={onChange}
-                    className="shadow appearance-none border border-gray-700 rounded-lg w-full py-3 px-4 bg-gray-700 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                />
-            </div>
-        );
-
-        // Composant TextArea Field (réutilisable)
-        const TextAreaField = ({ label, placeholder, required = false, value, onChange, name }) => (
-            <div>
-                <label htmlFor={name || label} className="block text-gray-300 text-sm font-bold mb-2"> {/* Utilise name comme id si fourni */}
-                    {label} {required && <span className="text-red-500">*</span>}
-                </label>
-                <textarea
-                    id={name || label} // Utilise name comme id si fourni
-                    name={name} // Ajout de l'attribut name
-                    placeholder={placeholder}
-                    required={required}
-                    value={value}
-                    onChange={onChange}
-                    rows="4"
-                    className="shadow appearance-none border border-gray-700 rounded-lg w-full py-3 px-4 bg-gray-700 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200 resize-y"
-                />
-            </div>
-        );
-
-        // Composant Page Contact
-        const ContactPage = () => {
+        // Composant de la Page Contact
+        const ContactPage = ({ isAdminAuthenticated }) => {
             const { content } = useContext(ContentContext);
-            const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
-            const [submissionStatus, setSubmissionStatus] = useState(null); // 'success', 'error', 'submitting', null
 
-            const handleChange = (e) => {
-                setFormData({ ...formData, [e.target.name]: e.target.value });
-            };
-
-            const handleSubmit = async (e) => {
+            // Fonction de soumission (Placeholder)
+            const handleSubmit = (e) => {
                 e.preventDefault();
-                setSubmissionStatus('submitting');
-
-                // Envoi du formulaire (Simulation ou utilisation d'un service réel comme Formspree/Netlify Forms)
-                // Dans le contexte de GitHub Pages sans backend, on peut simuler ou utiliser Formspree.
-                // Ici, une simple simulation:
-                try {
-                    // Simuler une requête réseau de 2 secondes
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-
-                    console.log('Form data submitted:', formData);
-
-                    // Supposons que l'envoi réussisse
-                    setSubmissionStatus('success');
-                    setFormData({ name: '', email: '', subject: '', message: '' }); // Réinitialiser le formulaire
-
-                } catch (error) {
-                    console.error('Erreur de soumission du formulaire:', error);
-                    setSubmissionStatus('error');
-                }
+                alert("Message envoyé ! (Fonctionnalité réelle à implémenter côté serveur)");
+                e.target.reset(); // Réinitialise le formulaire
             };
 
-            const ContactInfoCard = ({ icon, label, valueKey, linkPrefix = '' }) => (
-                <div className="bg-gray-800 p-6 rounded-xl shadow-xl flex items-center space-x-4 border border-gray-700 transform transition duration-300 hover:scale-[1.03] hover:border-pink-500 animate-fade-in-up">
-                    <div className="text-pink-500 text-4xl">{icon}</div>
-                    <div>
-                        <h3 className="text-lg font-semibold text-white mb-1">{label}</h3>
-                        <EditableText
-                            tag="a"
-                            contentKey={valueKey}
-                            isAdminAuthenticated={false}
-                            className="text-gray-300 hover:text-pink-300 transition duration-300"
-                            href={linkPrefix + (content.contact[valueKey] || '')}
-                            target={linkPrefix ? "_blank" : "_self"} // Ouvre dans un nouvel onglet si c'est un lien externe
-                        />
-                    </div>
-                </div>
-            );
+            const emailAddress = content.contact && content.contact.email ? content.contact.email : initialContent.contact.email;
+            const phoneNumber = content.contact && content.contact.phone ? content.contact.phone : initialContent.contact.phone;
 
             return (
-                <div className="min-h-screen bg-gray-900 text-white pt-[96px] pb-12 font-inter">
-                    <div className="container mx-auto px-4 py-12">
-                        <EditableText tag="h1" contentKey="contact.mainTitle" isAdminAuthenticated={false} className="text-4xl sm:text-5xl font-extrabold text-center mb-4 text-pink-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */ />
-                        <EditableText tag="p" contentKey="contact.subtitle" isAdminAuthenticated={false} className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up" />
+                <div className="min-h-screen pt-[120px] bg-white">
+                    {/* Section Entête Contact */}
+                    <header className="bg-gray-900 text-white py-16 mb-12">
+                        <div className="container mx-auto px-6 max-w-6xl text-center">
+                            <EditableText tag="h1" contentKey="contact.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-5xl font-extrabold mb-3" />
+                            <EditableText tag="p" contentKey="contact.subTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-xl text-gray-400" />
+                        </div>
+                    </header>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-12">
-                            {/* Colonne des informations de contact */}
-                            <div className="lg:col-span-1 space-y-6">
-                                <ContactInfoCard
-                                    icon={<PhoneIcon />}
-                                    label="Téléphone"
-                                    valueKey="phoneNumber"
-                                    linkPrefix="tel:"
-                                />
-                                <ContactInfoCard
-                                    icon={<MailIcon />}
-                                    label="E-mail"
-                                    valueKey="emailAddress"
-                                    linkPrefix="mailto:"
-                                />
-                                <ContactInfoCard
-                                    icon={<InstagramIcon />}
-                                    label="Instagram"
-                                    valueKey="instagramHandle"
-                                    linkPrefix="https://instagram.com/"
-                                />
-                                <div className="bg-gray-800 p-6 rounded-xl shadow-xl flex items-start space-x-4 border border-gray-700 transform transition duration-300 hover:scale-[1.03] hover:border-pink-500 animate-fade-in-up">
-                                    <RssIcon className="text-pink-500 text-4xl mt-1" />
-                                    <div>
-                                        <h3 className="text-lg font-semibold text-white mb-1">Adresse</h3>
-                                        <EditableText tag="p" contentKey="contact.address" isAdminAuthenticated={false} className="text-gray-300 whitespace-pre-line" />
+                    {/* Section Formulaire et Infos */}
+                    <section className="container mx-auto px-6 max-w-6xl pb-20">
+                        <div className="grid lg:grid-cols-3 gap-12">
+                            {/* Colonne 1 : Informations de contact */}
+                            <div className="lg:col-span-1 bg-gray-100 p-8 rounded-xl shadow-lg h-full">
+                                <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                                    <PhoneIcon className="w-7 h-7 mr-3 text-red-600" /> Nos Coordonnées
+                                </h2>
+                                <EditableText tag="p" contentKey="contact.contactText" isAdminAuthenticated={isAdminAuthenticated} className="text-gray-700 mb-8 leading-relaxed" />
+
+                                <div className="space-y-4">
+                                    {/* Email */}
+                                    <div className="flex items-center text-gray-900">
+                                        <MailIcon className="w-6 h-6 mr-3 text-blue-600" />
+                                        <div>
+                                            <p className="font-semibold">Email :</p>
+                                            <p className="text-red-600 hover:underline">{emailAddress}</p>
+                                        </div>
+                                    </div>
+                                    {/* Téléphone */}
+                                    <div className="flex items-center text-gray-900">
+                                        <PhoneIcon className="w-6 h-6 mr-3 text-blue-600" />
+                                        <div>
+                                            <p className="font-semibold">Téléphone :</p>
+                                            <p className="text-red-600 hover:underline">{phoneNumber}</p>
+                                        </div>
+                                    </div>
+                                    {/* Adresse (Placeholder) */}
+                                    <div className="flex items-center text-gray-900">
+                                        <CarIcon className="w-6 h-6 mr-3 text-blue-600" />
+                                        <div>
+                                            <p className="font-semibold">Adresse :</p>
+                                            <p className="text-red-600">75000 Paris, France</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Colonne du formulaire de contact */}
-                            <div className="lg:col-span-2 bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700 animate-fade-in">
-                                <EditableText tag="h2" contentKey="contact.formTitle" isAdminAuthenticated={false} className="text-3xl font-bold mb-6 text-pink-400 border-b border-gray-700 pb-3" />
-
+                            {/* Colonne 2 : Formulaire de contact */}
+                            <div className="lg:col-span-2 bg-gray-50 p-8 rounded-xl shadow-lg">
+                                <h2 className="text-3xl font-bold text-gray-900 mb-8">Formulaire de Contact</h2>
                                 <form onSubmit={handleSubmit} className="space-y-6">
-                                    <InputField
-                                        label="Nom Complet"
-                                        type="text"
-                                        name="name"
-                                        placeholder="Votre nom"
-                                        required={true}
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                    />
-                                    <InputField
-                                        label="Adresse E-mail"
-                                        type="email"
-                                        name="email"
-                                        placeholder="votre.email@exemple.com"
-                                        required={true}
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                    />
-                                    <InputField
-                                        label="Sujet"
-                                        type="text"
-                                        name="subject"
-                                        placeholder="Objet de votre message"
-                                        required={true}
-                                        value={formData.subject}
-                                        onChange={handleChange}
-                                    />
-                                    <TextAreaField
-                                        label="Message"
-                                        name="message"
-                                        placeholder="Votre message détaillé..."
-                                        required={true}
-                                        value={formData.message}
-                                        onChange={handleChange}
-                                    />
+                                    <div>
+                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nom et Prénom</label>
+                                        <input type="text" id="name" name="name" required className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 bg-white text-gray-900" />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Adresse Email</label>
+                                        <input type="email" id="email" name="email" required className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 bg-white text-gray-900" />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="subject" className="block text-sm font-medium text-gray-700">Sujet</label>
+                                        <input type="text" id="subject" name="subject" required className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 bg-white text-gray-900" />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
+                                        <textarea id="message" name="message" rows="4" required className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 bg-white text-gray-900"></textarea>
+                                    </div>
                                     <button
                                         type="submit"
-                                        className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed w-full"
-                                        disabled={submissionStatus === 'submitting'}
+                                        className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg text-lg uppercase tracking-wider shadow-lg transition duration-300 transform hover:scale-[1.01]"
                                     >
-                                        {submissionStatus === 'submitting' ? 'Envoi en cours...' : 'Envoyer le Message'}
+                                        Envoyer le Message
                                     </button>
                                 </form>
-
-                                {submissionStatus === 'success' && (
-                                    <p className="mt-4 text-center text-green-400 font-semibold animate-fade-in">
-                                        ✅ Votre message a été envoyé avec succès ! Nous vous répondrons rapidement.
-                                    </p>
-                                )}
-                                {submissionStatus === 'error' && (
-                                    <p className="mt-4 text-center text-red-400 font-semibold animate-fade-in">
-                                        ❌ Une erreur s'est produite lors de l'envoi. Veuillez réessayer ou nous contacter par téléphone.
-                                    </p>
-                                )}
                             </div>
                         </div>
-                    </div>
+                    </section>
                 </div>
             );
         };
 
-        // Composant Page Qui Sommes-nous
-        const AboutUsPage = ({ isAdminAuthenticated }) => {
+        // Composant de la Page Qui Sommes-nous
+        const QuiSommesNousPage = ({ isAdminAuthenticated }) => {
             return (
-                <div className="min-h-screen bg-gray-900 text-white pt-[96px] pb-12 font-inter">
-                    <div className="container mx-auto px-4 py-12">
-                        <EditableText tag="h1" contentKey="aboutUs.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl sm:text-5xl font-extrabold text-center mb-4 text-yellow-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */ />
-                        <EditableText tag="p" contentKey="aboutUs.subtitle" isAdminAuthenticated={isAdminAuthenticated} className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up" />
+                <div className="min-h-screen pt-[120px] bg-white">
+                    {/* Section Entête */}
+                    <header className="bg-gray-900 text-white py-16 mb-12">
+                        <div className="container mx-auto px-6 max-w-6xl text-center">
+                            <EditableText tag="h1" contentKey="about.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-5xl font-extrabold mb-3" />
+                            <EditableText tag="p" contentKey="about.subTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-xl text-gray-400" />
+                        </div>
+                    </header>
 
-                        <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 mb-10 animate-fade-in-up">
-                            <EditableText tag="h2" contentKey="aboutUs.historyTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl sm:text-4xl font-bold mb-6 text-red-400 text-center" /* Ajusté pour mobile */ />
-                            <EditableText tag="p" contentKey="aboutUs.historyParagraph1" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-300 leading-relaxed mb-6" />
-                            <EditableText tag="p" contentKey="aboutUs.historyParagraph2" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-300 leading-relaxed" />
-                        </section>
-
-                        <section className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up">
-                            <EditableText tag="h2" contentKey="aboutUs.valuesTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl sm:text-4xl font-bold mb-6 text-yellow-300 text-center" /* Ajusté pour mobile */ />
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <ValueCard
-                                    titleKey="aboutUs.value1Title"
-                                    descriptionKey="aboutUs.value1Description"
-                                    icon={<WrenchIcon />}
-                                    isAdminAuthenticated={isAdminAuthenticated}
-                                />
-                                <ValueCard
-                                    titleKey="aboutUs.value2Title"
-                                    descriptionKey="aboutUs.value2Description"
-                                    icon={<span className="text-3xl">✨</span>}
-                                    isAdminAuthenticated={isAdminAuthenticated}
-                                />
-                                <ValueCard
-                                    titleKey="aboutUs.value3Title"
-                                    descriptionKey="aboutUs.value3Description"
-                                    icon={<span className="text-3xl">✅</span>}
-                                    isAdminAuthenticated={isAdminAuthenticated}
-                                />
-                                <ValueCard
-                                    titleKey="aboutUs.value4Title"
-                                    descriptionKey="aboutUs.value4Description"
-                                    icon={<span className="text-3xl">❤️</span>}
-                                    isAdminAuthenticated={isAdminAuthenticated}
-                                />
+                    {/* Section Histoire */}
+                    <section className="py-16 bg-gray-50">
+                        <div className="container mx-auto px-6 max-w-6xl">
+                            <div className="grid md:grid-cols-2 gap-12 items-center">
+                                {/* Image Histoire */}
+                                <div className="order-2 md:order-1">
+                                    <img src="about_history.jpg" alt="Atelier ancien" className="rounded-xl shadow-2xl transition duration-500 hover:shadow-red-500/50" />
+                                </div>
+                                {/* Texte Histoire */}
+                                <div className="order-1 md:order-2">
+                                    <p className="text-red-600 font-bold mb-3 uppercase tracking-wider">Notre Rétrospective</p>
+                                    <EditableText tag="h2" contentKey="about.historyTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl font-extrabold mb-6 leading-tight text-gray-900" />
+                                    <EditableText tag="p" contentKey="about.historyText" isAdminAuthenticated={isAdminAuthenticated} className="text-lg leading-relaxed text-gray-700" />
+                                </div>
                             </div>
-                        </section>
-                    </div>
+                        </div>
+                    </section>
+
+                    {/* Section Mission/Valeurs */}
+                    <section className="py-16 bg-white">
+                        <div className="container mx-auto px-6 max-w-6xl">
+                            <div className="grid md:grid-cols-2 gap-12 items-center">
+                                {/* Texte Mission */}
+                                <div>
+                                    <p className="text-red-600 font-bold mb-3 uppercase tracking-wider">Notre Engagement</p>
+                                    <EditableText tag="h2" contentKey="about.missionTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl font-extrabold mb-6 leading-tight text-gray-900" />
+                                    <EditableText tag="p" contentKey="about.missionText" isAdminAuthenticated={isAdminAuthenticated} className="text-lg leading-relaxed text-gray-700" />
+                                </div>
+                                {/* Image Mission */}
+                                <div>
+                                    <img src="about_mission.jpg" alt="Équipe travaillant" className="rounded-xl shadow-2xl transition duration-500 hover:shadow-blue-500/50" />
+                                </div>
+                            </div>
+                            {/* Section Valeurs Clés (supplémentaire) */}
+                            <div className="mt-16 text-center">
+                                <h3 className="text-3xl font-extrabold text-gray-900 mb-8">Nos Valeurs Fondamentales</h3>
+                                <div className="grid sm:grid-cols-3 gap-8">
+                                    <ValuePillar icon={<HandshakeIcon />} title="Transparence" description="Honnêteté totale sur les diagnostics et les tarifs." />
+                                    <ValuePillar icon={<WrenchIcon />} title="Expertise" description="Utilisation des meilleures techniques et outils de l'industrie." />
+                                    <ValuePillar icon={<StarIcon />} title="Passion" description="L'amour de la mécanique automobile au cœur de notre travail." />
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             );
         };
 
-        // Composant Carte de Valeur
-        const ValueCard = ({ icon, titleKey, descriptionKey, isAdminAuthenticated }) => (
-            <div className="bg-gray-700 p-6 rounded-xl shadow-lg border-l-4 border-yellow-500 flex flex-col items-center text-center transform transition duration-300 hover:scale-[1.03] hover:bg-gray-600">
-                <div className="text-yellow-400 text-5xl mb-3">{icon}</div>
-                <EditableText tag="h3" contentKey={titleKey} isAdminAuthenticated={isAdminAuthenticated} className="text-xl font-semibold mb-2 text-white" />
-                <EditableText tag="p" contentKey={descriptionKey} isAdminAuthenticated={isAdminAuthenticated} className="text-gray-300" />
+        // Composant Pilier de Valeur (utilisé dans QuiSommesNousPage)
+        const ValuePillar = ({ icon, title, description }) => (
+            <div className="p-6 bg-gray-100 rounded-xl shadow-lg border-t-4 border-blue-600">
+                <div className="text-blue-600 w-12 h-12 mx-auto mb-4">{icon}</div>
+                <h4 className="text-xl font-bold text-gray-900 mb-2">{title}</h4>
+                <p className="text-gray-700">{description}</p>
             </div>
         );
 
-        // Composant Page Mentions Légales
-        const LegalMentionsPage = ({ isAdminAuthenticated }) => {
-            return (
-                <div className="min-h-screen bg-gray-900 text-white pt-[96px] pb-12 font-inter">
-                    <div className="container mx-auto px-4 py-12">
-                        <EditableText tag="h1" contentKey="legalMentions.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl sm:text-5xl font-extrabold text-center mb-4 text-teal-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */ />
-                        <EditableText tag="p" contentKey="legalMentions.subtitle" isAdminAuthenticated={isAdminAuthenticated} className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up" />
 
-                        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700 space-y-8 animate-fade-in">
-                            {/* Section Éditeur du site */}
-                            <section>
-                                <EditableText tag="h2" contentKey="legalMentions.editorTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl font-bold mb-4 text-teal-300 border-b border-gray-700 pb-2" />
-                                <ul className="text-lg text-gray-300 list-disc list-inside space-y-2 ml-4">
-                                    <li><EditableText tag="span" contentKey="legalMentions.list1Item1" isAdminAuthenticated={isAdminAuthenticated} className="text-gray-300" /></li>
-                                    <li><EditableText tag="span" contentKey="legalMentions.list1Item2" isAdminAuthenticated={isAdminAuthenticated} className="text-gray-300" /></li>
-                                    <li><EditableText tag="span" contentKey="legalMentions.list1Item3" isAdminAuthenticated={isAdminAuthenticated} className="text-gray-300" /></li>
-                                </ul>
-                            </section>
-
-                            {/* Section Hébergement */}
-                            <section>
-                                <EditableText tag="h2" contentKey="legalMentions.hostingTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl font-bold mb-4 text-teal-300 border-b border-gray-700 pb-2" />
-                                <ul className="text-lg text-gray-300 list-disc list-inside space-y-2 ml-4">
-                                    <li><EditableText tag="span" contentKey="legalMentions.list2Item1" isAdminAuthenticated={isAdminAuthenticated} className="text-gray-300" /></li>
-                                    <li><EditableText tag="span" contentKey="legalMentions.list2Item2" isAdminAuthenticated={isAdminAuthenticated} className="text-gray-300" /></li>
-                                    <li><EditableText tag="span" contentKey="legalMentions.list2Item3" isAdminAuthenticated={isAdminAuthenticated} className="text-gray-300" /></li>
-                                </ul>
-                            </section>
-
-                            {/* Conditions Générales d'Utilisation */}
-                            <section>
-                                <EditableText tag="h2" contentKey="legalMentions.cguTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl font-bold mb-4 text-teal-300 border-b border-gray-700 pb-2" />
-                                <EditableText tag="p" contentKey="legalMentions.cguText" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-300 leading-relaxed" />
-                            </section>
-
-                            {/* Responsabilité */}
-                            <section>
-                                <EditableText tag="h2" contentKey="legalMentions.liabilityTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl font-bold mb-4 text-teal-300 border-b border-gray-700 pb-2" />
-                                <EditableText tag="p" contentKey="legalMentions.liabilityText" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-300 leading-relaxed" />
-                            </section>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // Composant Page Politique de Confidentialité
-        const PrivacyPolicyPage = ({ isAdminAuthenticated }) => {
-            return (
-                <div className="min-h-screen bg-gray-900 text-white pt-[96px] pb-12 font-inter">
-                    <div className="container mx-auto px-4 py-12">
-                        <EditableText tag="h1" contentKey="privacyPolicy.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl sm:text-5xl font-extrabold text-center mb-4 text-purple-400 animate-fade-in-down animate-vibrate" /* Ajusté pour mobile */ />
-                        <EditableText tag="p" contentKey="privacyPolicy.subtitle" isAdminAuthenticated={isAdminAuthenticated} className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up" />
-
-                        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700 space-y-8 animate-fade-in">
-                            {/* Section Données Collectées */}
-                            <section>
-                                <EditableText tag="h2" contentKey="privacyPolicy.dataTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl font-bold mb-4 text-purple-300 border-b border-gray-700 pb-2" />
-                                <EditableText tag="p" contentKey="privacyPolicy.dataText" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-300 leading-relaxed" />
-                            </section>
-
-                            {/* Section Utilisation des Données */}
-                            <section>
-                                <EditableText tag="h2" contentKey="privacyPolicy.usageTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl font-bold mb-4 text-purple-300 border-b border-gray-700 pb-2" />
-                                <EditableText tag="p" contentKey="privacyPolicy.usageText" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-300 leading-relaxed" />
-                            </section>
-
-                            {/* Section Partage des Données */}
-                            <section>
-                                <EditableText tag="h2" contentKey="privacyPolicy.sharingTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl font-bold mb-4 text-purple-300 border-b border-gray-700 pb-2" />
-                                <EditableText tag="p" contentKey="privacyPolicy.sharingText" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-300 leading-relaxed" />
-                            </section>
-
-                            {/* Section Vos Droits */}
-                            <section>
-                                <EditableText tag="h2" contentKey="privacyPolicy.rightsTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl font-bold mb-4 text-purple-300 border-b border-gray-700 pb-2" />
-                                <EditableText tag="p" contentKey="privacyPolicy.rightsText" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-300 leading-relaxed" />
-                                {/* Assurez-vous que ce champ existe et est une chaîne de caractères dans content.json */}
-                                <EditableText tag="p" contentKey="privacyPolicy.disclaimerText" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-300 leading-relaxed" />
-                            </section>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // Composant pour la page Voiture Vitrine
-        const ShowcaseCarPage = ({ isAdminAuthenticated }) => {
+        // Composant de la Page Mentions Légales
+        const MentionsLegalesPage = ({ isAdminAuthenticated }) => {
             const { content } = useContext(ContentContext);
-            const images = [
-                `Photo1.png`,
-                `photo2.png`,
-                `photo3.png`,
-                `photo4.png`,
-                `photo5.png`,
-                `photo6.png`,
-                `photo7.png`,
-                `photo8.png`,
-                `photo9.png`,
-                `photo10.png`
-            ];
-            const [currentImageIndex, setCurrentImageIndex] = useState(0);
-            const [isPlaying, setIsPlaying] = useState(true); // Auto-play by default
+            const legalContent = content.legal && content.legal.content ? content.legal.content : initialContent.legal.content;
 
-            // Lightbox state
-            const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-            const [lightboxImages, setLightboxImages] = useState(images); // Utiliser toutes les images pour la Lightbox
-            const [currentLightboxImageIndex, setCurrentLightboxImageIndex] = useState(0);
+            return (
+                <div className="min-h-screen pt-[120px] bg-white">
+                    {/* Section Entête */}
+                    <header className="bg-gray-900 text-white py-16 mb-12">
+                        <div className="container mx-auto px-6 max-w-6xl text-center">
+                            <EditableText tag="h1" contentKey="legal.title" isAdminAuthenticated={isAdminAuthenticated} className="text-5xl font-extrabold mb-3" />
+                        </div>
+                    </header>
 
-            // Gère le diaporama
+                    {/* Section Contenu Légal */}
+                    <section className="container mx-auto px-6 max-w-4xl pb-20">
+                        <div className="bg-gray-50 p-8 rounded-xl shadow-xl text-gray-900 prose lg:prose-lg max-w-none">
+                            {/* Utilisation de dangerouslySetInnerHTML pour afficher le contenu HTML des mentions légales */}
+                            {isAdminAuthenticated ? (
+                                <textarea
+                                    value={legalContent}
+                                    onChange={(e) => {
+                                        // Appel direct à updateContent pour la clé legal.content
+                                        const { updateContent } = useContext(ContentContext);
+                                        updateContent('legal.content', e.target.value);
+                                    }}
+                                    className="bg-gray-200 text-gray-900 rounded p-4 focus:ring-2 focus:ring-red-500 w-full min-h-[500px]"
+                                    rows={20}
+                                />
+                            ) : (
+                                <div dangerouslySetInnerHTML={{ __html: legalContent }} />
+                            )}
+                            {/* Note: Dans un environnement réel, la modification des Mentions Légales en direct via l'interface admin n'est pas recommandée pour des raisons de conformité légale/versioning. Un système de validation serait préférable. */}
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
+        // Composant de la Lightbox (Modale d'Image)
+        const Lightbox = ({ images, currentIndex, onClose, onNext, onPrev }) => {
+            if (currentIndex === null) return null;
+
+            const currentImage = images[currentIndex];
+            const [scale, setScale] = useState(1);
+            const [offset, setOffset] = useState({ x: 0, y: 0 });
+            const [isDragging, setIsDragging] = useState(false);
+            const dragStart = useRef({ x: 0, y: 0, offsetX: 0, offsetY: 0 });
+
             useEffect(() => {
-                let interval;
-                if (isPlaying) {
-                    interval = setInterval(() => {
-                        setCurrentImageIndex(prevIndex => (prevIndex + 1) % images.length);
-                    }, 4000); // Change toutes les 4 secondes
+                // Réinitialiser le zoom et le décalage à chaque changement d'image
+                setScale(1);
+                setOffset({ x: 0, y: 0 });
+            }, [currentIndex]);
+
+
+            // --- Gestion du Zoom et du Déplacement ---
+            const handleMouseDown = (e) => {
+                e.preventDefault();
+                if (scale > 1) { // Seulement pour les images zoomées
+                    setIsDragging(true);
+                    dragStart.current = {
+                        x: e.clientX,
+                        y: e.clientY,
+                        offsetX: offset.x,
+                        offsetY: offset.y,
+                    };
                 }
-                return () => clearInterval(interval);
-            }, [isPlaying, images.length]);
-
-            const goToPreviousImage = () => {
-                setCurrentImageIndex(prevIndex => (prevIndex - 1 + images.length) % images.length);
             };
 
-            const goToNextImage = () => {
-                setCurrentImageIndex(prevIndex => (prevIndex + 1) % images.length);
-            };
-
-            const togglePlayPause = () => {
-                setIsPlaying(prev => !prev);
-            };
-
-            const openLightbox = (index) => {
-                setCurrentLightboxImageIndex(index);
-                setIsLightboxOpen(true);
-            };
-
-            const closeLightbox = () => {
-                setIsLightboxOpen(false);
-            };
-
-            const navigateLightbox = (direction) => {
-                const total = lightboxImages.length;
-                if (total === 0) return;
-
-                setCurrentLightboxImageIndex(prevIndex => {
-                    if (direction === 'next') {
-                        return (prevIndex + 1) % total;
-                    } else if (direction === 'prev') {
-                        return (prevIndex - 1 + total) % total;
-                    }
-                    return prevIndex;
+            const handleMouseMove = (e) => {
+                if (!isDragging || scale <= 1) return;
+                const dx = e.clientX - dragStart.current.x;
+                const dy = e.clientY - dragStart.current.y;
+                setOffset({
+                    x: dragStart.current.offsetX + dx,
+                    y: dragStart.current.offsetY + dy,
                 });
             };
 
-            // Composant pour une ligne de détail de préparation
-            const DetailItem = ({ labelKey, valueKey }) => (
-                <div className="flex justify-between border-b border-gray-700 py-2">
-                    <span className="font-semibold text-gray-300">{content.showcaseCar[labelKey]}:</span>
-                    <EditableText tag="span" contentKey={`showcaseCar.${valueKey}`} isAdminAuthenticated={isAdminAuthenticated} className="text-red-400 font-medium" />
-                </div>
-            );
+            const handleMouseUp = () => {
+                setIsDragging(false);
+            };
 
-            return (
-                <div className="min-h-screen bg-gray-900 text-white pt-[96px] pb-12 font-inter">
-                    <div className="container mx-auto px-4 py-12">
-                        <EditableText tag="h1" contentKey="showcaseCar.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-4xl sm:text-5xl font-extrabold text-center mb-4 text-red-500 animate-fade-in-down animate-vibrate" />
-                        <EditableText tag="p" contentKey="showcaseCar.description" isAdminAuthenticated={isAdminAuthenticated} className="text-xl text-center text-gray-300 max-w-3xl mx-auto mb-10 animate-fade-in-up" />
+            const handleZoom = (zoomFactor) => {
+                // Limiter le zoom entre 1 (taille réelle) et 3 (300%)
+                setScale(prevScale => Math.max(1, Math.min(3, prevScale * zoomFactor)));
+            };
 
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                            {/* Colonne Galerie d'images */}
-                            <div className="lg:col-span-2 bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700 animate-fade-in">
-                                <h2 className="text-3xl font-bold mb-6 text-red-400 border-b border-gray-700 pb-3">Galerie</h2>
-                                <div className="relative rounded-xl overflow-hidden shadow-xl aspect-video mb-4 cursor-pointer" onClick={() => openLightbox(currentImageIndex)}>
-                                    <img
-                                        src={images[currentImageIndex]}
-                                        alt={`Voiture Vitrine ${currentImageIndex + 1}`}
-                                        className="w-full h-full object-cover transition-opacity duration-700"
-                                        style={{ opacity: 1 }}
-                                        onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/800x450/000/FFF?text=Image+${currentImageIndex+1}+non+trouvée`; }}
-                                    />
-                                    {/* Compteur et boutons de navigation/lecture */}
-                                    <div className="absolute inset-0 flex items-center justify-between p-4 bg-black bg-opacity-20 transition-opacity opacity-0 hover:opacity-100">
-                                        <button onClick={(e) => { e.stopPropagation(); goToPreviousImage(); }} className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg transition duration-300" aria-label="Image précédente"><ArrowLeftIcon /></button>
-                                        <button onClick={(e) => { e.stopPropagation(); goToNextImage(); }} className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg transition duration-300" aria-label="Image suivante"><ArrowRightIcon /></button>
-                                    </div>
-                                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white text-sm px-4 py-2 rounded-full shadow-lg">
-                                        {currentImageIndex + 1} / {images.length}
-                                        <button onClick={(e) => { e.stopPropagation(); togglePlayPause(); }} className="ml-4 text-lg hover:text-red-400" aria-label={isPlaying ? "Mettre en pause" : "Jouer"}>
-                                            {isPlaying ? <PauseIcon className="w-5 h-5 inline-block align-middle"/> : <PlayIcon className="w-5 h-5 inline-block align-middle"/>}
-                                        </button>
-                                    </div>
-                                    <div className="absolute top-4 right-4 bg-black bg-opacity-70 text-white text-sm px-4 py-2 rounded-full shadow-lg cursor-pointer hover:bg-opacity-90" onClick={(e) => { e.stopPropagation(); openLightbox(currentImageIndex); }}>
-                                        <PlusIcon className="w-5 h-5 inline-block align-middle mr-1"/> Zoom
-                                    </div>
-                                </div>
-                                {/* Grille de prévisualisation */}
-                                <div className="grid grid-cols-5 gap-3">
-                                    {images.map((image, index) => (
-                                        <img
-                                            key={index}
-                                            src={image}
-                                            alt={`Miniature ${index + 1}`}
-                                            className={`w-full h-auto object-cover rounded-lg cursor-pointer transition duration-300 border-2 ${index === currentImageIndex ? 'border-red-500 transform scale-105' : 'border-gray-700 hover:border-red-300'}`}
-                                            onClick={() => setCurrentImageIndex(index)}
-                                            onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/100x75/000/FFF?text=Img`; }}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
+            const resetView = () => {
+                setScale(1);
+                setOffset({ x: 0, y: 0 });
+            };
 
-                            {/* Colonne Détails de la Préparation */}
-                            <div className="lg:col-span-1 bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700 animate-fade-in-up">
-                                <EditableText tag="h2" contentKey="showcaseCar.preparationTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-3xl font-bold mb-4 text-red-400 border-b border-gray-700 pb-3" />
-                                <EditableText tag="p" contentKey="showcaseCar.preparationDescription" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-300 mb-6" />
 
-                                <div className="space-y-3">
-                                    <DetailItem labelKey="pistonLabel" valueKey="piston" />
-                                    <DetailItem labelKey="biellesLabel" valueKey="bielles" />
-                                    <DetailItem labelKey="soupapesLabel" valueKey="soupapes" />
-                                    <DetailItem labelKey="admLabel" valueKey="adm" />
-                                    <DetailItem labelKey="ressortLabel" valueKey="ressort" />
-                                    <DetailItem labelKey="viserieLabel" valueKey="viserie" />
-                                    <DetailItem labelKey="pompeHuileLabel" valueKey="pompeHuile" />
-                                    <DetailItem labelKey="turboLabel" valueKey="turbo" />
-                                    <DetailItem labelKey="wastegateLabel" valueKey="wastegate" />
-                                    <DetailItem labelKey="injecteursLabel" valueKey="injecteurs" />
-                                    <DetailItem labelKey="pipAdmissionLabel" valueKey="pipAdmission" />
-                                    <DetailItem labelKey="wmiLabel" valueKey="wmi" />
-                                    <DetailItem labelKey="embrayageLabel" valueKey="embrayage" />
-                                </div>
+            useEffect(() => {
+                // Ajouter les écouteurs d'événements globaux pour le glisser-déposer
+                window.addEventListener('mousemove', handleMouseMove);
+                window.addEventListener('mouseup', handleMouseUp);
+                return () => {
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    window.removeEventListener('mouseup', handleMouseUp);
+                };
+            }, [isDragging, scale]); // Dépend de isDragging et scale
 
-                                <EditableText tag="p" contentKey="showcaseCar.finalDescription" isAdminAuthenticated={isAdminAuthenticated} className="text-sm italic text-gray-500 mt-6 pt-4 border-t border-gray-700" />
+            // Gestion du clavier pour la navigation et la fermeture
+            useEffect(() => {
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') onClose();
+                    if (e.key === 'ArrowRight') onNext();
+                    if (e.key === 'ArrowLeft') onPrev();
+                };
+                window.addEventListener('keydown', handleKeyDown);
+                return () => {
+                    window.removeEventListener('keydown', handleKeyDown);
+                };
+            }, [onClose, onNext, onPrev]);
+
+            // Style de l'image pour le zoom et le décalage
+            const imageStyle = {
+                transform: `scale(${scale}) translate(${offset.x / scale}px, ${offset.y / scale}px)`,
+                cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default', // Curseur 'grab' si zoomé
+                transition: isDragging ? 'none' : 'transform 0.2s ease-out', // Pas de transition lors du drag
+            };
+
+            // Options de la Lightbox
+            const isFirst = currentIndex === 0;
+            const isLast = currentIndex === images.length - 1;
+
+            return ReactDOM.createPortal(
+                <div className="lightbox-overlay" onClick={onClose}>
+                    {/* Conteneur principal de la Lightbox */}
+                    <div className="lightbox-content" onClick={e => e.stopPropagation()}>
+                        {/* Image avec gestion du zoom/drag */}
+                        <img
+                            src={currentImage.src}
+                            alt={currentImage.alt}
+                            className="lightbox-image"
+                            style={imageStyle}
+                            onMouseDown={handleMouseDown}
+                        />
+
+                        {/* Bouton Fermer (X) */}
+                        <button className="lightbox-button lightbox-close-button" onClick={onClose}>
+                            <XIcon />
+                        </button>
+
+                        {/* Boutons de navigation (Précédent) */}
+                        {!isFirst && (
+                            <button className="lightbox-button lightbox-prev-button hidden sm:flex" onClick={onPrev}>
+                                <ArrowLeftIcon />
+                            </button>
+                        )}
+
+                        {/* Boutons de navigation (Suivant) */}
+                        {!isLast && (
+                            <button className="lightbox-button lightbox-next-button hidden sm:flex" onClick={onNext}>
+                                <ArrowRightIcon />
+                            </button>
+                        )}
+
+                        {/* Barre d'outils de zoom/navigation en bas */}
+                        <div className="absolute bottom-4 bg-gray-900 bg-opacity-70 p-3 rounded-xl shadow-2xl flex space-x-4 text-white">
+                            <span className="flex items-center text-sm">Image {currentIndex + 1} / {images.length}</span>
+                            <div className="flex space-x-2">
+                                <button className="p-1 rounded-full hover:bg-gray-700 transition" onClick={() => handleZoom(1.2)}>
+                                    <PlusIcon className="w-5 h-5" />
+                                </button>
+                                <button className="p-1 rounded-full hover:bg-gray-700 transition" onClick={() => handleZoom(0.8)}>
+                                    <MinusIcon className="w-5 h-5" />
+                                </button>
+                                {scale > 1 && (
+                                    <button className="p-1 rounded-full hover:bg-gray-700 transition" onClick={resetView}>
+                                        <TargetIcon className="w-5 h-5" />
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
-                    {isLightboxOpen && (
-                        <Lightbox
-                            images={lightboxImages}
-                            currentIndex={currentLightboxImageIndex}
-                            onClose={closeLightbox}
-                            onNavigate={navigateLightbox}
-                        />
-                    )}
-                </div>
+                </div>,
+                document.body
             );
         };
 
 
+        // Composant de la Page Voiture Vitrine
+        const VoitureVitrinePage = ({ isAdminAuthenticated }) => {
+            const { content } = useContext(ContentContext);
+            const [lightboxIndex, setLightboxIndex] = useState(null); // État pour la Lightbox
+
+            // Données des projets (placeholders)
+            const projects = [
+                {
+                    id: 1,
+                    title: "BMW M3 G80 - Stage 2 (510cv -> 650cv)",
+                    description: "Reprogrammation Stage 2 avec ligne d'échappement complète et admission optimisée. Performances stupéfiantes, son agressif.",
+                    specifications: [
+                        { label: "Modèle", value: "BMW M3 G80" },
+                        { label: "Année", value: "2023" },
+                        { label: "Puissance Stock", value: "510 ch / 650 Nm" },
+                        { label: "Puissance Modifiée", value: "650 ch / 800 Nm" },
+                    ],
+                    images: [
+                        { src: "m3_g80_1.jpg", alt: "BMW M3 G80 Avant" },
+                        { src: "m3_g80_2.jpg", alt: "BMW M3 G80 Moteur" },
+                        { src: "m3_g80_3.jpg", alt: "BMW M3 G80 Arrière" },
+                    ],
+                },
+                {
+                    id: 2,
+                    title: "Audi RS3 8V - Stage 1 (400cv -> 480cv)",
+                    description: "Optimisation logicielle Stage 1 offrant un gain significatif et une meilleure réactivité du moteur 2.5 TFSI.",
+                    specifications: [
+                        { label: "Modèle", value: "Audi RS3 8V" },
+                        { label: "Année", value: "2019" },
+                        { label: "Puissance Stock", value: "400 ch / 480 Nm" },
+                        { label: "Puissance Modifiée", value: "480 ch / 600 Nm" },
+                    ],
+                    images: [
+                        { src: "rs3_8v_1.jpg", alt: "Audi RS3 8V Avant" },
+                        { src: "rs3_8v_2.jpg", alt: "Audi RS3 8V Intérieur" },
+                    ],
+                },
+                // Ajoutez plus de projets ici
+            ];
+
+            const handleImageClick = (project, imageIndex) => {
+                const globalIndex = projects.findIndex(p => p.id === project.id) * 100 + imageIndex; // Une façon de gérer l'index si on voulait un carrousel global
+                setLightboxIndex(imageIndex); // Simplification: on n'affiche que les images du projet sélectionné
+                // Pour une implémentation complète, il faudrait passer le tableau d'images du projet, et le carrousel ne naviguerait qu'à l'intérieur de ce projet.
+            };
+
+            // Fonctionnalités de navigation de la lightbox pour le projet actuel
+            const currentProjectImages = projects[0].images; // Simplification: utilise les images du premier projet
+            const handleNext = () => {
+                if (lightboxIndex < currentProjectImages.length - 1) {
+                    setLightboxIndex(lightboxIndex + 1);
+                }
+            };
+            const handlePrev = () => {
+                if (lightboxIndex > 0) {
+                    setLightboxIndex(lightboxIndex - 1);
+                }
+            };
+
+
+            // Composant de carte de projet
+            const ProjectCard = ({ project, index }) => (
+                <div className="bg-white rounded-xl shadow-2xl overflow-hidden mb-12 transform transition duration-500 hover:shadow-red-500/50 hover:scale-[1.01] border-t-4 border-red-600">
+                    <div className="p-6">
+                        <h3 className="text-3xl font-extrabold text-gray-900 mb-3">{project.title}</h3>
+                        <p className="text-gray-600 mb-6">{project.description}</p>
+
+                        {/* Caractéristiques */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 text-sm font-semibold">
+                            {project.specifications.map((spec, i) => (
+                                <div key={i} className="bg-gray-100 p-3 rounded-lg text-center">
+                                    <p className="text-xs text-red-600 uppercase">{spec.label}</p>
+                                    <p className="text-gray-900 font-bold">{spec.value}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Galerie d'images */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {project.images.map((image, i) => (
+                                <div key={i} className="relative aspect-video overflow-hidden rounded-lg cursor-pointer group" onClick={() => setLightboxIndex(i)}>
+                                    <img src={image.src} alt={image.alt} className="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
+                                    <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                                        <PlusIcon className="w-8 h-8 text-white" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+
+
+            return (
+                <div className="min-h-screen pt-[120px] bg-gray-50">
+                    {/* Section Entête */}
+                    <header className="bg-gray-900 text-white py-16 mb-12">
+                        <div className="container mx-auto px-6 max-w-6xl text-center">
+                            <EditableText tag="h1" contentKey="showcase.mainTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-5xl font-extrabold mb-3" />
+                            <EditableText tag="p" contentKey="showcase.subTitle" isAdminAuthenticated={isAdminAuthenticated} className="text-xl text-gray-400" />
+                        </div>
+                    </header>
+
+                    {/* Description générale */}
+                    <section className="container mx-auto px-6 max-w-4xl text-center mb-12">
+                         <EditableText tag="p" contentKey="showcase.description" isAdminAuthenticated={isAdminAuthenticated} className="text-lg text-gray-700 leading-relaxed" />
+                    </section>
+
+                    {/* Grille des Projets */}
+                    <section className="container mx-auto px-6 max-w-6xl pb-20">
+                        {projects.map((project, index) => (
+                            <ProjectCard key={project.id} project={project} index={index} />
+                        ))}
+                    </section>
+
+                    {/* Lightbox pour la visualisation des images */}
+                    <Lightbox
+                        images={currentProjectImages} // Simplification
+                        currentIndex={lightboxIndex}
+                        onClose={() => setLightboxIndex(null)}
+                        onNext={handleNext}
+                        onPrev={handlePrev}
+                    />
+                </div>
+            );
+        };
+
         // Composant Page de Connexion Admin
-        const AdminLoginPage = ({ setIsAdminAuthenticated, setCurrentPage }) => {
+        const AdminLoginPage = ({ handleLogin }) => {
             const [username, setUsername] = useState('');
             const [password, setPassword] = useState('');
-            const [error, setError] = useState(null);
+            const [error, setError] = useState('');
 
-            const handleLogin = (e) => {
+            const handleSubmit = (e) => {
                 e.preventDefault();
-                setError(null);
 
-                // Validation simple (À remplacer par une logique d'authentification sécurisée côté serveur)
-                // Dans le cas de GitHub Pages, nous utilisons une validation simple côté client
-                // Note: La vraie sécurité requiert un backend. Ceci est une mesure d'obscurité.
-                if (username === 'Remy' && password === 'Remy03200!') {
-                    setIsAdminAuthenticated(true);
-                    setCurrentPage('admin-panel'); // Rediriger vers le panneau admin
+                // Logique de vérification simple (simulée)
+                if (username === 'admin' && password === 'admin123') { // Mot de passe bidon
+                    handleLogin();
                 } else {
-                    setError('Nom d\'utilisateur ou mot de passe incorrect.');
+                    setError("Nom d'utilisateur ou mot de passe incorrect.");
+                    // Vider les champs après l'erreur
+                    setUsername('');
+                    setPassword('');
                 }
             };
 
             return (
-                <div className="min-h-screen flex items-center justify-center bg-gray-900 pt-[96px] pb-12 font-inter">
-                    <div className="w-full max-w-md bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700 animate-fade-in-down">
-                        <h1 className="text-4xl font-extrabold text-center mb-6 text-red-500">Connexion Admin</h1>
-                        <p className="text-center text-gray-400 mb-8">Veuillez vous connecter pour accéder au panneau d'administration.</p>
+                <div className="min-h-screen pt-[120px] flex items-center justify-center bg-gray-50">
+                    <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl border-t-4 border-red-600">
+                        <h2 className="text-4xl font-extrabold text-center text-gray-900 mb-6">Accès Administration</h2>
+                        <p className="text-center text-gray-600 mb-8">Connectez-vous pour éditer le contenu de votre site.</p>
 
-                        <form onSubmit={handleLogin} className="space-y-6">
-                            <InputField
-                                label="Nom d'utilisateur"
-                                type="text"
-                                name="username"
-                                placeholder="Nom d'utilisateur"
-                                required={true}
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                            <InputField
-                                label="Mot de passe"
-                                type="password"
-                                name="password"
-                                placeholder="Mot de passe"
-                                required={true}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <label htmlFor="username" className="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    required
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 bg-white text-gray-900"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Mot de passe</label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 bg-white text-gray-900"
+                                />
+                            </div>
 
                             {error && (
-                                <p className="text-red-400 text-sm text-center font-semibold">{error}</p>
+                                <p className="text-red-600 text-sm font-semibold text-center">{error}</p>
                             )}
 
                             <button
                                 type="submit"
-                                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 w-full"
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg uppercase tracking-wider shadow-lg transition duration-300 transform hover:scale-[1.01]"
                             >
-                                Se connecter
+                                Se Connecter
                             </button>
                         </form>
                     </div>
                 </div>
-            );
-        };
-
-        // Composant pour le panneau d'administration
-        const AdminPanelPage = ({ handleLogout, isAdminAuthenticated }) => {
-            const { content, updateContent, setInitialContent } = useContext(ContentContext);
-            const [activeTab, setActiveTab] = useState('home'); // Onglet actif
-            const [localContent, setLocalContent] = useState(null); // Contenu éditable local
-            const [isSaving, setIsSaving] = useState(false);
-            const [saveMessage, setSaveMessage] = useState(null);
-
-            // Synchroniser le contenu global vers le contenu local lors du montage et à chaque changement
-            useEffect(() => {
-                // Utiliser JSON.parse(JSON.stringify) pour une copie profonde et non liée
-                if (content) {
-                    setLocalContent(JSON.parse(JSON.stringify(content)));
-                    setSaveMessage(null); // Réinitialiser le message de sauvegarde
-                }
-            }, [content]);
-
-            // Fonction pour gérer les changements locaux dans le panneau admin
-            const handleLocalChange = (pageKey, fieldKey, newValue) => {
-                setLocalContent(prevContent => {
-                    if (!prevContent) return prevContent;
-
-                    // Crée une copie profonde pour l'immuabilité
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    const targetPage = newContent[pageKey];
-
-                    if (!targetPage) {
-                        console.error(`handleLocalChange: Page key "${pageKey}" not found in localContent.`);
-                        return prevContent;
-                    }
-
-                    // Utiliser la fonction utilitaire pour les propriétés imbriquées
-                    setNestedProperty(targetPage, fieldKey, newValue);
-
-                    // console.log(`handleLocalChange: Local change applied. New localContent:`, newContent);
-                    return newContent;
-                });
-            };
-
-            const handleAddBlogPost = () => {
-                setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    if (!newContent.blog || !Array.isArray(newContent.blog.posts)) {
-                        newContent.blog = { ...newContent.blog, posts: [] };
-                    }
-                    newContent.blog.posts.push({
-                        id: Date.now(), // Utiliser un timestamp unique pour l'ID
-                        images: ["https://placehold.co/600x400/000/FFF?text=Nouvelle+image"], // Initialise avec une image par défaut
-                        title: "Nouveau titre d'article",
-                        description: "Nouvelle description d'article."
-                    });
-                    return newContent;
-                });
-            };
-
-            const handleRemoveBlogPost = (idToRemove) => {
-                setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    if (newContent.blog && Array.isArray(newContent.blog.posts)) {
-                        newContent.blog.posts = newContent.blog.posts.filter(post => post.id !== idToRemove);
-                    }
-                    return newContent;
-                });
-            };
-
-            const handleAddImageToPost = (postIndex, imageUrl) => {
-                setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    const targetPost = newContent.blog.posts[postIndex];
-                    if (targetPost) {
-                        if (!targetPost.images) {
-                            targetPost.images = [];
-                        }
-                        targetPost.images.push(imageUrl);
-                    }
-                    return newContent;
-                });
-            };
-
-            const handleRemoveImageFromPost = (postIndex, imageIndex) => {
-                setLocalContent(prevContent => {
-                    const newContent = JSON.parse(JSON.stringify(prevContent));
-                    const targetPost = newContent.blog.posts[postIndex];
-                    if (targetPost && targetPost.images && Array.isArray(targetPost.images)) {
-                        targetPost.images.splice(imageIndex, 1);
-                    }
-                    return newContent;
-                });
-            };
-
-
-            // Fonction pour sauvegarder les changements (Simulée)
-            const handleSaveChanges = async () => {
-                setIsSaving(true);
-                setSaveMessage('Sauvegarde en cours...');
-                console.log("AdminPanelPage: Initiating save. Sending content:", JSON.parse(JSON.stringify(localContent)));
-
-                try {
-                    // --- REMPLACER PAR LA LOGIQUE DE SAUVEGARDE RÉELLE VERS VOTRE BACKEND/GITHUB ---
-                    // Exemple de simulation pour un environnement sans backend:
-                    await new Promise(resolve => setTimeout(resolve, 2000)); // Simuler le temps de sauvegarde
-
-                    // Appliquer les changements au contenu global (ce qui est affiché)
-                    // Utiliser setInitialContent (qui est updateContent dans ce contexte de fichier unique)
-                    setInitialContent(localContent); // Met à jour le contenu dans le App component
-
-                    setSaveMessage('✅ Modifications sauvegardées avec succès dans l\'application !');
-                    // --- FIN DE LA LOGIQUE DE SAUVEGARDE SIMULÉE ---
-
-                } catch (error) {
-                    console.error('AdminPanelPage: Erreur lors de la sauvegarde:', error);
-                    setSaveMessage(`❌ Erreur lors de la sauvegarde. Veuillez vérifier la console.`);
-                } finally {
-                    setIsSaving(false);
-                }
-            };
-
-
-            // Rendu des champs éditables (récursif pour gérer les objets)
-            const renderEditableFields = (fields, pageKey, path = '') => {
-                // Triez les clés pour un affichage plus logique
-                const sortedKeys = Object.keys(fields).sort();
-
-                return sortedKeys.map(fieldKey => {
-                    const fieldValue = fields[fieldKey];
-                    const contentPath = path ? `${path}.${fieldKey}` : fieldKey;
-
-                    // Si la valeur est un objet et n'est pas null, nous rendons récursivement
-                    if (fieldValue !== null && typeof fieldValue === 'object' && !Array.isArray(fieldValue)) {
-                        return (
-                            <div key={contentPath} className="p-4 bg-gray-600 rounded-lg mt-4 border border-gray-500">
-                                <h3 className="text-xl font-bold mb-3 text-white capitalize">{fieldKey.replace(/([A-Z])/g, ' $1').trim()}</h3>
-                                <div className="space-y-4">
-                                    {renderEditableFields(fieldValue, pageKey, contentPath)}
-                                </div>
-                            </div>
-                        );
-                    }
-
-                    // Ne pas afficher les IDs dans l'admin, sauf pour les posts
-                    if (fieldKey === 'id' && pageKey !== 'blog') {
-                        return null;
-                    }
-
-                    // Handle specific types like numbers for volume
-                    if (fieldKey === 'musicVolume' && typeof fieldValue === 'number') {
-                        return (
-                            <div key={contentPath} className="pb-4 border-b border-gray-600 last:border-b-0">
-                                <label className="block text-gray-300 text-sm font-bold mb-2">
-                                    Volume de la musique: ({Math.round(fieldValue * 100)}%)
-                                </label>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="1"
-                                    step="0.01"
-                                    value={fieldValue}
-                                    onChange={(e) => handleLocalChange(pageKey, fieldKey, parseFloat(e.target.value))}
-                                    className="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                        );
-                    }
-
-                    const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
-                    const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle')) ? 'text' : 'textarea';
-                    const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
-
-                    return (
-                        <div key={contentPath} className="pb-4 border-b border-gray-600 last:border-b-0">
-                            <label className="block text-gray-300 text-sm font-bold mb-2">
-                                {fieldKey.replace(/([A-Z])/g, ' $1').replace(/([0-9])/g, ' $1').trim()}:
-                            </label>
-                            {inputType === 'text' ? (
-                                <input
-                                    type="text"
-                                    value={valueToDisplay}
-                                    onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
-                                    className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500"
-                                />
-                            ) : (
-                                <textarea
-                                    value={valueToDisplay}
-                                    onChange={(e) => handleLocalChange(pageKey, fieldKey, e.target.value)}
-                                    rows={rows}
-                                    className="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 focus:ring-blue-500 focus:border-blue-500 resize-y"
-                                />
-                            )}
-                        </div>
-                    );
-                });
-            };
-
-            if (!isAdminAuthenticated || !localContent) {
-                return (
-                    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white text-2xl pt-[96px]">
-                        Accès non autorisé ou chargement en cours.
-                    </div>
-                );
-            }
-
-            return (
-                <div className="min-h-screen bg-gray-900 text-white pt-[96px] pb-12 font-inter">
-                    <div className="container mx-auto px-4 py-12">
-                        <h1 className="text-5xl font-extrabold text-center mb-10 text-red-500">Panneau d'Administration</h1>
-
-                        {/* Barre d'onglets pour la navigation des pages */}
-                        <div className="flex flex-wrap justify-center space-x-2 md:space-x-4 mb-10 p-3 bg-gray-800 rounded-xl shadow-inner border border-gray-700">
-                            {[
-                                { key: 'home', label: 'Accueil' },
-                                { key: 'blog', label: 'Blog' },
-                                { key: 'showcaseCar', label: 'Voiture Vitrine' },
-                                { key: 'aboutUs', label: 'Qui Sommes-nous' },
-                                { key: 'contact', label: 'Contact' },
-                                { key: 'legalMentions', label: 'Mentions Légales' },
-                                { key: 'privacyPolicy', label: 'Confidentialité' },
-                                { key: 'siteSettings', label: 'Paramètres Site' },
-                            ].map(tab => (
-                                <button
-                                    key={tab.key}
-                                    onClick={() => setActiveTab(tab.key)}
-                                    className={`px-4 py-3 rounded-lg font-semibold transition duration-300 ease-in-out ${activeTab === tab.key ? 'bg-blue-600 text-white shadow-lg transform scale-105' : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white' }`}
-                                >
-                                    {tab.label}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Contenu des onglets */}
-                        {localContent && (
-                            <div className="space-y-8">
-                                {/* Section Accueil */}
-                                {activeTab === 'home' && (
-                                    <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
-                                        <h2 className="text-3xl font-bold mb-6 text-blue-400 capitalize border-b-2 border-blue-600 pb-3"> Page Accueil </h2>
-                                        {/* Wrap adjacent elements in a fragment */}
-                                        <div className="space-y-6">
-                                            {renderEditableFields(localContent.home, 'home')}
-                                            {localContent.home.offerTitle && (
-                                                <div className="mt-8 pt-6 border-t-2 border-red-600">
-                                                    <h3 className="text-xl sm:text-2xl font-bold mb-4 text-red-300">Nos Offres</h3> {/* Ajusté pour mobile */}
-                                                    {renderEditableFields({
-                                                        offer1Title: localContent.home.offer1Title, offer1Description: localContent.home.offer1Description,
-                                                        offer2Title: localContent.home.offer2Title, offer2Description: localContent.home.offer2Description,
-                                                        offer3Title: localContent.home.offer3Title, offer3Description: localContent.home.offer3Description,
-                                                        offer4Title: localContent.home.offer4Title, offer4Description: localContent.home.offer4Description,
-                                                    }, 'home')}
-                                                </div>
-                                            )}
-                                            {localContent.home.trustTitle && (
-                                                <div className="mt-8 pt-6 border-t-2 border-blue-600">
-                                                    <h3 className="text-xl sm:text-2xl font-bold mb-4 text-blue-300">Pourquoi nous faire confiance</h3> {/* Ajusté pour mobile */}
-                                                    {renderEditableFields({
-                                                        trust1Title: localContent.home.trust1Title, trust1Description: localContent.home.trust1Description,
-                                                        trust2Title: localContent.home.trust2Title, trust2Description: localContent.home.trust2Description,
-                                                        trust3Title: localContent.home.trust3Title, trust3Description: localContent.home.trust3Description,
-                                                        trust4Title: localContent.home.trust4Title, trust4Description: localContent.home.trust4Description,
-                                                    }, 'home')}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Section Blog */}
-                                {activeTab === 'blog' && (
-                                    <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
-                                        <h2 className="text-3xl font-bold mb-6 text-green-400 capitalize border-b-2 border-green-600 pb-3"> Page Blog </h2>
-                                        {/* Champs généraux du blog */}
-                                        {renderEditableFields({
-                                            mainTitle: localContent.blog.mainTitle,
-                                            description: localContent.blog.description,
-                                            // Ne pas afficher la liste des posts ici, mais dans la section dédiée
-                                        }, 'blog')}
-
-                                        {/* Section Gestion des Articles de Blog */}
-                                        <div className="mt-8 pt-6 border-t-2 border-green-600">
-                                            <h3 className="text-xl sm:text-2xl font-bold mb-4 text-green-300">Articles de Blog</h3>
-                                            <button
-                                                onClick={handleAddBlogPost}
-                                                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 mb-4"
-                                            >
-                                                + Ajouter un Nouvel Article
-                                            </button>
-
-                                            <div className="space-y-6">
-                                                {localContent.blog.posts && localContent.blog.posts.map((post, postIndex) => (
-                                                    <div key={post.id} className="p-4 border border-gray-500 rounded-lg bg-gray-600 shadow-md">
-                                                        <div className="flex justify-between items-center mb-3 border-b border-gray-500 pb-2">
-                                                            <h4 className="text-lg font-bold text-white">Article ID: {post.id}</h4>
-                                                            <button
-                                                                onClick={() => handleRemoveBlogPost(post.id)}
-                                                                className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-lg text-sm transition duration-300"
-                                                            >
-                                                                Supprimer
-                                                            </button>
-                                                        </div>
-                                                        {renderEditableFields({
-                                                            title: post.title,
-                                                            description: post.description,
-                                                        }, `blog.posts.${postIndex}`)}
-
-                                                        {/* Gestion des Images de l'Article */}
-                                                        <div className="mt-4 pt-4 border-t border-gray-500">
-                                                            <h5 className="text-md font-bold mb-2 text-gray-300">Images de l'Article</h5>
-                                                            <div className="space-y-2">
-                                                                {post.images && post.images.map((image, imageIndex) => (
-                                                                    <div key={imageIndex} className="flex items-center space-x-2">
-                                                                        <input
-                                                                            type="text"
-                                                                            value={image}
-                                                                            onChange={(e) => handleLocalChange('blog', `posts.${postIndex}.images.${imageIndex}`, e.target.value)}
-                                                                            className="w-full p-2 rounded bg-gray-500 text-white border border-gray-400"
-                                                                        />
-                                                                        <button
-                                                                            onClick={() => handleRemoveImageFromPost(postIndex, imageIndex)}
-                                                                            className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg text-sm transition duration-300"
-                                                                        >
-                                                                            <XIcon className="w-4 h-4" />
-                                                                        </button>
-                                                                    </div>
-                                                                ))}
-                                                                <button
-                                                                    onClick={() => handleAddImageToPost(postIndex, "https://placehold.co/600x400/000/FFF?text=Nouvelle+image")}
-                                                                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-lg text-sm transition duration-300"
-                                                                >
-                                                                    + Ajouter Image
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Section Voiture Vitrine */}
-                                {activeTab === 'showcaseCar' && (
-                                    <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
-                                        <h2 className="text-3xl font-bold mb-6 text-red-400 capitalize border-b-2 border-red-600 pb-3"> Page Voiture Vitrine </h2>
-                                        {/* Wrap adjacent elements in a fragment */}
-                                        <div className="space-y-6">
-                                            {renderEditableFields(localContent.showcaseCar, 'showcaseCar')}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Section Qui Sommes-nous */}
-                                {activeTab === 'aboutUs' && (
-                                    <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
-                                        <h2 className="text-3xl font-bold mb-6 text-yellow-400 capitalize border-b-2 border-yellow-600 pb-3"> Page Qui Sommes-nous </h2>
-                                        <div className="space-y-6">
-                                            {renderEditableFields(localContent.aboutUs, 'aboutUs')}
-                                            {localContent.aboutUs.value1Title && (
-                                                <div className="mt-8 pt-6 border-t-2 border-yellow-600">
-                                                    <h3 className="text-xl sm:text-2xl font-bold mb-4 text-yellow-300">Nos Valeurs</h3> {/* Ajusté pour mobile */}
-                                                    {renderEditableFields({
-                                                        value1Title: localContent.aboutUs.value1Title, value1Description: localContent.aboutUs.value1Description,
-                                                        value2Title: localContent.aboutUs.value2Title, value2Description: localContent.aboutUs.value2Description,
-                                                        value3Title: localContent.aboutUs.value3Title, value3Description: localContent.aboutUs.value3Description,
-                                                        value4Title: localContent.aboutUs.value4Title, value4Description: localContent.aboutUs.value4Description,
-                                                    }, 'aboutUs')}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Section Contact */}
-                                {activeTab === 'contact' && (
-                                    <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
-                                        <h2 className="text-3xl font-bold mb-6 text-pink-400 capitalize border-b-2 border-pink-600 pb-3"> Page Contact </h2>
-                                        {/* Wrap adjacent elements in a fragment */}
-                                        <React.Fragment>
-                                            {renderEditableFields(localContent.contact, 'contact')}
-                                        </React.Fragment>
-                                    </div>
-                                )}
-
-                                {/* Section Mentions Légales */}
-                                {activeTab === 'legalMentions' && (
-                                    <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
-                                        <h2 className="text-3xl font-bold mb-6 text-teal-400 capitalize border-b-2 border-teal-600 pb-3"> Page Mentions Légales </h2>
-                                        <div className="space-y-6">
-                                            {renderEditableFields(localContent.legalMentions, 'legalMentions')}
-                                            {localContent.legalMentions.list1Item1 && (
-                                                <div className="mt-8 pt-6 border-t-2 border-teal-600">
-                                                    <h3 className="text-xl sm:text-2xl font-bold mb-4 text-teal-300">Liste 1</h3> {/* Ajusté pour mobile */}
-                                                    {renderEditableFields({
-                                                        list1Item1: localContent.legalMentions.list1Item1,
-                                                        list1Item2: localContent.legalMentions.list1Item2,
-                                                        list1Item3: localContent.legalMentions.list1Item3,
-                                                    }, 'legalMentions')}
-                                                </div>
-                                            )}
-                                            {localContent.legalMentions.list2Item1 && (
-                                                <div className="mt-8 pt-6 border-t-2 border-teal-600">
-                                                    <h3 className="text-xl sm:text-2xl font-bold mb-4 text-teal-300">Liste 2</h3> {/* Ajusté pour mobile */}
-                                                    {renderEditableFields({
-                                                        list2Item1: localContent.legalMentions.list2Item1,
-                                                        list2Item2: localContent.legalMentions.list2Item2,
-                                                        list2Item3: localContent.legalMentions.list2Item3,
-                                                    }, 'legalMentions')}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Section Politique de Confidentialité */}
-                                {activeTab === 'privacyPolicy' && (
-                                    <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
-                                        <h2 className="text-3xl font-bold mb-6 text-purple-400 capitalize border-b-2 border-purple-600 pb-3"> Page Politique de Confidentialité </h2>
-                                        <div className="space-y-6">
-                                            {renderEditableFields(localContent.privacyPolicy, 'privacyPolicy')}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Section Paramètres du Site */}
-                                {activeTab === 'siteSettings' && (
-                                    <div className="p-6 bg-gray-700 rounded-xl shadow-inner border border-gray-600">
-                                        <h2 className="text-3xl font-bold mb-6 text-cyan-400 capitalize border-b-2 border-cyan-600 pb-3"> Paramètres du Site </h2>
-                                        <div className="space-y-6">
-                                            {/* Utilisez renderEditableFields */}
-                                            {localContent.siteSettings && renderEditableFields(localContent.siteSettings, 'siteSettings')}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        <div className="flex justify-center space-x-4 mt-8">
-                            <button
-                                onClick={handleSaveChanges}
-                                className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled={isSaving}
-                            >
-                                {isSaving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
-                            </button>
-                            <button
-                                onClick={handleLogout}
-                                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-                            >
-                                Déconnexion
-                            </button>
-                        </div>
-
-                        {saveMessage && (
-                            <p className="text-center text-yellow-400 mt-4 text-md animate-fade-in">
-                                {saveMessage}
-                            </p>
-                        )}
-                    </div>
-                </div>
-            );
-        };
-
-        // Nouveau composant pour le contrôle de la musique
-        const MusicControl = ({ volume }) => { // Accepte `volume` comme prop
-            const audioRef = useRef(null);
-            const [isPlaying, setIsPlaying] = useState(false);
-            const [showAutoplayMessage, setShowAutoplayMessage] = useState(false); // Nouvel état pour le message d'autoplay
-
-            useEffect(() => {
-                const audio = document.getElementById('background-music');
-                if (audio) {
-                    audioRef.current = audio;
-                    
-                    // Ajuster le volume initial et à chaque changement de la prop `volume`
-                    audio.volume = volume;
-
-                    // Tentative de lecture automatique
-                    const playPromise = audio.play();
-
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            // Lecture automatique réussie
-                            setIsPlaying(true);
-                            setShowAutoplayMessage(false);
-                        }).catch(error => {
-                            // Lecture automatique bloquée
-                            setIsPlaying(false);
-                            setShowAutoplayMessage(true);
-                            console.log("Lecture automatique bloquée. L'utilisateur doit interagir.");
-                        });
-                    }
-
-                    // Mettre à jour l'état isPlaying lorsque l'audio se met en pause/lecture
-                    const handlePlay = () => setIsPlaying(true);
-                    const handlePause = () => setIsPlaying(false);
-
-                    audio.addEventListener('play', handlePlay);
-                    audio.addEventListener('pause', handlePause);
-
-                    return () => {
-                        audio.removeEventListener('play', handlePlay);
-                        audio.removeEventListener('pause', handlePause);
-                    };
-                }
-            }, [volume]); // Dépend de `volume` pour ajuster le son
-
-            const togglePlayPause = () => {
-                if (!audioRef.current) return;
-
-                if (isPlaying) {
-                    audioRef.current.pause();
-                } else {
-                    audioRef.current.play().then(() => {
-                        setIsPlaying(true);
-                        setShowAutoplayMessage(false); // Masquer le message si l'utilisateur interagit
-                    }).catch(error => {
-                        console.error("Erreur lors de la tentative de lecture par le bouton:", error);
-                        // Optionnel: Afficher un message à l'utilisateur si la lecture échoue même avec le clic
-                    });
-                }
-            };
-
-            return (
-                <>
-                    <button
-                        onClick={togglePlayPause}
-                        className="fixed bottom-8 right-8 bg-red-600 hover:bg-red-700 text-white p-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-110 active:scale-90 z-50 flex items-center justify-center w-14 h-14"
-                        aria-label={isPlaying ? "Mettre la musique en pause" : "Jouer la musique"}
-                    >
-                        {isPlaying ? <PauseIcon /> : <PlayIcon />}
-                    </button>
-                    {showAutoplayMessage && (
-                        <div className="fixed bottom-24 right-8 bg-yellow-500 text-gray-900 px-4 py-2 rounded-lg shadow-lg text-sm animate-fade-in-down z-50">
-                            Cliquez sur le bouton de lecture pour lancer la musique !
-                        </div>
-                    )}
-                </>
-            );
-        };
-
-        // Composant pour le bouton de retour en haut de page
-        const ScrollToTopButton = () => {
-            const [isVisible, setIsVisible] = useState(false);
-
-            // Gère la visibilité du bouton en fonction du défilement
-            const toggleVisibility = () => {
-                if (window.pageYOffset > 300) { // Rend le bouton visible après 300px de défilement
-                    setIsVisible(true);
-                } else {
-                    setIsVisible(false);
-                }
-            };
-
-            // Fonction pour remonter en haut de page avec une animation douce
-            const scrollToTop = () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            };
-
-            useEffect(() => {
-                window.addEventListener('scroll', toggleVisibility);
-                return () => {
-                    window.removeEventListener('scroll', toggleVisibility);
-                };
-            }, []);
-
-            return (
-                <button
-                    className={`fixed bottom-24 right-8 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-110 active:scale-90 z-50 ${isVisible ? 'scroll-to-top' : 'scroll-to-top hidden'}`}
-                    onClick={scrollToTop}
-                    aria-label="Retour en haut de page"
-                >
-                    <ArrowUpIcon className="w-6 h-6"/>
-                </button>
             );
         };
 
@@ -2337,296 +1404,154 @@
         const App = () => {
             const [currentPage, setCurrentPage] = useState('accueil');
             const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-            const [content, setContent] = useState(null); // État du contenu global
-            const [loadingContent, setLoadingContent] = useState(true); // État de chargement du contenu
-            const [errorContent, setErrorContent] = useState(null); // État d'erreur de chargement du contenu
-            const [isNavbarVisible, setIsNavbarVisible] = useState(true); // État de visibilité de la navbar
-            const lastScrollY = useRef(0); // Dernière position de défilement connue
-            const appRef = useRef(null); // Ref pour le conteneur principal de l'App
+            // --- CORRECTION: Utiliser l'objet initial complet pour l'état du contenu ---
+            const [content, setContent] = useState(initialContent);
+            const [showScrollToTop, setShowScrollToTop] = useState(false);
+            const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+            const lastScrollY = useRef(0);
 
-            // Contenu de secours par défaut si content.json est introuvable
-            const defaultContent = {
-                home: {
-                    mainTitle: "BRMOTORSPORT",
-                    tagline: "Libérez la Puissance. Redéfinissez la Performance!",
-                    offerTitle: "Nos Services d'Optimisation",
-                    offerSubtitle: "Des préparations moteur sur mesure pour des performances maximales.",
-                    offer1Title: "Reprogrammation Moteur",
-                    offer1Description: "Optimisation Stage 1 à 3 pour améliorer la puissance et le couple.",
-                    offer2Title: "Entretien Spécialisé",
-                    offer2Description: "Maintenance et réparation de véhicules haute performance.",
-                    offer3Title: "Conseil Expert",
-                    offer3Description: "Accompagnement personnalisé pour vos projets automobiles.",
-                    offer4Title: "Diagnostic Électronique",
-                    offer4Description: "Identification précise des problèmes moteur et électronique.",
-                    trustTitle: "Pourquoi nous faire confiance ?",
-                    trust1Title: "Plus de 10 ans d'expérience terrain.",
-                    trust1Description: "Un savoir-faire éprouvé, bâti sur des années de pratique et de passion.",
-                    trust2Title: "Une expertise reconnue en performance moteur.",
-                    trust2Description: "Le moteur n'a plus de secret pour nous. Maîtrise et innovation au service de votre véhicule.",
-                    trust3Title: "Un service de proximité, fiable et à l'écoute.",
-                    trust3Description: "Votre partenaire automobile de confiance, toujours disponible pour vos besoins.",
-                    trust4Title: "La passion du moteur comme moteur.",
-                    trust4Description: "Faites confiance à une équipe de passionnés qui maîtrisent leur art. Rémy Bruyant, notre expert automobile dédié à la performance et à la qualité.",
-                    testimonialTitle: "Témoignages Clients",
-                    testimonial1Text: "La reprogrammation Stage 1 a transformé ma voiture. Une nouvelle vie, un couple impressionnant. Je recommande vivement !",
-                    testimonial1Author: "Marc L.",
-                    testimonial2Text: "Service impeccable, professionnel et très à l'écoute. Le diagnostic a été rapide et précis.",
-                    testimonial2Author: "Sophie B.",
-                    testimonial3Text: "Vraiment l'adresse incontournable pour les passionnés de performance dans la région.",
-                    testimonial3Author: "Julien V."
-                },
-                blog: {
-                    mainTitle: "Notre Blog Performance",
-                    description: "Tenez-vous au courant des dernières actualités, réalisations et conseils techniques de BRMOTORSPORT.",
-                    posts: [
-                        {
-                            id: 1700000000000, // Exemple de timestamp
-                            images: ["Photo1.png"],
-                            title: "Préparation Scirocco R Stage 3 : 500+ Ch",
-                            description: "Détails de notre dernière préparation extrême sur une Volkswagen Scirocco R, atteignant des puissances impressionnantes."
-                        },
-                        {
-                            id: 1600000000000,
-                            images: ["photo2.png"],
-                            title: "Le Choix de la Reprogrammation : Stage 1 ou Stage 2 ?",
-                            description: "Guide pour vous aider à choisir la bonne étape d'optimisation pour votre véhicule."
-                        },
-                    ]
-                },
-                aboutUs: {
-                    mainTitle: "Qui Sommes-nous",
-                    subtitle: "Notre engagement : vous offrir une performance et une fiabilité sans compromis.",
-                    historyTitle: "Notre Histoire",
-                    historyParagraph1: "Fondé par Rémy Bruyant, passionné d'automobile et expert en mécanique moteur depuis plus de dix ans, BRMOTORSPORT est né de la volonté de repousser les limites de la performance automobile. Notre mission est simple : transformer votre véhicule en une machine d'exception.",
-                    historyParagraph2: "Chaque préparation est réalisée avec le plus grand soin, en utilisant des outils de diagnostic à la pointe de la technologie et des pièces de haute qualité, pour garantir une fiabilité maximale à des niveaux de puissance extrêmes.",
-                    valuesTitle: "Nos Valeurs",
-                    value1Title: "Expertise Technique",
-                    value1Description: "Maîtrise complète de la chaîne cinématique et des systèmes électroniques pour des résultats garantis.",
-                    value2Title: "Innovation",
-                    value2Description: "Recherche constante de nouvelles solutions pour optimiser les performances de manière durable et efficace.",
-                    value3Title: "Fiabilité",
-                    value3Description: "La puissance n'a de sens qu'avec la fiabilité. Nous ne transigeons jamais sur la sécurité et la longévité de votre moteur.",
-                    value4Title: "Passion Client",
-                    value4Description: "Nous partageons votre passion. Notre service est basé sur l'écoute et l'accompagnement personnalisé de chaque projet."
-                },
-                contact: {
-                    mainTitle: "Contactez-nous",
-                    subtitle: "Pour toute demande de devis ou de renseignement, notre équipe est à votre écoute.",
-                    phoneNumber: "07 81 29 86 64",
-                    emailAddress: "brmotorsport@gmail.com",
-                    instagramHandle: "brmotorsport03",
-                    address: "Rue du Commerce\n03200 Vichy",
-                    formTitle: "Envoyez-nous un message"
-                },
-                legalMentions: {
-                    mainTitle: "Mentions Légales",
-                    subtitle: "Informations légales relatives à l'utilisation du site brmotorsport.fr.",
-                    editorTitle: "Éditeur du Site",
-                    list1Item1: "Statut : Micro-entreprise",
-                    list1Item2: "Nom du Responsable : Rémy Bruyant",
-                    list1Item3: "Adresse : Rue du Commerce, 03200 Vichy",
-                    hostingTitle: "Hébergement",
-                    list2Item1: "Hébergeur : GitHub Pages",
-                    list2Item2: "Raison sociale : GitHub, Inc.",
-                    list2Item3: "Adresse : 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA",
-                    cguTitle: "Conditions Générales d'Utilisation",
-                    cguText: "L'utilisation du site brmotorsport.fr implique l'acceptation pleine et entière des conditions générales d'utilisation décrites ci-après. Ces conditions d'utilisation sont susceptibles d'être modifiées ou complétées à tout moment.",
-                    liabilityTitle: "Limitation de Responsabilité",
-                    liabilityText: "BRMOTORSPORT ne pourra être tenu responsable des dommages directs et indirects causés au matériel de l'utilisateur, lors de l'accès au site, et résultant soit de l'utilisation d'un matériel non conforme aux spécifications, soit de l'apparition d'un bug ou d'une incompatibilité."
-                },
-                privacyPolicy: {
-                    mainTitle: "Politique de Confidentialité",
-                    subtitle: "Engagement de BRMOTORSPORT sur la protection de vos données personnelles.",
-                    dataTitle: "Données Personnelles Collectées",
-                    dataText: "Nous collectons uniquement les informations que vous nous fournissez volontairement via le formulaire de contact (nom, e-mail, sujet, message) dans le seul but de répondre à vos demandes.",
-                    usageTitle: "Utilisation de vos Données",
-                    usageText: "Vos données personnelles sont utilisées exclusivement pour le traitement de vos demandes de contact et l'amélioration de nos services.",
-                    sharingTitle: "Partage des Données",
-                    sharingText: "Vos données personnelles ne sont ni vendues, ni échangées, ni transférées à aucune autre société. Seuls les employés qui ont besoin d'effectuer un travail spécifique (par exemple, la facturation ou le service client) ont accès aux informations personnelles identifiables.",
-                    rightsTitle: "Vos Droits",
-                    rightsText: "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition au traitement de vos données personnelles. Pour exercer ces droits, veuillez nous contacter à brmotorsport@gmail.com.",
-                    disclaimerText: "Cette politique de confidentialité peut être mise à jour occasionnellement. Nous vous invitons à la consulter régulièrement."
-                },
-                showcaseCar: {
-                    mainTitle: "Notre Voiture Vitrine",
-                    description: "Découvrez notre dernière préparation exceptionnelle : une Volkswagen Scirocco R avec une optimisation Stage 3 poussée, développant plus de 500 chevaux.",
-                    preparationTitle: "Détails de la Préparation Stage 3",
-                    preparationDescription: "Ce véhicule a subi une transformation complète pour atteindre des niveaux de performance extrêmes, tout en conservant une fiabilité optimale.",
-                    pistonLabel: "Pistons", piston: "Pistons forgés",
-                    biellesLabel: "Bielles", bielles: "Bielles forgées",
-                    soupapesLabel: "Soupapes", soupapes: "Soupapes renforcées",
-                    admLabel: "Admission", adm: "Admission gros volume",
-                    ressortLabel: "Ressorts", ressort: "Ressorts de soupapes renforcées",
-                    viserieLabel: "Visserie", viserie: "Vis de bielles, vilebrequin et culasse renforcées",
-                    pompeHuileLabel: "Pompe à huile", pompeHuile: "Pompe à huile gros débit",
-                    turboLabel: "Turbo", turbo: "Turbo hybride sur mesure",
-                    wastegateLabel: "Wastegate", wastegate: "Wastegate externe",
-                    injecteursLabel: "Injecteurs", injecteurs: "Injecteurs gros débit",
-                    pipAdmissionLabel: "Pipe d'Admission", pipAdmission: "Pipe d'admission gros volume",
-                    wmiLabel: "Système WMI", wmi: "Système WMI (Water-Methanol Injection)",
-                    embrayageLabel: "Embrayage", embrayage: "Embrayage renforcé",
-                    finalDescription: "Chaque composant a été soigneusement sélectionné et installé pour garantir une synergie parfaite et une expérience de conduite inégalée sur route comme sur circuit."
-                },
-                siteSettings: {
-                    // Nouvelle section pour les paramètres du site
-                    musicVolume: 0.05 // Valeur par défaut pour le volume de la musique
+            // Gestion de la navigation
+            const renderPage = () => {
+                switch (currentPage) {
+                    case 'blog':
+                        return <BlogPage isAdminAuthenticated={isAdminAuthenticated} />;
+                    case 'qui-sommes-nous':
+                        return <QuiSommesNousPage isAdminAuthenticated={isAdminAuthenticated} />;
+                    case 'contact':
+                        return <ContactPage isAdminAuthenticated={isAdminAuthenticated} />;
+                    case 'admin-login':
+                        return <AdminLoginPage handleLogin={handleLogin} />;
+                    case 'mentions-legales':
+                        return <MentionsLegalesPage isAdminAuthenticated={isAdminAuthenticated} />;
+                    case 'voiture-vitrine':
+                        return <VoitureVitrinePage isAdminAuthenticated={isAdminAuthenticated} />;
+                    case 'accueil':
+                    default:
+                        return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
                 }
             };
 
-
-            // Fonction pour charger le contenu depuis content.json ou utiliser le contenu par défaut
-            useEffect(() => {
-                const fetchContent = async () => {
-                    console.log("App: Attempting to fetch content.json...");
-                    try {
-                        const response = await fetch('content.json'); // Assurez-vous que content.json est à la racine de votre dépôt
-                        if (!response.ok) {
-                            // Si le fichier n'est pas trouvé (404) ou autre erreur, utiliser le contenu par défaut
-                            if (response.status === 404) {
-                                console.warn("App: content.json not found (404). Using default content.");
-                                setContent(defaultContent);
-                            } else {
-                                throw new Error(`Erreur HTTP: ${response.status}`);
-                            }
-                        } else {
-                            const data = await response.json();
-                            setContent(data);
-                            console.log("App: content.json loaded successfully:", data);
-                        }
-                    } catch (error) {
-                        console.error("App: Erreur lors du chargement de content.json:", error);
-                        // Utiliser le contenu par défaut en cas d'erreur de parsing ou autre
-                        setErrorContent("Impossible de charger le contenu du site (Erreur réseau ou fichier). Le contenu par défaut est utilisé. Vérifiez la console pour les détails.");
-                        setContent(defaultContent);
-                    } finally {
-                        setLoadingContent(false);
-                    }
-                };
-                fetchContent();
-            }, []); // S'exécute une seule fois au montage du composant
-
-            // Fonction pour mettre à jour le contenu global (utilisée par le panneau admin)
-            const updateContent = (pageKey, newContentObject) => {
+            // Fonction de mise à jour du contenu pour l'édition en direct
+            const updateContent = (key, value) => {
+                // console.log(`Attempting to update key: ${key} with value:`, value);
                 setContent(prevContent => {
-                    // Effectuer une mise à jour seulement pour les champs concernés
-                    // newContentObject est le localContent.pageKey (ex: localContent.home)
-                    return {
-                        ...prevContent,
-                        [pageKey]: newContentObject,
-                    };
+                    // Créer une copie profonde de l'état précédent
+                    const newContent = JSON.parse(JSON.stringify(prevContent));
+                    // Utiliser la fonction utilitaire pour définir la propriété imbriquée
+                    setNestedProperty(newContent, key, value);
+                    // console.log("New content after update:", newContent);
+                    return newContent;
                 });
             };
 
-            // Fonction pour mettre à jour le contenu global (utilisée pour remplacer tout le contenu après une sauvegarde)
-            const setInitialContent = (newContent) => {
-                setContent(newContent);
+            // Fonctions de connexion/déconnexion
+            const handleLogin = () => {
+                setIsAdminAuthenticated(true);
+                setCurrentPage('accueil'); // Retourne à l'accueil après connexion
             };
 
-            // Fonction de déconnexion
             const handleLogout = () => {
                 setIsAdminAuthenticated(false);
                 setCurrentPage('accueil');
             };
 
-            // Défilement en haut de page à chaque changement de page
-            useEffect(() => {
-                window.scrollTo(0, 0); // Défile à la position 0, 0 (en haut à gauche)
-            }, [currentPage]); // Se déclenche à chaque fois que `currentPage` change
-
-            // Logique de visibilité de la navbar au défilement
+            // --- Logique de gestion du défilement (Scroll-to-Top et Navbar) ---
             useEffect(() => {
                 const handleScroll = () => {
                     const currentScrollY = window.scrollY;
 
-                    // Si l'utilisateur est tout en haut de la page, la navbar est toujours visible
-                    if (currentScrollY === 0) {
-                        setIsNavbarVisible(true);
-                    }
-                    // Si le défilement est vers le haut (currentScrollY < lastScrollY.current), la navbar est visible
-                    else if (currentScrollY < lastScrollY.current) {
-                        setIsNavbarVisible(true);
-                    }
-                    // Si le défilement est vers le bas (currentScrollY > lastScrollY.current) et qu'on a dépassé un certain seuil (ex: 200px), la navbar est cachée
-                    else if (currentScrollY > lastScrollY.current && currentScrollY > 200) {
+                    // Gérer le bouton Scroll-to-Top
+                    setShowScrollToTop(currentScrollY > 300);
+
+                    // Gérer la visibilité de la Navbar
+                    // Masquer si on défile vers le bas et qu'on est au-delà de la zone de la bannière (ex: 100px)
+                    if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
                         setIsNavbarVisible(false);
                     }
+                    // Afficher si on défile vers le haut ou si on est en haut de la page
+                    if (currentScrollY < lastScrollY.current || currentScrollY < 100) {
+                        setIsNavbarVisible(true);
+                    }
+
                     lastScrollY.current = currentScrollY;
                 };
 
-                window.addEventListener('scroll', handleScroll);
-                return () => {
-                    window.removeEventListener('scroll', handleScroll);
-                };
+                window.addEventListener('scroll', handleScroll, { passive: true });
+
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []); // Exécuté une seule fois
+
+            // Fonction pour remonter en haut de page
+            const scrollToTop = () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            };
+
+            // --- Logique de gestion de l'audio ---
+            useEffect(() => {
+                const audio = document.getElementById('background-music');
+                if (audio) {
+                    // Tente de jouer l'audio. Peut échouer si le navigateur bloque l'autoplay.
+                    audio.play().catch(error => {
+                        console.log("Autoplay bloqué. L'utilisateur devra interagir pour activer l'audio.");
+                        // Afficher un bouton de lecture ou un message si l'autoplay est bloqué.
+                    });
+                }
             }, []);
 
+            // Composant de contrôle de l'audio
+            const AudioControl = () => {
+                const audio = document.getElementById('background-music');
+                const [isPlaying, setIsPlaying] = useState(true); // Supposons qu'il doit jouer initialement
 
-            if (loadingContent || content === null) {
+                useEffect(() => {
+                    if (audio) {
+                        const checkPlayStatus = () => {
+                            setIsPlaying(!audio.paused);
+                        };
+                        audio.addEventListener('play', checkPlayStatus);
+                        audio.addEventListener('pause', checkPlayStatus);
+
+                        // Vérifier l'état initial après un court délai
+                        setTimeout(checkPlayStatus, 100);
+
+                        return () => {
+                            audio.removeEventListener('play', checkPlayStatus);
+                            audio.removeEventListener('pause', checkPlayStatus);
+                        };
+                    }
+                }, []);
+
+                const togglePlay = () => {
+                    if (audio) {
+                        if (audio.paused) {
+                            audio.play();
+                            setIsPlaying(true);
+                        } else {
+                            audio.pause();
+                            setIsPlaying(false);
+                        }
+                    }
+                };
+
                 return (
-                    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white text-3xl">
-                        <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-blue-500 mb-4"></div>
-                        <p>Chargement du contenu...</p>
-                    </div>
+                    <button
+                        onClick={togglePlay}
+                        className="bg-gray-900 bg-opacity-70 backdrop-blur-sm text-white p-3 rounded-full shadow-lg fixed bottom-6 right-6 z-[60] transition duration-300 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-500"
+                        title={isPlaying ? "Mettre en pause la musique de fond" : "Jouer la musique de fond"}
+                    >
+                        {isPlaying ? <PauseIcon /> : <PlayIcon />}
+                    </button>
                 );
-            }
+            };
 
-            if (errorContent && !content) { // Afficher l'erreur seulement si le contenu de secours n'a pas pu être chargé
-                return (
-                    <div className="min-h-screen flex flex-col items-center justify-center bg-red-900 text-white text-xl p-8 text-center">
-                        <p>❌ Erreur Critique : {errorContent}</p>
-                        <p className="mt-4">Veuillez vérifier votre connexion Internet ou la console du navigateur.</p>
-                    </div>
-                );
-            }
-
-            // Détermine le contenu principal en fonction de la page active
-            let mainContent;
-            switch (currentPage) {
-                case 'accueil':
-                    mainContent = <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
-                    break;
-                case 'blog':
-                    mainContent = <BlogPage isAdminAuthenticated={isAdminAuthenticated} />;
-                    break;
-                case 'qui-sommes-nous':
-                    mainContent = <AboutUsPage isAdminAuthenticated={isAdminAuthenticated} />;
-                    break;
-                case 'contact':
-                    mainContent = <ContactPage />;
-                    break;
-                case 'voiture-vitrine':
-                    mainContent = <ShowcaseCarPage isAdminAuthenticated={isAdminAuthenticated} />;
-                    break;
-                case 'admin-login':
-                    mainContent = <AdminLoginPage setIsAdminAuthenticated={setIsAdminAuthenticated} setCurrentPage={setCurrentPage} />;
-                    break;
-                case 'admin-panel':
-                    mainContent = <AdminPanelPage handleLogout={handleLogout} isAdminAuthenticated={isAdminAuthenticated} />;
-                    break;
-                case 'mentions-legales':
-                    mainContent = <LegalMentionsPage isAdminAuthenticated={isAdminAuthenticated} />;
-                    break;
-                case 'politique-confidentialite':
-                    mainContent = <PrivacyPolicyPage isAdminAuthenticated={isAdminAuthenticated} />;
-                    break;
-                default:
-                    mainContent = <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
-            }
-
-            // Récupère le volume de la musique à partir du contenu chargé
-            const musicVolume = content.siteSettings?.musicVolume !== undefined ? content.siteSettings.musicVolume : 0.05;
-
-            // Détermine le padding top du main content en fonction de la visibilité de la navbar
-            // La bannière défilante a une hauteur fixe de 40px (py-2 + text-lg).
-            // La navbar a un padding de p-4 (16px vertical) et une hauteur de contenu d'environ 40px, soit ~56px.
-            // Total visible: 40px (bannière) + 56px (navbar) = 96px.
-            // pt-[96px] est appliqué sur chaque page, ce qui donne la bonne marge.
 
             return (
-                <ContentContext.Provider value={{ content, updateContent, setInitialContent }}>
-                    {/* Ajout de overflow-x-hidden sur le div racine de l'application React */}
-                    <div ref={appRef} className="min-h-screen bg-black overflow-x-hidden">
-                        {/* Bannière défilante */}
+                <ContentContext.Provider value={{ content, updateContent }}>
+                    <div className="relative">
+                        {/* Bannière défilante tout en haut */}
                         <ScrollingBanner />
                         {/* Barre de navigation */}
                         <Navbar
@@ -2636,29 +1561,65 @@
                             isVisible={isNavbarVisible}
                         />
 
-                        {/* Contenu Principal */}
                         <main>
-                            {mainContent}
+                            {renderPage()}
                         </main>
 
-                        {/* Composants de contrôle (fixes) */}
-                        <MusicControl volume={musicVolume} />
-                        <ScrollToTopButton />
+                        {/* Bouton de retour en haut */}
+                        <button
+                            onClick={scrollToTop}
+                            className={`scroll-to-top fixed bottom-24 right-6 bg-red-600 text-white p-3 rounded-full shadow-lg z-50 transition duration-300 hover:bg-red-700 ${showScrollToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                            title="Remonter en haut de page"
+                        >
+                            <ArrowUpIcon />
+                        </button>
 
+                        {/* Contrôle de l'audio */}
+                        <AudioControl />
 
-                        {/* Footer (Pied de page) */}
-                        <footer className="bg-gray-950 text-white py-8 border-t-4 border-red-600">
-                            <div className="container mx-auto px-4 text-center">
-                                <p className="text-xl font-bold mb-4">
-                                    <span className="text-red-500">BR</span>
-                                    <span className="text-white">MOTOR</span>
-                                    <span className="text-blue-500">SPORT</span>
-                                </p>
-                                <p className="text-sm text-gray-400 mb-4">
-                                    {content.home?.trustTitle || "La passion du moteur est notre moteur, assurant des résultats qui dépassent vos attentes."}
-                                </p>
-                                <div className="text-sm space-x-4">
-                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('politique-confidentialite'); }} className="hover:text-red-500 transition duration-300">Confidentialité</a>
+                        {/* Footer - Pied de page */}
+                        <footer className="bg-gray-900 text-gray-400 py-10">
+                            <div className="container mx-auto px-6 max-w-6xl text-center">
+                                {/* Logo et Slogan */}
+                                <div className="mb-6">
+                                    <h3 className="text-3xl font-extrabold tracking-widest">
+                                        <span className="text-red-500">BR</span>
+                                        <span className="text-white">MOTOR</span>
+                                        <span className="text-blue-500">SPORT</span>
+                                    </h3>
+                                    <p className="text-gray-500 mt-2">L'excellence au service de votre véhicule.</p>
+                                </div>
+
+                                {/* Liens Sociaux */}
+                                <div className="flex justify-center space-x-6 mb-8">
+                                    <a href="#" className="text-gray-400 hover:text-red-500 transition duration-300" title="Instagram">
+                                        <InstagramIcon />
+                                    </a>
+                                    <a href="#" className="text-gray-400 hover:text-red-500 transition duration-300" title="Facebook">
+                                        {/* Icône Facebook (Placeholder) */}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="lucide lucide-facebook">
+                                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                                        </svg>
+                                    </a>
+                                    <a href={`mailto:${content.contact?.email || initialContent.contact.email}`} className="text-gray-400 hover:text-red-500 transition duration-300" title="Email">
+                                        <MailIcon />
+                                    </a>
+                                    <a href={`tel:${content.contact?.phone || initialContent.contact.phone}`} className="text-gray-400 hover:text-red-500 transition duration-300" title="Téléphone">
+                                        <PhoneIcon />
+                                    </a>
+                                </div>
+
+                                {/* Navigation Footer */}
+                                <div className="flex flex-wrap justify-center space-x-4 sm:space-x-6 text-sm font-medium">
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('accueil'); }} className="hover:text-red-500 transition duration-300">Accueil</a>
+                                    <span className="text-gray-600">|</span>
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('voiture-vitrine'); }} className="hover:text-red-500 transition duration-300">Vitrine</a>
+                                    <span className="text-gray-600">|</span>
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('blog'); }} className="hover:text-red-500 transition duration-300">Blog</a>
+                                    <span className="text-gray-600">|</span>
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('qui-sommes-nous'); }} className="hover:text-red-500 transition duration-300">Qui Sommes-nous</a>
+                                    <span className="text-gray-600">|</span>
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('contact'); }} className="hover:text-red-500 transition duration-300">Contact</a>
                                     <span className="text-gray-600">|</span>
                                     <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('mentions-legales'); }} className="hover:text-red-500 transition duration-300">Mentions Légales</a>
                                     <span className="text-gray-600">|</span>
