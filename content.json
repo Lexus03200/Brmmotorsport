@@ -1,255 +1,204 @@
 {
-  "home": {
-    "mainTitle": "Libérez la <span class=\"text-red-500\">Puissance</span>. Redéfinissez la <span class=\"text-blue-500\">Performance</span>!",
-    "description": "Chez BRMOTORSPORT, nous transformons votre passion pour l'automobile en une expérience de conduite inégalée.",
-    "contactMessage": "Pour toute prise de rendez-vous ou demande de devis, nous vous invitons à nous contacter directement via les informations disponibles dans la section 'Contact'.",
-    "offerTitle": "Ce que nous vous proposons",
-    "offer1Title": "Diagnostic et entretien mécanique complet",
-    "offer1Description": "Précision et fiabilité pour la longévité de votre véhicule.",
-    "offer2Title": "Reprogrammation moteur (Stage 1, 2, 3, etc.)",
-    "offer2Description": "Libérez le plein potentiel de votre moteur en toute sécurité.",
-    "offer3Title": "Optimisation des performances moteur",
-    "offer3Description": "Une puissance sur mesure, adaptée à nos exigences et votre style.",
-    "offer4Title": "Solutions personnalisées",
-    "offer4Description": "Chaque voiture est unique, chaque solution l'est aussi. Sur mesure pour vous.",
-    "trustTitle": "Pourquoi nous faire confiance ?",
-    "trust1Title": "Plus de 10 ans d’expérience terrain",
-    "trust1Description": "Un savoir-faire éprouvé, bâti sur des années de pratique et de passion.",
-    "trust2Title": "Une approche personnalisée et professionnelle",
-    "trust2Description": "Votre satisfaction est notre priorité, avec un service à votre écoute.",
-    "trust3Title": "Une expertise reconnue en performance moteur",
-    "trust3Description": "Le moteur n'a plus de secret pour nous. Maîtrise et innovation au service de votre véhicule.",
-    "trust4Title": "Un service de proximité, fiable et à l’écoute",
-    "trust4Description": "Votre partenaire automobile de confiance, toujours disponible pour vos besoins.",
-    "teamTitle": "Faites confiance à une équipe de passionnés qui maîtrisent leur art",
-    "teamDescription": "Rémy Bruyant, notre expert automobile dédié à la performance et à la qualité. Chez BRMOTORSPORT, la passion du moteur est notre moteur, assurant des résultats qui dépassent vos attentes."
-  },
-  "blog": {
-    "mainTitle": "Nos Réalisations et Actus",
-    "description": "Découvrez nos dernières interventions, nos projets d'optimisation et les coulisses de BRMOTORSPORT.",
-    "posts": [
-      {
-        "id": 1749496186270,
-        "image": "Flyer.png",
-        "title": "Nouveau Flyer ! ",
-        "description": "🔥 BRMotorsport est fier de vous dévoiler son tout nouveau flyer et ses cartes de visite ! Restez connectés : casquettes, tee-shirts et stickers seront bientôt dispo à la vente ! 🧢👕🚗💨scription d'article.",
-        "images": [
-          "Flyer.png"
+    "home": {
+        "mainTitle": "Libérez la <span class=\"text-red-500\">Puissance</span>. Redéfinissez la <span class=\"text-blue-500\">Performance</span>!",
+        "description": "Spécialiste de la reprogrammation moteur et de l'optimisation de véhicules. Performance, fiabilité et satisfaction client sont nos maîtres mots.",
+        "contactMessage": "Contactez-nous dès aujourd'hui pour transformer votre véhicule !",
+        "offerTitle": "Nos Offres",
+        "offer1Title": "Reprogrammation Moteur",
+        "offer1Description": "Optimisation des performances et de la consommation de votre véhicule.",
+        "offer2Title": "Diagnostic Électronique",
+        "offer2Description": "Identification précise des problèmes moteur et électroniques.",
+        "offer3Title": "Préparation de Véhicule",
+        "offer3Description": "Solutions complètes pour piste et route, du châssis au moteur.",
+        "offer4Title": "Conseil Personnalisé",
+        "offer4Description": "Accompagnement expert pour tous vos projets automobiles.",
+        "trustTitle": "Pourquoi nous faire confiance ?",
+        "trust1Title": "Rapidité d'Intervention",
+        "trust1Description": "Des délais optimisés pour que vous retrouviez votre véhicule au plus vite.",
+        "trust2Title": "Transparence et Confiance",
+        "trust2Description": "Une communication claire et honnête à chaque étape du processus.",
+        "trust3Title": "Qualité Garantie",
+        "trust3Description": "Des prestations de haute qualité avec des résultats mesurables.",
+        "trust4Title": "Satisfaction Client",
+        "trust4Description": "Votre plaisir de conduire est notre plus grande réussite.",
+        "teamTitle": "Notre Équipe",
+        "teamDescription": "Notre équipe est composée de professionnels passionnés et expérimentés, dévoués à l'excellence automobile."
+    },
+    "blog": {
+        "mainTitle": "Notre Blog BRMOTORSPORT",
+        "description": "Découvrez nos dernières actualités, projets et optimisations automobiles.",
+        "posts": [
+            {
+                "id": 1,
+                "images": [
+                    "IMG_9611.png",
+                    "Photo1.png"
+                ],
+                "title": "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur",
+                "description": "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime."
+            },
+            {
+                "id": 2,
+                "images": [
+                    "IMG_9609.png"
+                ],
+                "title": "BMW Série 2 : Reprogrammation et FAP OFF",
+                "description": "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité."
+            },
+            {
+                "id": 3,
+                "images": [
+                    "IMG_9607.png"
+                ],
+                "title": "VW Golf GTI : Boost de Performance Ultime",
+                "description": "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !"
+            },
+            {
+                "id": 4,
+                "images": [
+                    "IMG_9608.png"
+                ],
+                "title": "Seat Ibiza : Amélioration de la Réactivité Moteur",
+                "description": "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini."
+            },
+            {
+                "id": 5,
+                "images": [
+                    "IMG_9610.png"
+                ],
+                "title": "VW Golf 5 GTI : Mise à Jour Cartographie",
+                "description": "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !"
+            },
+            {
+                "id": 6,
+                "images": [
+                    "Photopeugeot.png",
+                    "anciennevoiture.png"
+                ],
+                "title": "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation",
+                "description": "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf, esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led)."
+            },
+            {
+                "id": 7,
+                "images": [
+                    "Seat1.png"
+                ],
+                "title": "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)",
+                "description": "Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm."
+            },
+            {
+                "id": 8,
+                "images": [
+                    "anciennevoiture.png"
+                ],
+                "title": "Ancienne Voiture : Dépannage Express et Remplacement Bobine",
+                "description": "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité."
+            },
+            {
+                "id": 9,
+                "images": [
+                    "audi1.png"
+                ],
+                "title": "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU",
+                "description": "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité."
+            },
+            {
+                "id": 10,
+                "images": [
+                    "gx.png"
+                ],
+                "title": "Triumph TR3 : Check-up Complet et Optimisation",
+                "description": "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance notre priorité."
+            },
+            {
+                "id": 11,
+                "images": [
+                    "mercedes2021.png"
+                ],
+                "title": "Mercedes (2021) : Solution ADBLUE",
+                "description": "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système."
+            }
         ]
-      },
-      {
-        "id": 1749660183084,
-        "images": [
-          "Voitureyoucef.png"
-        ],
-        "title": "Notre équipe de BR Motorsport est fière de vous présenter cette préparation sur-mesure réalisée dans nos ateliers !",
-        "description": "✅ Stage 2 effectué : Optimisation des performances moteur avec reprogrammation spécifique pour un gain significatif en puissance et en couple, tout en respectant la fiabilité mécanique.\n\n✅ Soudure complète de la ligne d’échappement : Travail de précision réalisé par nos techniciens afin d’améliorer le flux des gaz d’échappement, offrir une sonorité plus sportive et maximiser le rendement du moteur.\n\nChaque intervention est réalisée avec soin et expertise, dans le respect des normes de qualité qui font la réputation de BR Motorsport.\n\n➡ Pour vos projets de préparation moteur ou d’amélioration de performance, n’hésitez pas à nous contacter !"
-      },
-      {
-        "id": 1,
-        "image": "IMG_9611.png",
-        "title": "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur",
-        "description": "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime.✅",
-        "images": [
-          "IMG_9611.png"
-        ]
-      },
-      {
-        "id": 2,
-        "image": "IMG_9609.png",
-        "title": "BMW Série 2 : Reprogrammation et FAP OFF",
-        "description": "Optimisation de la BMW Série 2 avec suppression du FAP et reprogrammation moteur pour une performance accrue et une meilleure réactivité.✅",
-        "images": [
-          "IMG_9609.png"
-        ]
-      },
-      {
-        "id": 3,
-        "image": "IMG_9607.png",
-        "title": "VW Golf GTI : Boost de Performance Ultime",
-        "description": "La Golf GTI a retrouvé sa jeunesse avec une augmentation de puissance notable. Un véritable plaisir de conduite redécouvert !✅",
-        "images": [
-          "IMG_9607.png"
-        ]
-      },
-      {
-        "id": 4,
-        "image": "IMG_9608.png",
-        "title": "Seat Ibiza : Amélioration de la Réactivité Moteur",
-        "description": "Transformation de cette Seat Ibiza pour une meilleure réponse à l'accélération et à une conduite plus dynamique. Un plaisir garantini.✅",
-        "images": [
-          "Seat1.png"
-        ]
-      },
-      {
-        "id": 5,
-        "image": "IMG_9610.png",
-        "title": "VW Golf 5 GTI : Mise à Jour Cartographie",
-        "description": "Une mise à Jour complète de la cartographie pour cette Golf 5 GTI, optimisant la puissance et la consommation. Plus performante que jamais !✅",
-        "images": [
-          "IMG_9610.png"
-        ]
-      },
-      {
-        "id": 6,
-        "image": "Photopeugeot.png",
-        "title": "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation",
-        "description": "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf), esthétique (passage de coque en blanc, peinture de la carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led).✅",
-        "images": [
-          "Photopeugeot.png"
-        ]
-      },
-      {
-        "id": 7,
-        "image": "Seat1.png",
-        "title": "Seat Leon : Optimisation Moteur Stage 2 (2.0 TDI 170 @230)",
-        "description": "✅Découvrez l'optimisation de cette Seat Leon : FAP off, EGR off, et Reprogrammation Stage 2 pour des performances accrues, passant de 170 à 230 chevaux et un couple de 370 à 450 Nm.✅",
-        "images": [
-          "IMG_9608.png"
-        ]
-      },
-      {
-        "id": 8,
-        "image": "anciennevoiture.png",
-        "title": "Ancienne Voiture : Dépannage Express et Remplacement Bobine",
-        "description": "Tombée en panne un dimanche, nous avons diagnostiqué et résolu le problème en 1h. Notre client a pu repartir avec sa voiture, grâce à une recherche de panne efficace et le remplacement de la bobine. Votre tranquillité, notre priorité.✅",
-        "images": [
-          "anciennevoiture.png"
-        ]
-      },
-      {
-        "id": 9,
-        "image": "audi1.png",
-        "title": "Audi 1.5 TFSI 150 : Optimisation Stage 1 et TCU",
-        "description": "Optimisation de cette Audi 1.5 TFSI, avec un passage de 150 à 180 chevaux (Stage 1) et une modification de l'unité de contrôle de la transmission (TCU mod 1) pour une meilleure réactivité.✅",
-        "images": [
-          "audi1.png"
-        ]
-      },
-      {
-        "id": 11,
-        "image": "mercedes2021.png",
-        "title": "Mercedes (2021) : Solution ADBLUE",
-        "description": "✅ Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système.✅",
-        "images": [
-          "mercedes2021.png"
-        ]
-      },
-      {
-        "id": 10,
-        "image": "gx.png",
-        "title": "Triumph TR3 : Check-up Complet et Optimisation",
-        "description": "Réalisation d'un check-up complet sur cette Triumph TR3, assurant son bon fonctionnement et sa fiabilité. Votre sécurité et performance sont notre priorité.✅",
-        "images": [
-          "gx.png"
-        ]
-      },
-      {
-        "id": 1749421809033,
-        "image": "Audi2.png",
-        "title": "Audi A3 finition S line",
-        "description": "🔧 Entretien complet réalisé sur le véhicule :\n✅ Vidange moteur effectuée avec huile de qualité supérieure\n✅ Remplacement du filtre à huile\n✅ Remplacement du filtre à air\n✅ Remplacement du filtre à gazole\n✅ Airbag remplacé, sécurité assurée\n\n🚗 Esthétique soignée :\n✅ Lavage complet intérieur & extérieur effectué avec soin\n\nVéhicule prêt à prendre la route, révisé et entretenu avec rigueur. Idéal pour un achat en toute confiance.",
-        "images": [
-          "Audi2.png"
-        ]
-      },
-      {
-        "id": 1749739194846,
-        "images": [
-          "derniére1.png"
-        ],
-        "title": "Entretien Complet et Optimisation FlexFuel : Volkswagen Golf 5",
-        "description": "Chez BRMOTORSPORT, nous vous offrons un service d’entretien complet et des solutions d’optimisation personnalisées pour votre véhicule. Nous vous présentons cette Volkswagen Golf 5 qui a bénéficié d’une série d’interventions essentielles dans nos ateliers.\n\nPour garantir la longévité et les performances optimales de votre moteur, nous avons effectué un entretien méticuleux incluant :\n\nVidange moteur : Avec une huile de qualité supérieure pour une lubrification optimale.\nRemplacement du filtre à huile : Pour maintenir la propreté de l’huile moteur.\nRemplacement du filtre à air : Assurant une respiration optimale du moteur.\nRemplacement du filtre à essence : Pour une alimentation en carburant propre et efficace.\nRemplacement des bougies d’allumage : Deux bougies pour un allumage parfait.\nDe plus, nous avons procédé à une optimisation spécifique pour une polyvalence accrue :\n\nConversion FlexFuel (moitié essence, moitié éthanol) : Une reprogrammation qui permet au véhicule de fonctionner de manière optimale avec un mélange d’essence et d’éthanol E85, offrant une flexibilité à la pompe et des économies potentielles.\nBRMOTORSPORT : Votre partenaire de confiance pour l’entretien, la fiabilité et l’optimisation de votre Volkswagen."
-      }
-    ]
-  },
-  "aboutUs": {
-    "mainTitle": "Qui Sommes-nous",
-    "description": "Découvrez la passion, l'histoire et les valeurs qui animent BRMOTORSPORT.",
-    "historyTitle": "Notre Histoire",
-    "historyParagraph1": "BRMOTORSPORT est né de la passion inébranlable de Rémy Bruyant pour l'automobile et la performance. Fort de plus de 10 ans d'expérience sur le terrain, Rémy a concrétisé notre vision en créant un atelier dédié à l'optimisation des véhicules et à l'excellence mécanique. Ce qui a commencé comme une fascination pour les moteurs et leur potentiel est devenu une entreprise florissante, réputée pour notre expertise et notre approche personnalisée.",
-    "historyParagraph2": "Notre parcours est jalonné de défis relevés et de succès partagés avec nos clients, qui nous font confiance pour libérer la pleine puissance de leur véhicule, qu'il s'agisse d'une voiture de sport, d'un utilitaire ou d'un véhicule de tous les jours. Chaque projet est traité avec le même engagement : la qualité, la fiabilité et la performance.",
-    "valuesTitle": "Nos Valeurs",
-    "value1Title": "Expertise",
-    "value1Description": "Une connaissance approfondie et constamment mise à jour des technologies automobiles.",
-    "value2Title": "Qualité",
-    "value2Description": "Nous utilisons uniquement des outils et des méthodes de pointe pour des résultats durables.",
-    "value3Title": "Transparence",
-    "value3Description": "Une communication claire et honnête à chaque étape de nos interventions.",
-    "value4Title": "Passion",
-    "value4Description": "Notre amour de l'automobile est le moteur de notre engagement et de notre précision."
-  },
-  "contact": {
-    "mainTitle": "Contactez-nous",
-    "description": "N'hésitez pas à nous contacter pour toute question, demande de devis ou prise de rendez-vous.",
-    "emailTitle": "Adresse E-mail",
-    "email": "brmotosport003@gmail.com",
-    "phoneTitle": "Numéro de Téléphone",
-    "phoneNumber": "06.68.27.88.01",
-    "instagramTitle": "Suivez-nous sur Instagram",
-    "instagramHandle": "@brmotorsport003"
-  },
-  "legalMentions": {
-    "mainTitle": "Mentions Légales & Clause de Non-responsabilité",
-    "sectionTitle": "Mention légale – Clause de non-responsabilité sur la reprogrammation moteur",
-    "paragraph1": "La société Brmotorsport, dirigée par Rémy Bruyant, spécialisée dans la reprogrammation moteur et l’optimisation de performances automobiles, informe notre clientèle que toutes les interventions réalisées sur les calculateurs électroniques (ECU) sont exclusivement destinées à un usage sur circuit fermé ou terrain privé, sauf mention contraire spécifiant une conformité avec la réglementation en vigueur.",
-    "paragraph2": "Brmotorsport décline toute responsabilité en cas d’utilisation d’un véhicule reprogrammé sur la voie publique lorsque cette modification entraîne une non-conformité :",
-    "list1Item1": "au Code de la route,",
-    "list1Item2": "aux normes environnementales (notamment les normes EURO antipollution),",
-    "list1Item3": "aux exigences des assureurs ou du contrôle technique.",
-    "paragraph3": "Il appartient au propriétaire du véhicule de s’assurer de :",
-    "list2Item1": "La conformité légale du véhicule après reprogrammation,",
-    "list2Item2": "La déclaration des modifications à son assureur,",
-    "list2Item3": "La connaissance des risques juridiques et mécaniques encourus en cas d’usage inadapté du véhicule.",
-    "paragraph4": "Brmotorsport ne saurait être tenue responsable des conséquences légales, techniques ou financières résultant d’un usage non autorisé d’un véhicule reprogrammé sur la voie publique."
-  },
-  "privacyPolicy": {
-    "mainTitle": "Politique de Confidentialité",
-    "introTitle": "Introduction",
-    "introText": "Bienvenue sur le site de BRMOTORSPORT. Nous nous engageons à protéger vos données personnelles. Cette politique de confidentialité vous informe sur la manière dont nous collectons, utilisons et protégeons vos informations.",
-    "collectionTitle": "Collecte des Informations",
-    "collectionText": "Nous collectons des informations lorsque vous utilisez notre formulaire de contact, notamment votre nom, adresse e-mail et numéro de téléphone. Nous pouvons également collecter des données techniques telles que votre adresse IP et le type de navigateur.",
-    "usageTitle": "Utilisation des Informations",
-    "usageListItem1": "Traiter vos demandes de contact et de devis.",
-    "usageListItem2": "Améliorer l'expérience utilisateur de notre site.",
-    "usageListItem3": "Répondre à vos questions et vous fournir un support client.",
-    "protectionTitle": "Protection des Données",
-    "protectionText": "Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Vos données sont stockées sur des serveurs sécurisés et accessibles uniquement par un personnel autorisé.",
-    "rightsTitle": "Vos Droits",
-    "rightsText": "Conformément à la réglementation sur la protection des données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression, de limitation et d'opposition concernant vos données personnelles. Pour exercer ces droits, veuillez nous contacter à brmotosport003@gmail.com.",
-    "disclaimerText": ""
-  },
-  "showcaseCar": {
-    "mainTitle": "Notre Voiture Vitrine : Le Projet Scirocco R",
-    "description": "Découvrez en détail la préparation ultime de notre Volkswagen Scirocco R, un chef-d'œuvre de performance et d'ingénierie.",
-    "preparationTitle": "Préparation Moteur et Optimisations",
-    "preparationDescription": "Ce projet sur le Volkswagen Scirocco R a été une démonstration de notre expertise en performance automobile. Chaque composant a été soigneusement sélectionné et optimisé pour atteindre un niveau de puissance et de fiabilité exceptionnel. Voici les détails de la préparation :",
-    "listTitle": "Détails de la préparation :",
-    "piston": "**Piston ITG :** Installation de pistons forgés pour une résistance accrue et une meilleure gestion des contraintes.",
-    "bielles": "**Bielles Carillo :** Remplacement par des bielles Carillo, offrant légèreté et robustesse pour les hautes performances.",
-    "soupapes": "**Soupapes inconel :** Utilisation de soupapes en Inconel, un alliage résistant aux températures extrêmes et à la corrosion.",
-    "adm": "**ADM (Admission Directe Moteur) :** Optimisation de l'admission d'air pour un flux plus direct et un gain de puissance.",
-    "ressort": "**Ressort bar teck :** Mise en place de ressorts de soupapes renforcés pour éviter le flottement à haut régime.",
-    "viserie": "**Viserie ARP 2000 :** Boulonnerie de haute résistance pour une fixation sécurisée des éléments critiques du moteur.",
-    "pompeHuile": "**Pompe à huile :** Amélioration du système d'huile avec une pompe à huile plus performante.",
-    "turbo": "**Turbo GTX :** Installation d'un turbocompresseur Garrett GTX pour une augmentation significative de la puissance.",
-    "wastegate": "**Wastegate Tial 44 mm :** Contrôle précis de la pression du turbo avec une wastegate externe de haute qualité.",
-    "injecteurs": "**Injecteurs Porsche :** Mise à niveau des injecteurs pour fournir le carburant nécessaire à la puissance accrue.",
-    "pipAdmission": "**Pip admission :** Optimisation du conduit d'admission pour un flux d'air maximal.",
-    "wmi": "**WMI (Water Methanol Injection) :** Système d'injection eau-méthanol pour refroidir l'admission et augmenter la puissance.",
-    "embrayage": "**Embrayage 880 nm :** Installation d'un embrayage renforcé capable de supporter un couple moteur de 880 Nm.",
-    "finalDescription": "Cette préparation complète garantit non seulement une performance époustouflante sur piste, mais aussi une fiabilité à toute épreuve pour un usage sportif.\nUne préparation qui sors de l'ordinaire.",
-    "images": [
-      "Photo1.png",
-      "photo2.png",
-      "photo3.png",
-      "photo4.png",
-      "photo5.png",
-      "photo6.png",
-      "photo7.png",
-      "photo8.png",
-      "photo9.png",
-      "photo10.png"
-    ]
-  }
+    },
+    "aboutUs": {
+        "mainTitle": "Qui sommes-nous ?",
+        "description": "BRMOTORSPORT est votre partenaire de confiance pour l'optimisation automobile. Fondée sur la passion de la performance et de la mécanique, notre entreprise s'engage à offrir des services de reprogrammation moteur, de préparation de véhicules et de diagnostics électroniques de pointe.",
+        "historyTitle": "Notre Histoire",
+        "historyParagraph1": "Notre aventure a débuté il y a plusieurs années, animée par une vision : celle de repousser les limites de la performance automobile tout en garantissant une fiabilité et une sécurité optimale. Forts d'une expertise technique approfondie et d'une passion inébranlable pour les voitures, nous avons bâti BRMOTORSPORT sur des valeurs de précision, d'innovation et de dévouement. Chaque véhicule qui passe entre nos mains est traité avec le plus grand soin, comme si c'était le nôtre.",
+        "historyParagraph2": "Au fil des ans, nous avons développé des compétences uniques en reprogrammation sur mesure, en travaillant avec les technologies les plus avancées pour extraire le potentiel caché de chaque moteur. Notre histoire est marquée par des milliers de clients satisfaits, des voitures transformées et une réputation bâtie sur l'excellence. Nous sommes fiers de notre parcours et de l'impact que nous avons sur la performance et le plaisir de conduite de nos clients.",
+        "valuesTitle": "Nos Valeurs",
+        "value1Title": "Expertise Technique",
+        "value1Description": "Une connaissance approfondie des systèmes moteurs et des technologies d'optimisation.",
+        "value2Title": "Innovation Continue",
+        "value2Description": "Veille technologique et développement de solutions toujours plus performantes.",
+        "value3Title": "Qualité et Fiabilité",
+        "value3Description": "Des interventions rigoureuses pour une durabilité et une sécurité maximales.",
+        "value4Title": "Service Client Exceptionnel",
+        "value4Description": "Écoute, conseil personnalisé et accompagnement pour une satisfaction totale."
+    },
+    "contact": {
+        "mainTitle": "Contactez-nous",
+        "description": "Nous sommes là pour répondre à toutes vos questions et vous accompagner dans vos projets d'optimisation automobile.",
+        "addressTitle": "Adresse",
+        "address": "Zone industriel le coquet\n03260 Saint-Germain-des-Fossés",
+        "emailTitle": "Email",
+        "email": "contact@brmotorsport.com",
+        "phoneTitle": "Téléphone",
+        "phoneNumber": "06.12.34.56.78",
+        "instagramTitle": "Instagram",
+        "instagramHandle": "@brmotorsport_official"
+    },
+    "legalMentions": {
+        "mainTitle": "Mentions Légales",
+        "sectionTitle": "Informations Générales",
+        "paragraph1": "Ce site web est édité par BRMOTORSPORT.",
+        "paragraph2": "Adresse : [Votre Adresse Complète]",
+        "list1Item1": "Numéro de téléphone : [Votre Numéro de Téléphone]",
+        "list1Item2": "Adresse e-mail : [Votre E-mail]",
+        "list1Item3": "Numéro d'immatriculation : [Votre Numéro SIRET/RCS]",
+        "paragraph3": "Directeur de la publication : Monsieur [Votre Nom]",
+        "list2Item1": "Hébergeur : GitHub Pages",
+        "list2Item2": "Adresse : [Adresse de GitHub]",
+        "list2Item3": "Site web : https://github.com",
+        "paragraph4": "Propriété intellectuelle : L'ensemble des éléments de ce site (textes, images, graphismes, logos, icônes, etc.) est la propriété exclusive de BRMOTORSPORT, sauf mention contraire. Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de BRMOTORSPORT."
+    },
+    "privacyPolicy": {
+        "mainTitle": "Politique de Confidentialité",
+        "introTitle": "Introduction",
+        "introText": "La présente politique de confidentialité décrit comment BRMOTORSPORT collecte, utilise et protège vos informations personnelles lorsque vous utilisez notre site web.",
+        "collectionTitle": "Collecte des Informations Personnelles",
+        "collectionText": "Nous collectons des informations lorsque vous nous contactez via le formulaire de contact, lorsque vous naviguez sur notre site, ou lorsque vous interagissez avec nos services. Les informations collectées peuvent inclure votre nom, adresse e-mail, numéro de téléphone, et toute autre information que vous choisissez de nous fournir.",
+        "usageTitle": "Utilisation des Informations",
+        "usageListItem1": "Pour répondre à vos demandes et vous fournir les services que vous avez sollicités.",
+        "usageListItem2": "Pour améliorer notre site web et nos offres de services.",
+        "usageListItem3": "Pour vous envoyer des communications marketing (avec votre consentement).",
+        "protectionTitle": "Protection des Informations",
+        "protectionText": "Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Seuls les employés qui ont besoin d'effectuer un travail spécifique (par exemple, la facturation ou le service client) ont accès aux informations personnelles identifiables.",
+        "rightsTitle": "Vos Droits",
+        "rightsText": "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition au traitement de vos données personnelles. Pour exercer ces droits, veuillez nous contacter à [Votre Adresse E-mail].",
+        "disclaimerText": "Cette politique de confidentialité peut être mise à jour occasionnellement. Nous vous invitons à la consulter régulièrement."
+    },
+    "showcaseCar": {
+        "mainTitle": "Notre Voiture Vitrine",
+        "description": "Découvrez notre dernière préparation exceptionnelle : une Volkswagen Scirocco R avec une optimisation Stage 3 poussée, développant plus de 500 chevaux.",
+        "preparationTitle": "Détails de la Préparation Stage 3",
+        "preparationDescription": "Ce véhicule a subi une transformation complète pour atteindre des niveaux de performance extrêmes, tout en conservant une fiabilité optimale.",
+        "piston": "Pistons forgés",
+        "bielles": "Bielles forgées",
+        "soupapes": "Soupapes renforcées",
+        "adm": "Admission gros volume",
+        "ressort": "Ressorts de soupapes renforcés",
+        "viserie": "Vis de bielles, vilebrequin et culasse renforcées",
+        "pompeHuile": "Pompe à huile gros débit",
+        "turbo": "Turbo hybride sur mesure",
+        "wastegate": "Wastegate externe",
+        "injecteurs": "Injecteurs gros débit",
+        "pipAdmission": "Pipe d'admission gros volume",
+        "wmi": "Système WMI (Water-Methanol Injection)",
+        "embrayage": "Embrayage renforcé",
+        "finalDescription": "Chaque composant a été soigneusement sélectionné et installé pour garantir une synergie parfaite et une expérience de conduite inégalée sur route comme sur circuit."
+    },
+    "siteSettings": {
+        "musicVolume": 0.05
+    }
 }
