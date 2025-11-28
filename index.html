@@ -268,14 +268,14 @@
               <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
             </svg>
         );
-        
-        // Composant d'icône de localisation (Map Pin) - AJOUTÉ
+
+        // Composant d'icône de localisation (Map Pin) - CORRIGÉ ET AJOUTÉ
         const MapPinIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-map-pin">
                 <path d="M12 18s-4.5-8-4.5-11.5A4.5 4.5 0 0 1 12 2a4.5 4.5 0 0 1 4.5 4.5c0 3.5-4.5 11.5-4.5 11.5z"/><circle cx="12" cy="6.5" r="2.5"/>
             </svg>
         );
-
+        
         // Composant d'icône Instagram
         const InstagramIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram">
@@ -1153,9 +1153,9 @@
 
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
                             
-                            {/* Nouvelle carte pour l'adresse - AJOUTÉE */}
+                            {/* Nouvelle carte pour l'adresse - AJOUTÉE AVEC MapPinIcon */}
                             <div className="flex flex-col items-center text-center">
-                                <MapPinIcon className="text-pink-500 w-12 h-12 mb-4" /> {/* Utilisation de la nouvelle icône */}
+                                <MapPinIcon className="text-pink-500 w-12 h-12 mb-4" />
                                 <EditableText
                                     tag="h3"
                                     contentKey="contact.addressTitle"
@@ -1166,7 +1166,7 @@
                                     tag="span"
                                     contentKey="contact.address"
                                     isAdminAuthenticated={isAdminAuthenticated}
-                                    className="text-gray-300 text-lg leading-relaxed whitespace-pre-line" // Ajout de whitespace-pre-line pour respecter les sauts de ligne
+                                    className="text-gray-300 text-lg leading-relaxed whitespace-pre-line" // Utilise whitespace-pre-line pour gérer le saut de ligne (\n)
                                 />
                             </div>
 
@@ -1829,7 +1829,7 @@
                 setOffsetY(0);
             };
 
-            // Centre l'image (réinitialise seulement la position, pas le zoom)
+            // Centrer l'image (réinitialise seulement la position, pas le zoom)
             const centerImage = () => {
                 setOffsetX(0);
                 setOffsetY(0);
@@ -2289,7 +2289,7 @@
                     }
 
                     const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
-                    const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle') || fieldKey.includes('addressTitle')) ? 'text' : 'textarea';
+                    const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle')) ? 'text' : 'textarea';
                     const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
 
                     return (
@@ -2851,8 +2851,8 @@
                             contact: {
                                 mainTitle: "Contactez-nous",
                                 description: "Nous sommes là pour répondre à toutes vos questions et vous accompagner dans vos projets d'optimisation automobile.",
-                                addressTitle: "Adresse", // CLÉ AJOUTÉE
-                                address: "Zone industriel le coquet\n03260 Saint-Germain-des-Fossés", // CLÉ AJOUTÉE AVEC VOTRE ADRESSE
+                                addressTitle: "Adresse", // CLÉ AJOUTÉE ET CORRIGÉE
+                                address: "Zone industriel le coquet\n03260 Saint-Germain-des-Fossés", // CLÉ AJOUTÉE ET CORRIGÉE
                                 emailTitle: "Email",
                                 email: "contact@brmotorsport.com",
                                 phoneTitle: "Téléphone",
