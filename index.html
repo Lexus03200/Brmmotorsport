@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BRMOTORSPORT - Performance Automobile</title>
-    <!-- Intégration de Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Intégration de React et ReactDOM CDN -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Intégration de Babel pour transpiler le JSX directement dans le navigateur -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -204,20 +201,12 @@
     </style>
 </head>
 <body class="min-h-screen bg-black font-inter">
-    <!-- Section Audio de fond -->
-    <!-- 'autoplay' tente de lancer la lecture automatique, mais peut être bloqué par les navigateurs mobiles. -->
-    <!-- 'loop' assure que la musique se répète. -->
-    <!-- 'style="display:none;"' masque les contrôles de lecture par défaut. -->
-    <!-- Ajout de l'attribut volume pour réduire le son (valeur de 0.0 à 1.0) -->
     <audio id="background-music" autoplay loop volume="0.01" style="display:none;">
-        <!-- L'URL est construite en utilisant votre domaine GitHub Pages et le nom de votre fichier MP3. -->
-        <source src="musique.mp3" type="audio/mpeg"> <!-- Chemin mis à jour pour être relatif au dossier racine -->
-        Votre navigateur ne supporte pas l'élément audio.
+        <source src="musique.mp3" type="audio/mpeg"> Votre navigateur ne supporte pas l'élément audio.
     </audio>
 
     <div id="root" class="overflow-x-hidden"></div>
 
-    <!-- Le type du script a été changé en "text/babel" pour le transpiler -->
     <script type="text/babel">
         // Récupère les hooks React depuis l'objet global React
         const { useState, useEffect, useRef, createContext, useContext } = React;
@@ -277,6 +266,13 @@
         const MailIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mail">
               <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+        );
+        
+        // Composant d'icône de localisation (Map Pin) - AJOUTÉ
+        const MapPinIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-map-pin">
+                <path d="M12 18s-4.5-8-4.5-11.5A4.5 4.5 0 0 1 12 2a4.5 4.5 0 0 1 4.5 4.5c0 3.5-4.5 11.5-4.5 11.5z"/><circle cx="12" cy="6.5" r="2.5"/>
             </svg>
         );
 
@@ -1156,6 +1152,24 @@
                         />
 
                         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up space-y-8">
+                            
+                            {/* Nouvelle carte pour l'adresse - AJOUTÉE */}
+                            <div className="flex flex-col items-center text-center">
+                                <MapPinIcon className="text-pink-500 w-12 h-12 mb-4" /> {/* Utilisation de la nouvelle icône */}
+                                <EditableText
+                                    tag="h3"
+                                    contentKey="contact.addressTitle"
+                                    isAdminAuthenticated={isAdminAuthenticated}
+                                    className="text-xl sm:text-2xl font-semibold mb-2 text-white" /* Ajusté pour mobile */
+                                />
+                                <EditableText
+                                    tag="span"
+                                    contentKey="contact.address"
+                                    isAdminAuthenticated={isAdminAuthenticated}
+                                    className="text-gray-300 text-lg leading-relaxed whitespace-pre-line" // Ajout de whitespace-pre-line pour respecter les sauts de ligne
+                                />
+                            </div>
+
                             <div className="flex flex-col items-center text-center">
                                 <MailIcon className="text-pink-500 w-12 h-12 mb-4" />
                                 <EditableText
@@ -2275,7 +2289,7 @@
                     }
 
                     const valueToDisplay = typeof fieldValue === 'string' ? fieldValue : '';
-                    const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle')) ? 'text' : 'textarea';
+                    const inputType = (fieldKey.includes('Title') || fieldKey.includes('email') || fieldKey.includes('phone') || fieldKey.includes('instagram') || fieldKey.includes('Handle') || fieldKey.includes('addressTitle')) ? 'text' : 'textarea';
                     const rows = (inputType === 'textarea' && typeof valueToDisplay === 'string') ? Math.max(3, valueToDisplay.split('\n').length) : undefined;
 
                     return (
@@ -2837,6 +2851,8 @@
                             contact: {
                                 mainTitle: "Contactez-nous",
                                 description: "Nous sommes là pour répondre à toutes vos questions et vous accompagner dans vos projets d'optimisation automobile.",
+                                addressTitle: "Adresse", // CLÉ AJOUTÉE
+                                address: "Zone industriel le coquet\n03260 Saint-Germain-des-Fossés", // CLÉ AJOUTÉE AVEC VOTRE ADRESSE
                                 emailTitle: "Email",
                                 email: "contact@brmotorsport.com",
                                 phoneTitle: "Téléphone",
