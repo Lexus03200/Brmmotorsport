@@ -125,7 +125,7 @@
         "description": "BRMOTORSPORT est votre partenaire de confiance pour l'optimisation automobile. Fondée sur la passion de la performance et de la mécanique, notre entreprise s'engage à offrir des services de reprogrammation moteur, de préparation de véhicules et de diagnostics électroniques de pointe.",
         "historyTitle": "Notre Histoire",
         "historyParagraph1": "Notre aventure a débuté il y a plusieurs années, animée par une vision : celle de repousser les limites de la performance automobile tout en garantissant une fiabilité et une sécurité optimale. Forts d'une expertise technique approfondie et d'une passion inébranlable pour les voitures, nous avons bâti BRMOTORSPORT sur des valeurs de précision, d'innovation et de dévouement. Chaque véhicule qui passe entre nos mains est traité avec le plus grand soin, comme si c'était le nôtre.",
-        "historyParagraph2": "Au fil des ans, nous avons développé des compétences uniques en reprogrammation sur mesure, en travaillant avec les technologies les plus avancées pour extraire le potentiel caché de chaque moteur. Notre histoire est marquée par des milliers de clients satisfaits, des voitures transformées et une réputation bâtie sur l'excellence. Nous sommes fiers de notre parcours et de l'impact que nous avons sur la performance et le plaisir de conduite de nos clients.",
+        "historyParagraph2": "Au fil des ans, nous avons développé des compétences uniques en reprogrammation sur mesure, en travaillant avec les technologies les plus avancées pour extraire le potentiel caché de chaque moteur. Notre histoire est marquée par des milliers de clients satisfaits, des voitures transformées et une réputation bâtie sur l'excellence. Nous sommes fiers de notre parcours et de l'impact que nous avons sur la performance et le plaisir de conduire de nos clients.",
         "valuesTitle": "Nos Valeurs",
         "value1Title": "Expertise Technique",
         "value1Description": "Une connaissance approfondie des systèmes moteurs et des technologies d'optimisation.",
@@ -160,7 +160,12 @@
         "list2Item1": "Numéro SIRET : 98999397700010",
         "list2Item2": "Directeur de la publication : Monsieur Rémy Bruyant",
         "list2Item3": "Hébergeur : GitHub Pages",
-        "paragraph4": "Propriété intellectuelle : L'ensemble des éléments de ce site (textes, images, graphismes, logos, icônes, etc.) est la propriété exclusive de BRMOTORSPORT, sauf mention contraire. Le site internet a été conçu par Viremot Giovanni. Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de BRMOTORSPORT."
+        
+        // Nouvelle clause de non-responsabilité (Usage Compétition/Piste)
+        "paragraph4": "Clause de non-responsabilité (Usage Compétition) : Les services de reprogrammation moteur et d'optimisation des calculateurs (ECU) sont exclusivement destinés à une utilisation en compétition, sur circuit fermé ou sur toute autre voie non ouverte à la circulation publique. L'utilisateur final est seul responsable de la conformité de son véhicule avec les lois et règlements applicables, notamment en matière de circulation routière, d'émissions polluantes et de contrôle technique. BRMOTORSPORT décline toute responsabilité en cas d'usage non conforme à la réglementation.",
+        
+        // Propriété Intellectuelle (Ancien paragraph4)
+        "proprieteIntellectuelle": "Propriété intellectuelle : L'ensemble des éléments de ce site (textes, images, graphismes, logos, icônes, etc.) est la propriété exclusive de BRMOTORSPORT, sauf mention contraire. Le site internet a été conçu par Viremot Giovanni. Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de BRMOTORSPORT."
     },
     "privacyPolicy": {
         "mainTitle": "Politique de Confidentialité",
