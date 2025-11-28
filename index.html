@@ -16,6 +16,7 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
+            overflow-y: scroll; /* <-- CORRECTION APPLIQUÉE ICI */
             /* overflow-x: hidden; /* Déplacé vers #root pour une meilleure portée avec React */
         }
         h1, h2, h3 {
@@ -268,14 +269,14 @@
               <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
             </svg>
         );
-        
+
         // Composant d'icône de localisation (Map Pin)
         const MapPinIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-map-pin">
                 <path d="M12 18s-4.5-8-4.5-11.5A4.5 4.5 0 0 1 12 2a4.5 4.5 0 0 1 4.5 4.5c0 3.5-4.5 11.5-4.5 11.5z"/><circle cx="12" cy="6.5" r="2.5"/>
             </svg>
         );
-
+        
         // Composant d'icône Instagram
         const InstagramIcon = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram">
@@ -1137,7 +1138,9 @@
             const { content } = useContext(ContentContext);
             
             // Construit l'URL Google Maps à partir de l'adresse (nécessite d'encoder les caractères spéciaux)
-            const mapQuery = encodeURIComponent(content?.contact?.address?.replace(/\n/g, ', ') || 'Zone industriel le coquet, 03260 Saint-Germain-des-Fossés');
+            // Remplace le saut de ligne par une virgule pour la recherche Google Maps
+            const rawAddress = content?.contact?.address || "Zone industriel le coquet\n03260 Saint-Germain-des-Fossés";
+            const mapQuery = encodeURIComponent(rawAddress.replace(/\n/g, ', '));
             const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
             return (
@@ -2861,11 +2864,11 @@
                                 addressTitle: "Adresse", 
                                 address: "Zone industriel le coquet\n03260 Saint-Germain-des-Fossés", // Adresse avec saut de ligne
                                 emailTitle: "Email",
-                                email: "contact@brmotorsport.com", // Rétabli à l'original
+                                email: "contact@brmotorsport.com", // Rétabli
                                 phoneTitle: "Téléphone",
-                                phoneNumber: "06.12.34.56.78", // Rétabli à l'original
+                                phoneNumber: "06.12.34.56.78", // Rétabli
                                 instagramTitle: "Instagram",
-                                instagramHandle: "@brmotorsport_official" // Rétabli à l'original
+                                instagramHandle: "@brmotorsport_official" // Rétabli
                             },
                             legalMentions: {
                                 mainTitle: "Mentions Légales",
