@@ -645,7 +645,66 @@
                                 />
                             </a>
                         </section>
-
+                        {/* --- SECTION CATALOGUE DE PERFORMANCES --- */}
+<section className="mb-20 container mx-auto px-4">
+    <div className="text-center mb-10">
+        <h2 className="text-3xl md:text-5xl font-black uppercase italic mb-4">
+            Catalogue <span className="text-blue-500">Performances</span> <span className="text-red-600">BRMOTORSPORT</span>
+        </h2>
+        <p className="text-gray-400">Gains réels constatés en Stage 1 sur banc de puissance.</p>
+    </div>
+    
+    <div className="overflow-x-auto rounded-2xl border border-gray-800 shadow-2xl bg-gray-900/40">
+        <table className="w-full text-left border-collapse">
+            <thead>
+                <tr className="bg-gradient-to-r from-blue-900 to-red-900 text-white uppercase text-xs md:text-sm">
+                    <th className="p-4 font-black">Modèle</th>
+                    <th className="p-4 font-black">Origine</th>
+                    <th className="p-4 font-black text-blue-400">Stage 1</th>
+                    <th className="p-4 font-black text-red-500">Gain Couple</th>
+                </tr>
+            </thead>
+            <tbody className="text-gray-200 divide-y divide-gray-800 text-sm md:text-base">
+                <tr className="bg-blue-900/10 hover:bg-gray-800/50 transition">
+                    <td className="p-4 font-bold text-blue-400">Seat Ibiza FR (1.0 TSI)</td>
+                    <td className="p-4">115 ch / 200 Nm</td>
+                    <td className="p-4 text-blue-400 font-black">140 ch</td>
+                    <td className="p-4 text-red-500 font-black">+ 50 Nm</td>
+                </tr>
+                <tr className="bg-blue-900/10 hover:bg-gray-800/50 transition">
+                    <td className="p-4 font-bold text-blue-400">Cupra Formentor (2.0 TSI)</td>
+                    <td className="p-4">310 ch / 400 Nm</td>
+                    <td className="p-4 text-blue-400 font-black">370 ch</td>
+                    <td className="p-4 text-red-500 font-black">+ 100 Nm</td>
+                </tr>
+                <tr className="hover:bg-gray-800/50 transition">
+                    <td className="p-4 font-bold">VW Golf 7 GTI</td>
+                    <td className="p-4">230 ch / 350 Nm</td>
+                    <td className="p-4 text-blue-400 font-black">300 ch</td>
+                    <td className="p-4 text-red-500 font-black">+ 100 Nm</td>
+                </tr>
+                <tr className="hover:bg-gray-800/50 transition">
+                    <td className="p-4 font-bold">Audi A3 (2.0 TDI)</td>
+                    <td className="p-4">150 ch / 320 Nm</td>
+                    <td className="p-4 text-blue-400 font-black">190 ch</td>
+                    <td className="p-4 text-red-500 font-black">+ 80 Nm</td>
+                </tr>
+                <tr className="hover:bg-gray-800/50 transition">
+                    <td className="p-4 font-bold">BMW 330d (N57)</td>
+                    <td className="p-4">258 ch / 560 Nm</td>
+                    <td className="p-4 text-blue-400 font-black">310 ch</td>
+                    <td className="p-4 text-red-500 font-black">+ 110 Nm</td>
+                </tr>
+                <tr className="bg-gray-800/30 hover:bg-gray-800/50 transition">
+                    <td className="p-4 font-bold italic text-gray-400">Renault Master (2.3 dCi)</td>
+                    <td className="p-4">130 ch / 330 Nm</td>
+                    <td className="p-4 text-blue-400 font-black">165 ch</td>
+                    <td className="p-4 text-red-500 font-black">+ 90 Nm</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
                         {/* Section Nos Offres */}
                         <section className="mb-20">
                             <EditableText
