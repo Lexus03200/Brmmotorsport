@@ -211,7 +211,83 @@
     <script type="text/babel">
         // Récupère les hooks React depuis l'objet global React
         const { useState, useEffect, useRef, createContext, useContext } = React;
+const carData = {
+    "Audi": {
+        "A3 (2.0 TDI 150)": { orig: "150 ch / 320 Nm", s1: "190 ch", s2: "210 ch", gain: "+ 110 Nm" },
+        "RS3 (2.5 TFSI 400)": { orig: "400 ch / 480 Nm", s1: "450 ch", s2: "500 ch", gain: "+ 180 Nm" }
+    },
+    "BMW": {
+        "330d (N57 258)": { orig: "258 ch / 560 Nm", s1: "310 ch", s2: "340 ch", gain: "+ 160 Nm" },
+        "M4 (S55 431)": { orig: "431 ch / 550 Nm", s1: "510 ch", s2: "550 ch", gain: "+ 200 Nm" }
+    },
+    "Seat / Cupra": {
+        "Ibiza FR (1.0 TSI 115)": { orig: "115 ch / 200 Nm", s1: "140 ch", s2: "155 ch", gain: "+ 70 Nm" },
+        "Leon (2.0 TDI 150)": { orig: "150 ch / 340 Nm", s1: "190 ch", s2: "210 ch", gain: "+ 110 Nm" },
+        "Cupra Formentor (310)": { orig: "310 ch / 400 Nm", s1: "370 ch", s2: "400 ch", gain: "+ 130 Nm" }
+    },
+    "Mercedes": {
+        "A200 (1.3 T 163)": { orig: "163 ch / 250 Nm", s1: "195 ch", s2: "210 ch", gain: "+ 90 Nm" },
+        "A220d (2.0 D 190)": { orig: "190 ch / 400 Nm", s1: "230 ch", s2: "250 ch", gain: "+ 100 Nm" }
+    },
+    "Renault / Peugeot": {
+        "Megane 4 RS (280)": { orig: "280 ch / 390 Nm", s1: "320 ch", s2: "350 ch", gain: "+ 120 Nm" },
+        "308 (1.2 PureTech 130)": { orig: "130 ch / 230 Nm", s1: "155 ch", s2: "170 ch", gain: "+ 75 Nm" }
+    },
+    "Utilitaires": {
+        "Renault Master (2.3 dCi 130)": { orig: "130 ch / 330 Nm", s1: "165 ch", s2: "185 ch", gain: "+ 110 Nm" },
+        "Iveco Daily (3.0 HPI 150)": { orig: "150 ch / 350 Nm", s1: "200 ch", s2: "230 ch", gain: "+ 140 Nm" },
+        "Ford Transit (2.0 TDCi 130)": { orig: "130 ch / 385 Nm", s1: "185 ch", s2: "210 ch", gain: "+ 120 Nm" }
+    }
+};
+const PerformanceSelector = () => {
+    const [brand, setBrand] = useState("Seat / Cupra");
+    const [model, setModel] = useState("Ibiza FR (1.0 TSI 115)");
+    const stats = carData[brand][model];
 
+    return (
+        <div className="max-w-4xl mx-auto bg-gray-900/80 border border-gray-800 p-8 rounded-3xl shadow-2xl backdrop-blur-md">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 text-left">
+                <div className="space-y-2">
+                    <label className="text-xs uppercase font-bold text-gray-500 tracking-widest">1. Choisir la Marque</label>
+                    <select 
+                        value={brand} 
+                        onChange={(e) => { setBrand(e.target.value); setModel(Object.keys(carData[e.target.value])[0]); }} 
+                        className="w-full bg-gray-800 text-white p-4 rounded-xl border border-gray-700 outline-none focus:border-blue-500 transition"
+                    >
+                        {Object.keys(carData).map(b => <option key={b} value={b}>{b}</option>)}
+                    </select>
+                </div>
+                <div className="space-y-2">
+                    <label className="text-xs uppercase font-bold text-gray-500 tracking-widest">2. Motorisation</label>
+                    <select 
+                        value={model} 
+                        onChange={(e) => setModel(e.target.value)} 
+                        className="w-full bg-gray-800 text-white p-4 rounded-xl border border-gray-700 outline-none focus:border-blue-500 transition"
+                    >
+                        {Object.keys(carData[brand]).map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-gray-800 pt-8">
+                <div className="bg-gray-800/50 p-6 rounded-2xl text-center border border-gray-700">
+                    <span className="block text-gray-400 text-xs font-bold mb-2 uppercase italic">Origine</span>
+                    <span className="text-xl font-black text-white">{stats.orig}</span>
+                </div>
+                <div className="bg-blue-900/20 p-6 rounded-2xl text-center border border-blue-500/50 transform scale-105 shadow-xl">
+                    <span className="block text-blue-400 text-xs font-bold mb-2 uppercase italic">Stage 1</span>
+                    <span className="text-3xl font-black text-white">{stats.s1}</span>
+                    <span className="block text-blue-400 text-sm font-bold">{stats.gain}</span>
+                </div>
+                <div className="bg-orange-900/20 p-6 rounded-2xl text-center border border-orange-500/50">
+                    <span className="block text-orange-400 text-xs font-bold mb-2 uppercase italic">Stage 2</span>
+                    <span className="text-2xl font-black text-white">{stats.s2}</span>
+                    <span className="block text-orange-500 text-sm italic">Pièces perf requises</span>
+                </div>
+            </div>
+        </div>
+    );
+};
         // --- Icônes Lucide React ---
         // Composant d'icône de voiture
         const CarIcon = () => (
@@ -645,112 +721,18 @@
                                 />
                             </a>
                         </section>
-                        {/* --- SECTION CATALOGUE DE PERFORMANCES STAGE 1 & 2 --- */}
-<section className="mb-20 container mx-auto px-4">
-    <div className="text-center mb-10">
-        <h2 className="text-3xl md:text-5xl font-black uppercase italic mb-4">
-            Catalogue <span className="text-blue-500">Performances</span> <span className="text-red-600">BRMOTORSPORT</span>
-        </h2>
-        <p className="text-gray-400">Gains réels constatés • Optimisation sur-mesure sur banc de puissance.</p>
-    </div>
+{/* --- AFFICHAGE DU SÉLECTEUR DE PERFORMANCE --- */}
+<section className="mb-20 container mx-auto px-4 text-center">
+    <h2 className="text-3xl md:text-5xl font-black uppercase italic mb-10 tracking-tighter">
+        Catalogue <span className="text-blue-500">Performances</span> <span className="text-red-600">Interactif</span>
+    </h2>
     
-    <div className="overflow-x-auto rounded-2xl border border-gray-800 shadow-2xl bg-gray-900/40 backdrop-blur-md">
-        <table className="w-full text-left border-collapse">
-            <thead>
-                <tr className="bg-gradient-to-r from-blue-900 to-red-900 text-white uppercase text-xs">
-                    <th className="p-4 font-black">Modèle / Motorisation</th>
-                    <th className="p-4 font-black">Origine</th>
-                    <th className="p-4 font-black text-blue-400">Stage 1</th>
-                    <th className="p-4 font-black text-orange-500">Stage 2 (+Pièces)</th>
-                    <th className="p-4 font-black text-red-500">Couple Max</th>
-                </tr>
-            </thead>
-            <tbody className="text-gray-200 divide-y divide-gray-800 text-sm md:text-base">
-                {/* SEAT & CUPRA */}
-                <tr className="bg-blue-900/10 hover:bg-gray-800/50 transition">
-                    <td className="p-4 font-bold text-blue-400">Seat Ibiza FR (1.0 TSI)</td>
-                    <td className="p-4">115 ch</td>
-                    <td className="p-4 text-blue-400">140 ch</td>
-                    <td className="p-4 text-orange-500 font-black">155 ch</td>
-                    <td className="p-4 text-red-500">+ 70 Nm</td>
-                </tr>
-                <tr className="bg-blue-900/10 hover:bg-gray-800/50 transition">
-                    <td className="p-4 font-bold text-blue-400">Cupra Formentor (2.0 TSI)</td>
-                    <td className="p-4">310 ch</td>
-                    <td className="p-4 text-blue-400">370 ch</td>
-                    <td className="p-4 text-orange-500 font-black">400 ch</td>
-                    <td className="p-4 text-red-500">+ 130 Nm</td>
-                </tr>
-
-                {/* GROUPE VAG */}
-                <tr className="hover:bg-gray-800/50 transition">
-                    <td className="p-4 font-bold">VW Golf 7 GTI (2.0 TSI)</td>
-                    <td className="p-4">230 ch</td>
-                    <td className="p-4 text-blue-400">300 ch</td>
-                    <td className="p-4 text-orange-500 font-black">330 ch</td>
-                    <td className="p-4 text-red-500">+ 140 Nm</td>
-                </tr>
-                <tr className="hover:bg-gray-800/50 transition">
-                    <td className="p-4 font-bold">Audi RS3 (2.5 TFSI)</td>
-                    <td className="p-4">400 ch</td>
-                    <td className="p-4 text-blue-400">450 ch</td>
-                    <td className="p-4 text-orange-500 font-black">500 ch</td>
-                    <td className="p-4 text-red-500">+ 180 Nm</td>
-                </tr>
-                <tr className="hover:bg-gray-800/50 transition">
-                    <td className="p-4 font-bold">Audi A3 (2.0 TDI)</td>
-                    <td className="p-4">150 ch</td>
-                    <td className="p-4 text-blue-400">190 ch</td>
-                    <td className="p-4 text-orange-500 font-black">210 ch</td>
-                    <td className="p-4 text-red-500">+ 110 Nm</td>
-                </tr>
-
-                {/* BMW & MERCEDES */}
-                <tr className="hover:bg-gray-800/50 transition">
-                    <td className="p-4 font-bold">BMW 330d (N57)</td>
-                    <td className="p-4">258 ch</td>
-                    <td className="p-4 text-blue-400">310 ch</td>
-                    <td className="p-4 text-orange-500 font-black">340 ch</td>
-                    <td className="p-4 text-red-500">+ 160 Nm</td>
-                </tr>
-                <tr className="hover:bg-gray-800/50 transition">
-                    <td className="p-4 font-bold">BMW M4 (S55)</td>
-                    <td className="p-4">431 ch</td>
-                    <td className="p-4 text-blue-400">510 ch</td>
-                    <td className="p-4 text-orange-500 font-black">550 ch</td>
-                    <td className="p-4 text-red-500">+ 200 Nm</td>
-                </tr>
-                <tr className="hover:bg-gray-800/50 transition">
-                    <td className="p-4 font-bold">Mercedes A200 (1.3 T)</td>
-                    <td className="p-4">163 ch</td>
-                    <td className="p-4 text-blue-400">195 ch</td>
-                    <td className="p-4 text-orange-500 font-black">210 ch</td>
-                    <td className="p-4 text-red-500">+ 90 Nm</td>
-                </tr>
-
-                {/* SPORTIVES */}
-                <tr className="hover:bg-gray-800/50 transition">
-                    <td className="p-4 font-bold">Renault Megane 4 RS</td>
-                    <td className="p-4">280 ch</td>
-                    <td className="p-4 text-blue-400">320 ch</td>
-                    <td className="p-4 text-orange-500 font-black">350 ch</td>
-                    <td className="p-4 text-red-500">+ 120 Nm</td>
-                </tr>
-                <tr className="hover:bg-gray-800/50 transition">
-                    <td className="p-4 font-bold">Ford Fiesta ST (1.5 T)</td>
-                    <td className="p-4">200 ch</td>
-                    <td className="p-4 text-blue-400">235 ch</td>
-                    <td className="p-4 text-orange-500 font-black">260 ch</td>
-                    <td className="p-4 text-red-500">+ 110 Nm</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div className="mt-6 p-4 bg-orange-900/20 border border-orange-900/50 rounded-xl">
-        <p className="text-sm text-orange-400 text-center">
-            <strong>Note technique :</strong> Le Stage 2 nécessite l'installation de pièces mécaniques (Downpipe, Intercooler, Admission) pour garantir la fiabilité et atteindre ces performances.
-        </p>
-    </div>
+    {/* Appel du composant que tu as créé à la ligne 242 */}
+    <PerformanceSelector />
+    
+    <p className="mt-8 text-gray-500 text-sm italic">
+        * Données indicatives. Chaque véhicule fait l'objet d'un diagnostic complet avant intervention.
+    </p>
 </section>
                         {/* Section Nos Offres */}
                         <section className="mb-20">
