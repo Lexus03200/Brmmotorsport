@@ -212,87 +212,88 @@
         // Récupère les hooks React depuis l'objet global React
         const { useState, useEffect, useRef, createContext, useContext } = React;
 const carData = {
+    "Légendes TDI (1.9 TDI)": {
+        "Golf 4 / Leon (1.9 TDI 90)": { orig: "90 ch / 210 Nm", s1: "125 ch", s2: "145 ch", gain: "+ 75 Nm" },
+        "Golf 4 / A3 (1.9 TDI 110)": { orig: "110 ch / 235 Nm", s1: "145 ch", s2: "165 ch", gain: "+ 85 Nm" },
+        "Golf 5 / Leon (1.9 TDI 105)": { orig: "105 ch / 250 Nm", s1: "145 ch", s2: "160 ch", gain: "+ 100 Nm" },
+        "Golf 4 / Ibiza (1.9 TDI 130)": { orig: "130 ch / 310 Nm", s1: "175 ch", s2: "195 ch", gain: "+ 110 Nm" },
+        "Golf 4 GTI / Leon (1.9 TDI 150)": { orig: "150 ch / 320 Nm", s1: "195 ch", s2: "220 ch", gain: "+ 120 Nm" },
+        "Ibiza Cupra (1.9 TDI 160)": { orig: "160 ch / 330 Nm", s1: "200 ch", s2: "230 ch", gain: "+ 130 Nm" }
+    },
     "Audi": {
         "A1 (1.0 TFSI 95)": { orig: "95 ch / 160 Nm", s1: "135 ch", s2: "145 ch", gain: "+ 70 Nm" },
         "A3 (2.0 TDI 150)": { orig: "150 ch / 320 Nm", s1: "190 ch", s2: "210 ch", gain: "+ 110 Nm" },
-        "A4 (3.0 TDI 272)": { orig: "272 ch / 600 Nm", s1: "320 ch", s2: "350 ch", gain: "+ 120 Nm" },
+        "A4/A5/A6 (3.0 TDI 272)": { orig: "272 ch / 600 Nm", s1: "320 ch", s2: "350 ch", gain: "+ 120 Nm" },
         "S3 (2.0 TFSI 310)": { orig: "310 ch / 400 Nm", s1: "370 ch", s2: "400 ch", gain: "+ 120 Nm" },
         "RS3 (2.5 TFSI 400)": { orig: "400 ch / 480 Nm", s1: "450 ch", s2: "500 ch", gain: "+ 180 Nm" },
-        "RS6 (4.0 TFSI 600)": { orig: "600 ch / 800 Nm", s1: "700 ch", s2: "750 ch", gain: "+ 250 Nm" },
-        "Q5 (40 TDI 190)": { orig: "190 ch / 400 Nm", s1: "230 ch", s2: "250 ch", gain: "+ 90 Nm" }
+        "RS6 (4.0 TFSI 600)": { orig: "600 ch / 800 Nm", s1: "700 ch", s2: "750 ch", gain: "+ 250 Nm" }
     },
     "BMW": {
-        "116d (1.5 D 116)": { orig: "116 ch / 270 Nm", s1: "150 ch", s2: "165 ch", gain: "+ 80 Nm" },
-        "118d (2.0 D 150)": { orig: "150 ch / 320 Nm", s1: "190 ch", s2: "210 ch", gain: "+ 90 Nm" },
-        "330d (N57 258)": { orig: "258 ch / 560 Nm", s1: "310 ch", s2: "340 ch", gain: "+ 160 Nm" },
-        "335d (313 ch)": { orig: "313 ch / 630 Nm", s1: "370 ch", s2: "400 ch", gain: "+ 130 Nm" },
+        "116d/118d (2.0 D 150)": { orig: "150 ch / 320 Nm", s1: "195 ch", s2: "215 ch", gain: "+ 95 Nm" },
+        "120d (F20 184)": { orig: "184 ch / 380 Nm", s1: "225 ch", s2: "245 ch", gain: "+ 100 Nm" },
+        "330d/430d (258)": { orig: "258 ch / 560 Nm", s1: "310 ch", s2: "340 ch", gain: "+ 160 Nm" },
+        "335d/435d (313)": { orig: "313 ch / 630 Nm", s1: "375 ch", s2: "400 ch", gain: "+ 140 Nm" },
         "M140i (B58 340)": { orig: "340 ch / 500 Nm", s1: "420 ch", s2: "460 ch", gain: "+ 150 Nm" },
-        "M2/M3/M4 (S55 431)": { orig: "431 ch / 550 Nm", s1: "510 ch", s2: "550 ch", gain: "+ 200 Nm" },
-        "M5 (F90 600)": { orig: "600 ch / 750 Nm", s1: "720 ch", s2: "800 ch", gain: "+ 220 Nm" },
-        "X5 (30d 265)": { orig: "265 ch / 620 Nm", s1: "310 ch", s2: "340 ch", gain: "+ 100 Nm" }
+        "M2/M3/M4 (431)": { orig: "431 ch / 550 Nm", s1: "510 ch", s2: "550 ch", gain: "+ 200 Nm" }
     },
-    "Seat / Cupra": {
-        "Ibiza FR (1.0 TSI 115)": { orig: "115 ch / 200 Nm", s1: "140 ch", s2: "155 ch", gain: "+ 70 Nm" },
-        "Ibiza (1.4 TSI 150)": { orig: "150 ch / 250 Nm", s1: "190 ch", s2: "210 ch", gain: "+ 90 Nm" },
-        "Leon (2.0 TDI 150)": { orig: "150 ch / 340 Nm", s1: "190 ch", s2: "210 ch", gain: "+ 110 Nm" },
-        "Leon Cupra (300)": { orig: "300 ch / 380 Nm", s1: "370 ch", s2: "400 ch", gain: "+ 120 Nm" },
-        "Cupra Formentor (1.5 TSI 150)": { orig: "150 ch / 250 Nm", s1: "185 ch", s2: "205 ch", gain: "+ 80 Nm" },
-        "Cupra Formentor (VZ 310)": { orig: "310 ch / 400 Nm", s1: "370 ch", s2: "400 ch", gain: "+ 130 Nm" },
-        "Cupra Ateca (300)": { orig: "300 ch / 400 Nm", s1: "360 ch", s2: "390 ch", gain: "+ 110 Nm" }
-    },
-    "Volkswagen": {
+    "VW": {
         "Polo GTI (2.0 TSI 200)": { orig: "200 ch / 320 Nm", s1: "250 ch", s2: "270 ch", gain: "+ 100 Nm" },
         "Golf 7 GTE (204)": { orig: "204 ch / 350 Nm", s1: "250 ch", s2: "270 ch", gain: "+ 90 Nm" },
         "Golf 7 GTI (230)": { orig: "230 ch / 350 Nm", s1: "300 ch", s2: "330 ch", gain: "+ 130 Nm" },
         "Golf 7 R (300)": { orig: "300 ch / 380 Nm", s1: "370 ch", s2: "400 ch", gain: "+ 120 Nm" },
-        "Golf 8 R (320)": { orig: "320 ch / 420 Nm", s1: "380 ch", s2: "420 ch", gain: "+ 100 Nm" },
-        "Tiguan (2.0 TDI 150)": { orig: "150 ch / 340 Nm", s1: "190 ch", s2: "210 ch", gain: "+ 90 Nm" },
-        "Touareg (3.0 TDI 286)": { orig: "286 ch / 600 Nm", s1: "330 ch", s2: "360 ch", gain: "+ 110 Nm" }
+        "Golf 8 R (320)": { orig: "320 ch / 420 Nm", s1: "380 ch", s2: "420 ch", gain: "+ 100 Nm" }
+    },
+    "Seat / Cupra": {
+        "Ibiza (1.0 TSI 115)": { orig: "115 ch / 200 Nm", s1: "140 ch", s2: "155 ch", gain: "+ 75 Nm" },
+        "Leon (2.0 TDI 150)": { orig: "150 ch / 340 Nm", s1: "195 ch", s2: "215 ch", gain: "+ 115 Nm" },
+        "Leon Cupra (300)": { orig: "300 ch / 380 Nm", s1: "370 ch", s2: "400 ch", gain: "+ 120 Nm" },
+        "Formentor (VZ 310)": { orig: "310 ch / 400 Nm", s1: "375 ch", s2: "410 ch", gain: "+ 135 Nm" }
     },
     "Mercedes": {
-        "Classe A 180 (136)": { orig: "136 ch / 200 Nm", s1: "175 ch", s2: "190 ch", gain: "+ 80 Nm" },
-        "Classe A 200 (163)": { orig: "163 ch / 250 Nm", s1: "195 ch", s2: "210 ch", gain: "+ 90 Nm" },
-        "A220d (190 ch)": { orig: "190 ch / 400 Nm", s1: "230 ch", s2: "250 ch", gain: "+ 100 Nm" },
-        "A45 AMG (381)": { orig: "381 ch / 475 Nm", s1: "420 ch", s2: "440 ch", gain: "+ 110 Nm" },
-        "C63 AMG (510)": { orig: "510 ch / 700 Nm", s1: "600 ch", s2: "650 ch", gain: "+ 180 Nm" },
-        "G63 AMG (585)": { orig: "585 ch / 850 Nm", s1: "700 ch", s2: "750 ch", gain: "+ 200 Nm" }
+        "A180/A200 (1.3 T 163)": { orig: "163 ch / 250 Nm", s1: "195 ch", s2: "210 ch", gain: "+ 90 Nm" },
+        "A220d (2.0 D 190)": { orig: "190 ch / 400 Nm", s1: "235 ch", s2: "255 ch", gain: "+ 100 Nm" },
+        "A45 AMG (381)": { orig: "381 ch / 475 Nm", s1: "425 ch", s2: "450 ch", gain: "+ 120 Nm" },
+        "C63 AMG (510)": { orig: "510 ch / 700 Nm", s1: "610 ch", s2: "660 ch", gain: "+ 180 Nm" }
     },
     "Marques Françaises": {
-        "208 GTI (200)": { orig: "200 ch / 275 Nm", s1: "225 ch", s2: "245 ch", gain: "+ 85 Nm" },
-        "308 (2.0 HDi 150)": { orig: "150 ch / 370 Nm", s1: "190 ch", s2: "210 ch", gain: "+ 90 Nm" },
-        "308 GTI (270)": { orig: "270 ch / 330 Nm", s1: "300 ch", s2: "320 ch", gain: "+ 90 Nm" },
-        "508 (2.0 BlueHDi 180)": { orig: "180 ch / 400 Nm", s1: "210 ch", s2: "230 ch", gain: "+ 80 Nm" },
-        "Clio 4 RS (200)": { orig: "200 ch / 240 Nm", s1: "230 ch", s2: "250 ch", gain: "+ 80 Nm" },
-        "Megane 4 RS (280)": { orig: "280 ch / 390 Nm", s1: "320 ch", s2: "350 ch", gain: "+ 120 Nm" },
+        "Peugeot 308 (2.0 HDi 150)": { orig: "150 ch / 370 Nm", s1: "195 ch", s2: "215 ch", gain: "+ 90 Nm" },
+        "Peugeot 508 (2.0 BlueHDi 180)": { orig: "180 ch / 400 Nm", s1: "215 ch", s2: "235 ch", gain: "+ 85 Nm" },
+        "Renault Megane 4 RS (280)": { orig: "280 ch / 390 Nm", s1: "325 ch", s2: "355 ch", gain: "+ 125 Nm" },
         "Alpine A110 (252)": { orig: "252 ch / 320 Nm", s1: "300 ch", s2: "320 ch", gain: "+ 100 Nm" }
     },
     "Utilitaires": {
-        "Berlingo (1.6 HDi 90)": { orig: "90 ch / 215 Nm", s1: "120 ch", s2: "135 ch", gain: "+ 60 Nm" },
-        "Master (2.3 dCi 130)": { orig: "130 ch / 330 Nm", s1: "165 ch", s2: "185 ch", gain: "+ 110 Nm" },
-        "Master (2.3 dCi 150)": { orig: "150 ch / 350 Nm", s1: "190 ch", s2: "210 ch", gain: "+ 100 Nm" },
-        "Iveco Daily (3.0 HPI 150)": { orig: "150 ch / 350 Nm", s1: "200 ch", s2: "230 ch", gain: "+ 140 Nm" },
-        "Ford Transit (2.0 TDCI 130)": { orig: "130 ch / 385 Nm", s1: "185 ch", s2: "210 ch", gain: "+ 120 Nm" },
-        "Mercedes Sprinter (2.2 CDI 143)": { orig: "143 ch / 330 Nm", s1: "185 ch", s2: "200 ch", gain: "+ 100 Nm" }
+        "Berlingo (1.6 HDi 90)": { orig: "90 ch / 215 Nm", s1: "125 ch", s2: "140 ch", gain: "+ 65 Nm" },
+        "Master (2.3 dCi 130)": { orig: "130 ch / 330 Nm", s1: "165 ch", s2: "190 ch", gain: "+ 115 Nm" },
+        "Iveco Daily (3.0 HPI 150)": { orig: "150 ch / 350 Nm", s1: "205 ch", s2: "235 ch", gain: "+ 145 Nm" },
+        "Ford Transit (2.0 TDCI 130)": { orig: "130 ch / 385 Nm", s1: "185 ch", s2: "215 ch", gain: "+ 125 Nm" }
     }
 };
 
 const PerformanceSelector = () => {
-    const [brand, setBrand] = useState("Seat / Cupra");
-    const [model, setModel] = useState("Ibiza FR (1.0 TSI 115)");
+    const [brand, setBrand] = useState("Légendes TDI (1.9 TDI)");
+    const [model, setModel] = useState("Golf 4 / Leon (1.9 TDI 90)");
     const stats = carData[brand][model];
 
     return (
         <div className="max-w-4xl mx-auto bg-gray-900/80 border border-gray-800 p-8 rounded-3xl shadow-2xl backdrop-blur-md">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 text-left">
                 <div className="space-y-2">
-                    <label className="text-xs uppercase font-bold text-gray-500 tracking-widest">1. Marque</label>
-                    <select value={brand} onChange={(e) => { setBrand(e.target.value); setModel(Object.keys(carData[e.target.value])[0]); }} className="w-full bg-gray-800 text-white p-4 rounded-xl border border-gray-700 outline-none focus:border-blue-500 transition cursor-pointer">
+                    <label className="text-xs uppercase font-bold text-gray-500 tracking-widest">1. Choisir la Marque</label>
+                    <select 
+                        value={brand} 
+                        onChange={(e) => { setBrand(e.target.value); setModel(Object.keys(carData[e.target.value])[0]); }} 
+                        className="w-full bg-gray-800 text-white p-4 rounded-xl border border-gray-700 outline-none focus:border-blue-500 transition cursor-pointer"
+                    >
                         {Object.keys(carData).map(b => <option key={b} value={b}>{b}</option>)}
                     </select>
                 </div>
                 <div className="space-y-2">
                     <label className="text-xs uppercase font-bold text-gray-500 tracking-widest">2. Motorisation</label>
-                    <select value={model} onChange={(e) => setModel(e.target.value)} className="w-full bg-gray-800 text-white p-4 rounded-xl border border-gray-700 outline-none focus:border-blue-500 transition cursor-pointer">
+                    <select 
+                        value={model} 
+                        onChange={(e) => setModel(e.target.value)} 
+                        className="w-full bg-gray-800 text-white p-4 rounded-xl border border-gray-700 outline-none focus:border-blue-500 transition cursor-pointer"
+                    >
                         {Object.keys(carData[brand]).map(m => <option key={m} value={m}>{m}</option>)}
                     </select>
                 </div>
