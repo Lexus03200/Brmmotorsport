@@ -168,21 +168,21 @@
         "list2Item3": "Site diffusé via la plateforme GitHub Pages.",
         "paragraph4": "<br/><strong>⚠️ AVERTISSEMENT LÉGAL - REPROGRAMMATION MOTEUR :</strong><br/>Nous attirons l'attention de notre clientèle sur le fait que toute modification technique visant à augmenter la puissance du moteur (Stage 1, 2, etc.) modifie les caractéristiques techniques du véhicule mentionnées sur la carte grise. <br/><br/>Conformément aux articles R321-16 et R322-8 du Code de la Route, le véhicule modifié doit faire l'objet d'une Réception à Titre Isolé (RTI) auprès de la DREAL (Mines) pour être autorisé à circuler sur la voie publique. À défaut d'une telle homologation, le véhicule est réservé à un usage strict sur circuit fermé ou terrain privé.<br/><br/>L'utilisateur est informé que ces modifications peuvent entraîner :<br/>1. L'annulation de la garantie constructeur.<br/>2. L'absence de couverture par l'assurance en cas de sinistre si la modification n'a pas été déclarée.<br/><br/><strong>Propriété Intellectuelle :</strong><br/>Le site a été conçu par Viremot Giovanni. Tous les éléments (textes, logos, images) sont la propriété exclusive de BRMOTORSPORT. Toute reproduction est interdite sans accord écrit."
     },
-    "privacyPolicy": {
+"privacyPolicy": {
         "mainTitle": "Politique de Confidentialité",
-        "introTitle": "Introduction",
-        "introText": "La présente politique de confidentialité décrit comment BRMOTORSPORT collecte, utilise et protège vos informations personnelles lorsque vous utilisez notre site web.",
-        "collectionTitle": "Collecte des Informations Personnelles",
-        "collectionText": "Nous collectons des informations lorsque vous nous contactez via le formulaire de contact, lorsque vous naviguez sur notre site, ou lorsque vous interagissez avec nos services. Les informations collectées peuvent inclure votre nom, adresse e-mail, numéro de téléphone, et toute autre information que vous choisissez de nous fournir.",
-        "usageTitle": "Utilisation des Informations",
-        "usageListItem1": "Pour répondre à vos demandes et vous fournir les services que vous avez sollicités.",
-        "usageListItem2": "Pour améliorer notre site web et nos offres de services.",
-        "usageListItem3": "Pour vous envoyer des communications marketing (avec votre consentement).",
-        "protectionTitle": "Protection des Informations",
-        "protectionText": "Nous mettons en œuvre diverses mesures de sécurité pour maintenir la sûreté de vos informations personnelles. Seuls les employés qui ont besoin d'effectuer un travail spécifique (par exemple, la facturation ou le service client) ont accès aux informations personnelles identifiables.",
+        "introTitle": "Responsable du traitement",
+        "introText": "Les données personnelles sont traitées par l'entreprise BRMOTORSPORT (Rémy Bruyant), agissant en qualité de responsable de traitement.",
+        "collectionTitle": "Données collectées",
+        "collectionText": "Nous collectons uniquement les informations nécessaires : Nom, Prénom, Téléphone, Email et infos véhicule (Marque, Modèle) pour vos demandes de devis.",
+        "usageTitle": "Utilisation des données",
+        "usageListItem1": "Gestion de la relation client et des rendez-vous.",
+        "usageListItem2": "Établissement des factures.",
+        "usageListItem3": "Suivi technique des véhicules.",
+        "protectionTitle": "Sécurité",
+        "protectionText": "Vos données ne sont ni vendues ni partagées. Elles sont conservées 3 ans après le dernier contact.",
         "rightsTitle": "Vos Droits",
-        "rightsText": "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition au traitement de vos données personnelles. Pour exercer ces droits, veuillez nous contacter à brmotosport003@gmail.com.",
-        "disclaimerText": "Cette politique de confidentialité peut être mise à jour occasionnellement. Nous vous invitons à la consulter régulièrement."
+        "rightsText": "Vous avez un droit d'accès et de suppression de vos données. Contact : brmotosport003@gmail.com.",
+        "disclaimerText": "Mise à jour : Cette politique peut être modifiée selon l'évolution légale."
     },
     "showcaseCar": {
         "mainTitle": "Notre Voiture Vitrine",
