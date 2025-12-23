@@ -154,20 +154,19 @@
         "instagramTitle": "Instagram",
         "instagramHandle": "@brmotorsport003"
     },
-    "legalMentions": {
+"legalMentions": {
         "mainTitle": "Mentions Légales",
-        "sectionTitle": "Informations Générales",
-        "paragraph1": "Ce site web est édité par BRMOTORSPORT (Entreprise Individuelle - EI).",
-        "paragraph2": "Coordonnées de l'éditeur (Siège Social) :",
-        "list1Item1": "Nom et Prénom : Rémy Bruyant",
-        "list1Item2": "Adresse du Siège Social : 41 rue des peupliers, 03300 Cusset",
-        "list1Item3": "Téléphone : 06.68.27.88.01",
-        "paragraph3": "Adresse e-mail : brmotosport003@gmail.com",
-        "list2Item1": "Numéro SIRET : 98999397700010",
-        "list2Item2": "Directeur de la publication : Monsieur Rémy Bruyant",
-        "list2Item3": "Hébergeur : GitHub Pages",
-        "paragraph4": "Clause de non-responsabilité (Usage Compétition) : Les services de reprogrammation moteur et d'optimisation des calculateurs (ECU) sont exclusivement destinés à une utilisation en compétition, sur circuit fermé ou sur toute autre voie non ouverte à la circulation publique. L'utilisateur final est seul responsable de la conformité de son véhicule avec les lois et règlements applicables, notamment en matière de circulation routière, d'émissions polluantes et de contrôle technique. BRMOTORSPORT décline toute responsabilité en cas d'usage non conforme à la réglementation.",
-        "proprieteIntellectuelle": "Propriété intellectuelle : L'ensemble des éléments de ce site (textes, images, graphismes, logos, icônes, etc.) est la propriété exclusive de BRMOTORSPORT, sauf mention contraire. Le site internet a été conçu par Viremot Giovanni. Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de BRMOTORSPORT ET DE MONSIEUR VIREMOT GIOVANNI."
+        "sectionTitle": "Informations Juridiques & Réglementaires",
+        "paragraph1": "Le présent site est édité par l'entreprise individuelle BRMOTORSPORT, spécialisée dans l'entretien et la réparation de véhicules automobiles légers.",
+        "paragraph2": "Coordonnées de l'éditeur et immatriculation :",
+        "list1Item1": "Gérant : M. Rémy Bruyant | Siège : 41 rue des peupliers, 03300 Cusset",
+        "list1Item2": "SIRET : 989 993 977 00010 | TVA Intracommunautaire : (Non applicable, art. 293 B du CGI)",
+        "list1Item3": "Contact : 06.68.27.88.01 | Email : brmotosport003@gmail.com",
+        "paragraph3": "Hébergement du site internet :",
+        "list2Item1": "Hébergeur : GitHub Inc.",
+        "list2Item2": "Adresse : 88 Colin P Kelly Jr St, San Francisco, CA 94107, United States",
+        "list2Item3": "Site diffusé via la plateforme GitHub Pages.",
+        "paragraph4": "<br/><strong>⚠️ AVERTISSEMENT LÉGAL - REPROGRAMMATION MOTEUR :</strong><br/>Nous attirons l'attention de notre clientèle sur le fait que toute modification technique visant à augmenter la puissance du moteur (Stage 1, 2, etc.) modifie les caractéristiques techniques du véhicule mentionnées sur la carte grise. <br/><br/>Conformément aux articles R321-16 et R322-8 du Code de la Route, le véhicule modifié doit faire l'objet d'une Réception à Titre Isolé (RTI) auprès de la DREAL (Mines) pour être autorisé à circuler sur la voie publique. À défaut d'une telle homologation, le véhicule est réservé à un usage strict sur circuit fermé ou terrain privé.<br/><br/>L'utilisateur est informé que ces modifications peuvent entraîner :<br/>1. L'annulation de la garantie constructeur.<br/>2. L'absence de couverture par l'assurance en cas de sinistre si la modification n'a pas été déclarée.<br/><br/><strong>Propriété Intellectuelle :</strong><br/>Le site a été conçu par Viremot Giovanni. Tous les éléments (textes, logos, images) sont la propriété exclusive de BRMOTORSPORT. Toute reproduction est interdite sans accord écrit."
     },
     "privacyPolicy": {
         "mainTitle": "Politique de Confidentialité",
