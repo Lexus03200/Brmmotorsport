@@ -31,8 +31,7 @@
             {
                 "id": 1,
                 "images": [
-                    "IMG_9611.png",
-                    "Photo1.png"
+                    "IMG_9611.png"
                 ],
                 "title": "Porsche Cayenne V8 Bi-Turbo : Optimisation Moteur",
                 "description": "Découvrez notre travail sur cette bête de course, avec des améliorations de performances significatives pour une expérience de conduite ultime."
@@ -72,8 +71,7 @@
             {
                 "id": 6,
                 "images": [
-                    "Photopeugeot.png",
-                    "anciennevoiture.png"
+                    "Photopeugeot.png"
                 ],
                 "title": "Peugeot 206 1.4 HDi : Préparation Complète et Optimisation",
                 "description": "Rien n'a été laissé au hasard sur cette magnifique 206 1.4 hdi : mécanique (embrayage renforcé, turbo 1.6hdi v2, graissage renforcé, EGR off, filtre à carburant modifié, collecteur d'échappement modifié, reprogrammation sur mesure, admission sur mesure, dégazage haut moteur réaspiré, ligne tube 51mm, boost contrôleur avec réglage optimum), châssis (décrantage train arrière, combinés KW, jantes alu 16, réflexion train roulant à neuf, esthétique (passage de coque en blanc, peinture banquette couleur carrosserie, béquet 206 Rc, peinture blanche jantes, intérieur complet 206 Rc, clignotant latéral led)."
@@ -117,6 +115,14 @@
                 ],
                 "title": "Mercedes (2021) : Solution ADBLUE",
                 "description": "Mise en place d'une solution AdBlue pour ce modèle Mercedes 2021, garantissant la conformité environnementale et le bon fonctionnement du système."
+            },
+            {
+                "id": 1766491422212,
+                "images": [
+                    "Audi2.png"
+                ],
+                "title": "Audi",
+                "description": "🔧 Entretien complet réalisé sur le véhicule : ✅ Vidange moteur effectuée avec huile de qualité supérieure ✅ Remplacement du filtre à huile ✅ Remplacement du filtre à air ✅ Remplacement du filtre à gazole ✅ Airbag remplacé, sécurité assurée 🚗 Esthétique soignée : ✅ Lavage complet intérieur & extérieur effectué avec soin Véhicule prêt à prendre la route, révisé et entretenu avec rigueur. Idéal pour un achat en toute confiance."
             }
         ]
     },
