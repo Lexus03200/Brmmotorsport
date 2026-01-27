@@ -3166,11 +3166,15 @@ const FileUploadPage = ({ isAdminAuthenticated }) => (
             // Fonction de rendu du contenu de la page en fonction de l'état
             const renderPage = () => {
               switch (currentPage) {
-                case 'accueil':
-				case 'envoi-carto':
-    return <FileUploadPage isAdminAuthenticated={isAdminAuthenticated} />;
-                  return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
-                case 'blog':
+    case 'accueil':
+        return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
+    
+    // Ajoute le nouveau cas ICI, bien séparé du précédent
+    case 'envoi-carto':
+        return <FileUploadPage isAdminAuthenticated={isAdminAuthenticated} />;
+
+    case 'blog':
+        // ...
                   return <BlogPage isAdminAuthenticated={isAdminAuthenticated} />;
                 case 'qui-sommes-nous':
                   return <AboutUsPage isAdminAuthenticated={isAdminAuthenticated} />;
