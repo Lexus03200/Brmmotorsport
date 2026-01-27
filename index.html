@@ -215,48 +215,143 @@ html {
     <script type="text/babel">
         // Récupère les hooks React depuis l'objet global React
         const { useState, useEffect, useContext, createContext, useRef } = React;
-const carData = {
-    "Peugeot / Citroën / DS": {
-        "1.2 PureTech 110/130": { orig: "130 ch / 230 Nm", s1: "155 ch", s2: "170 ch", gain: "+ 65 Nm" },
-        "1.5 BlueHDi 130": { orig: "130 ch / 300 Nm", s1: "165 ch", s2: "180 ch", gain: "+ 70 Nm" },
-        "1.6 THP 200/208 (GTI/DS3)": { orig: "208 ch / 300 Nm", s1: "235 ch", s2: "255 ch", gain: "+ 85 Nm" },
-        "2.0 HDi 136/140/150": { orig: "150 ch / 340 Nm", s1: "190 ch", s2: "210 ch", gain: "+ 95 Nm" },
-        "2.0 BlueHDi 180 (508/3008)": { orig: "180 ch / 400 Nm", s1: "215 ch", s2: "235 ch", gain: "+ 85 Nm" },
-        "V6 3.0 HDi 240 (C6/407)": { orig: "240 ch / 450 Nm", s1: "290 ch", s2: "310 ch", gain: "+ 110 Nm" }
-    },
-    "Renault / Alpine / Dacia": {
-        "1.0 TCe 90/100": { orig: "100 ch / 160 Nm", s1: "125 ch", s2: "135 ch", gain: "+ 55 Nm" },
-        "1.3 TCe 130/140/160": { orig: "140 ch / 240 Nm", s1: "175 ch", s2: "190 ch", gain: "+ 80 Nm" },
-        "1.5 dCi 90/110": { orig: "110 ch / 260 Nm", s1: "140 ch", s2: "155 ch", gain: "+ 70 Nm" },
-        "1.6 dCi 130/160": { orig: "160 ch / 380 Nm", s1: "195 ch", s2: "215 ch", gain: "+ 85 Nm" },
-        "2.0 dCi 150/175/180": { orig: "175 ch / 360 Nm", s1: "210 ch", s2: "230 ch", gain: "+ 90 Nm" },
-        "1.8 Turbo 252/300 (Alpine/RS)": { orig: "300 ch / 400 Nm", s1: "340 ch", s2: "370 ch", gain: "+ 110 Nm" },
-        "2.0 Turbo 275 (M3RS)": { orig: "275 ch / 360 Nm", s1: "315 ch", s2: "345 ch", gain: "+ 125 Nm" }
-    },
-    "Groupe VAG (1.9 TDI & Sport)": {
-        "1.9 TDI 90/105/110": { orig: "105 ch / 250 Nm", s1: "145 ch", s2: "160 ch", gain: "+ 90 Nm" },
-        "1.9 TDI 130/150/160": { orig: "150 ch / 320 Nm", s1: "195 ch", s2: "220 ch", gain: "+ 120 Nm" },
-        "2.0 TDI 140/150/184": { orig: "150 ch / 340 Nm", s1: "195 ch", s2: "215 ch", gain: "+ 110 Nm" },
-        "3.0 TDI V6 245/272": { orig: "272 ch / 600 Nm", s1: "320 ch", s2: "350 ch", gain: "+ 130 Nm" },
-        "2.0 TSI 230/300/310": { orig: "310 ch / 400 Nm", s1: "375 ch", s2: "410 ch", gain: "+ 135 Nm" },
-        "RS3/RS6/RSQ8": { orig: "600 ch / 800 Nm", s1: "700 ch", s2: "780 ch", gain: "+ 240 Nm" }
-    },
-    "BMW / Mercedes / Sport": {
-        "118d/120d/320d (2.0 D)": { orig: "190 ch / 400 Nm", s1: "230 ch", s2: "250 ch", gain: "+ 100 Nm" },
-        "330d/335d/435d (3.0 D)": { orig: "313 ch / 630 Nm", s1: "375 ch", s2: "410 ch", gain: "+ 145 Nm" },
-        "M140i/M240i/340i (B58)": { orig: "340 ch / 500 Nm", s1: "420 ch", s2: "470 ch", gain: "+ 160 Nm" },
-        "A45/CLA45 AMG": { orig: "381 ch / 475 Nm", s1: "425 ch", s2: "450 ch", gain: "+ 120 Nm" },
-        "C63/E63/G63 AMG": { orig: "510 ch / 700 Nm", s1: "610 ch", s2: "680 ch", gain: "+ 190 Nm" }
-    },
-    "Utilitaires (Experts & Pros)": {
-        "Expert/Jumpy (2.0 HDi 120/150)": { orig: "150 ch / 370 Nm", s1: "195 ch", s2: "215 ch", gain: "+ 105 Nm" },
-        "Master/Traffic (2.3 dCi 130)": { orig: "130 ch / 330 Nm", s1: "170 ch", s2: "195 ch", gain: "+ 120 Nm" },
-        "Boxer/Jumper (2.2 BlueHDi 140)": { orig: "140 ch / 340 Nm", s1: "180 ch", s2: "200 ch", gain: "+ 90 Nm" },
-        "Transit Custom (2.0 TDCI)": { orig: "130 ch / 385 Nm", s1: "185 ch", s2: "210 ch", gain: "+ 125 Nm" },
-        "Daily (3.0 HPI 150/180)": { orig: "180 ch / 430 Nm", s1: "230 ch", s2: "260 ch", gain: "+ 160 Nm" },
-        "Sprinter (2.2/3.0 CDI)": { orig: "163 ch / 360 Nm", s1: "200 ch", s2: "225 ch", gain: "+ 100 Nm" }
-    }
-};
+// --- BASE DE DONNÉES COMPLETE (Voitures + Utilitaires + Jet-Skis) ---
+        const carData = {
+            "Audi": {
+                "A1 (GB) 2018+": {
+                    "25 TFSI (1.0)": { orig: "95 ch / 175 Nm", s1: "130 ch", s2: "-", gain: "+35ch / +55Nm" },
+                    "30 TFSI (1.0)": { orig: "116 ch / 200 Nm", s1: "140 ch", s2: "-", gain: "+24ch / +40Nm" },
+                    "35 TFSI (1.5 Evo)": { orig: "150 ch / 250 Nm", s1: "180 ch", s2: "-", gain: "+30ch / +50Nm" },
+                    "40 TFSI (2.0)": { orig: "200 ch / 320 Nm", s1: "250 ch", s2: "265 ch", gain: "+50ch / +90Nm" }
+                },
+                "A3 (8V/8Y) 2013+": {
+                    "1.6 TDI 105/110": { orig: "105 ch / 250 Nm", s1: "145 ch", s2: "-", gain: "+40ch / +60Nm" },
+                    "2.0 TDI 150": { orig: "150 ch / 340 Nm", s1: "195 ch", s2: "210 ch", gain: "+45ch / +70Nm" },
+                    "2.0 TDI 184": { orig: "184 ch / 380 Nm", s1: "220 ch", s2: "240 ch", gain: "+36ch / +60Nm" },
+                    "S3 2.0 TFSI": { orig: "300/310 ch / 380 Nm", s1: "370 ch", s2: "400 ch", gain: "+70ch / +100Nm" },
+                    "RS3 2.5 TFSI": { orig: "400 ch / 480 Nm", s1: "480 ch", s2: "530 ch", gain: "+80ch / +120Nm" }
+                },
+                "A4 / A5 (B9)": {
+                    "2.0 TDI 150": { orig: "150 ch / 320 Nm", s1: "195 ch", s2: "215 ch", gain: "+45ch / +80Nm" },
+                    "3.0 TDI 218": { orig: "218 ch / 400 Nm", s1: "310 ch", s2: "330 ch", gain: "+92ch (Moteur bridé!)" },
+                    "3.0 TDI 272": { orig: "272 ch / 600 Nm", s1: "320 ch", s2: "350 ch", gain: "+48ch / +80Nm" }
+                }
+            },
+            "BMW": {
+                "Série 1 (F20/F40)": {
+                    "114i (1.6T)": { orig: "102 ch / 180 Nm", s1: "220 ch", s2: "-", gain: "+118ch (Incroyable)" },
+                    "116i (1.5T)": { orig: "109/136 ch", s1: "170 ch", s2: "-", gain: "+60ch" },
+                    "118d": { orig: "143/150 ch", s1: "190 ch", s2: "205 ch", gain: "+40ch / +80Nm" },
+                    "120d": { orig: "184/190 ch", s1: "225 ch", s2: "240 ch", gain: "+35ch / +60Nm" },
+                    "M135i / M140i": { orig: "320/340 ch", s1: "420 ch", s2: "460 ch", gain: "+80ch / +120Nm" }
+                },
+                "Série 3 (F30/G20)": {
+                    "316d": { orig: "116 ch", s1: "190 ch", s2: "-", gain: "+74ch (Moteur bridé)" },
+                    "320d": { orig: "184/190 ch", s1: "225 ch", s2: "245 ch", gain: "+35ch / +60Nm" },
+                    "330d": { orig: "258 ch", s1: "310 ch", s2: "340 ch", gain: "+52ch / +90Nm" },
+                    "M3 / M4 (S55)": { orig: "431/450 ch", s1: "520 ch", s2: "560 ch", gain: "+90ch / +150Nm" }
+                }
+            },
+            "Volkswagen / Utilitaire": {
+                "Golf 7 / 7.5": {
+                    "1.6 TDI": { orig: "105/110 ch", s1: "145 ch", s2: "-", gain: "+40ch / +60Nm" },
+                    "2.0 TDI 150": { orig: "150 ch", s1: "195 ch", s2: "215 ch", gain: "+45ch / +80Nm" },
+                    "2.0 GTI": { orig: "220/230/245 ch", s1: "300 ch", s2: "330 ch", gain: "+70ch / +100Nm" },
+                    "2.0 R": { orig: "300/310 ch", s1: "370 ch", s2: "400 ch", gain: "+70ch / +100Nm" }
+                },
+                "Transporter T5 / T6 (Van)": {
+                    "2.0 TDI 84/102 (Bridé)": { orig: "84/102 ch", s1: "170 ch", s2: "-", gain: "+70-85ch (Énorme!)" },
+                    "2.0 TDI 140/150": { orig: "140/150 ch", s1: "185 ch", s2: "-", gain: "+35ch / +70Nm" },
+                    "2.0 BiTDI 180/204": { orig: "180/204 ch", s1: "220 ch", s2: "-", gain: "+20-40ch" }
+                },
+                "Caddy / Crafter": {
+                    "1.6 TDI 75/102": { orig: "75/102 ch", s1: "140 ch", s2: "-", gain: "+40-65ch" },
+                    "2.0 TDI 102/140": { orig: "102/140 ch", s1: "175 ch", s2: "-", gain: "+35-70ch" }
+                }
+            },
+            "Peugeot / Utilitaire": {
+                "208 / 3008 / 5008": {
+                    "1.2 Puretech 110/130": { orig: "110/130 ch", s1: "155 ch", s2: "-", gain: "+25-45ch" },
+                    "1.5 BlueHDi 130": { orig: "130 ch", s1: "160 ch", s2: "-", gain: "+30ch" },
+                    "2.0 BlueHDi 150/180": { orig: "150/180 ch", s1: "190/210 ch", s2: "-", gain: "+30ch" }
+                },
+                "Partner / Expert / Boxer": {
+                    "1.6 BlueHDi 75/100": { orig: "75/100 ch", s1: "130 ch", s2: "-", gain: "+30-55ch" },
+                    "2.0 BlueHDi 120/150": { orig: "120/150 ch", s1: "180 ch", s2: "-", gain: "+30-60ch" },
+                    "2.2 HDi (Boxer)": { orig: "110/130/150 ch", s1: "170 ch", s2: "-", gain: "+40ch (Couple utile)" }
+                }
+            },
+            "Renault / Utilitaire": {
+                "Clio 4 / 5 / Megane": {
+                    "0.9 TCe 90": { orig: "90 ch", s1: "115 ch", s2: "-", gain: "+25ch" },
+                    "1.5 dCi 90/110": { orig: "90/110 ch", s1: "135 ch", s2: "-", gain: "+25ch" },
+                    "1.3 TCe 130/140": { orig: "130/140 ch", s1: "170 ch", s2: "-", gain: "+30ch" },
+                    "Megane 4 RS": { orig: "280/300 ch", s1: "330 ch", s2: "350 ch", gain: "+30ch" }
+                },
+                "Trafic / Master / Kangoo": {
+                    "1.6 dCi (Trafic 3)": { orig: "120/125 ch", s1: "150 ch", s2: "-", gain: "+30ch / +60Nm" },
+                    "2.0 dCi (Trafic/Master)": { orig: "115/150 ch", s1: "180 ch", s2: "-", gain: "+30-65ch" },
+                    "2.3 dCi (Master)": { orig: "130/145/165 ch", s1: "190 ch", s2: "-", gain: "+25-60ch" }
+                }
+            },
+            "Ford / Utilitaire": {
+                "Fiesta / Focus": {
+                    "1.0 Ecoboost": { orig: "100/125 ch", s1: "145 ch", s2: "-", gain: "+30ch" },
+                    "1.5 TDCi": { orig: "120 ch", s1: "150 ch", s2: "-", gain: "+30ch" },
+                    "Fiesta ST": { orig: "182/200 ch", s1: "230/240 ch", s2: "260 ch", gain: "+40ch" }
+                },
+                "Transit / Custom / Connect": {
+                    "2.0 EcoBlue 105/130": { orig: "105/130 ch", s1: "170/180 ch", s2: "-", gain: "+50-75ch (Moteur bridé)" },
+                    "2.2 TDCi": { orig: "100/125/155 ch", s1: "180 ch", s2: "-", gain: "+25-80ch" }
+                }
+            },
+            "Mercedes / Utilitaire": {
+                "Classe A / C": {
+                    "200d / 220d": { orig: "136/170 ch", s1: "180/210 ch", s2: "-", gain: "+40ch" },
+                    "45 AMG / 63 AMG": { orig: "381/510 ch", s1: "420/600 ch", s2: "-", gain: "+40-90ch" }
+                },
+                "Vito / Sprinter": {
+                    "109/111 CDI (1.6)": { orig: "88/114 ch", s1: "140 ch", s2: "-", gain: "+50ch" },
+                    "114/116/119 CDI (2.1)": { orig: "136/163/190 ch", s1: "220 ch", s2: "-", gain: "+30-85ch (Moteur bridé)" },
+                    "V6 3.0 CDI": { orig: "190/224 ch", s1: "260 ch", s2: "-", gain: "+40ch / +100Nm" }
+                }
+            },
+            "Sea-Doo (Jet-Ski)": {
+                "Gamme Spark": {
+                    "Spark 60": { orig: "60 ch", s1: "90 ch", s2: "110 ch", gain: "+30ch (Débridage)" },
+                    "Spark 90": { orig: "90 ch", s1: "110 ch", s2: "120 ch", gain: "+20ch (E85 possible)" }
+                },
+                "Gamme GTI / GTX / RXT (Atmo)": {
+                    "GTI 130": { orig: "130 ch", s1: "170 ch", s2: "-", gain: "+40ch (Débridage)" },
+                    "GTX 170": { orig: "170 ch", s1: "185 ch", s2: "-", gain: "+15ch" }
+                },
+                "Gamme Compresseur (RXP/RXT/GTX)": {
+                    "215 / 255 / 260": { orig: "215-260 ch", s1: "280 ch", s2: "300+ ch", gain: "+20-60ch" },
+                    "300 (1630 ACE)": { orig: "300 ch", s1: "325 ch", s2: "350 ch", gain: "+25-50ch (8400 rpm)" },
+                    "325 (Nouveau)": { orig: "325 ch", s1: "340 ch", s2: "-", gain: "+15ch" }
+                }
+            },
+            "Yamaha (Jet-Ski)": {
+                "Gamme EX / VX (TR-1)": {
+                    "EX / VX 110": { orig: "100/110 ch", s1: "125 ch", s2: "-", gain: "+15ch (Reprog + Filtre)" }
+                },
+                "Gamme HO (1.8 Atmo)": {
+                    "VXR / GP1800 HO": { orig: "180 ch", s1: "200 ch", s2: "-", gain: "+20ch (8200 rpm)" }
+                },
+                "Gamme SHO / SVHO (Compressé)": {
+                    "SHO 210/240": { orig: "210/240 ch", s1: "260 ch", s2: "-", gain: "+20-50ch" },
+                    "SVHO (GP1800 / FX)": { orig: "250/260 ch", s1: "285 ch", s2: "350+ ch", gain: "+35ch (Stage 1)" }
+                }
+            },
+            "Kawasaki (Jet-Ski)": {
+                "Ultra LX (Atmo)": {
+                    "LX 160": { orig: "160 ch", s1: "175 ch", s2: "-", gain: "+15ch" }
+                },
+                "Ultra 300 / 310 (Compressé)": {
+                    "300 / 310 X/LX/R": { orig: "300/310 ch", s1: "330 ch", s2: "350 ch", gain: "+30ch" }
+                }
+            }
+        };
 
 const PerformanceSelector = () => {
     const [brand, setBrand] = useState("Peugeot / Citroën / DS");
