@@ -3167,6 +3167,8 @@ const FileUploadPage = ({ isAdminAuthenticated }) => (
             const renderPage = () => {
               switch (currentPage) {
                 case 'accueil':
+				case 'envoi-carto':
+    return <FileUploadPage isAdminAuthenticated={isAdminAuthenticated} />;
                   return <HomePage setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} />;
                 case 'blog':
                   return <BlogPage isAdminAuthenticated={isAdminAuthenticated} />;
