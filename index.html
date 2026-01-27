@@ -624,6 +624,7 @@ const setNestedProperty = (obj, path, value) => {
 
                 {/* Menu de bureau */}
                 <div className="hidden md:flex space-x-8">
+				<NavItem icon={<span className="text-xl">📂</span>} text="Envoie ta cartographie" page="envoi-carto" setCurrentPage={setCurrentPage} />
                   <NavItem icon={<CarIcon />} text="Accueil" page="accueil" setCurrentPage={setCurrentPage} />
                   <NavItem icon={<StarIcon />} text="Voiture Vitrine" page="voiture-vitrine" setCurrentPage={setCurrentPage} /> {/* Ajout du lien "Voiture Vitrine" */}
                   <NavItem icon={<RssIcon />} text="Blog" page="blog" setCurrentPage={setCurrentPage} />
@@ -691,7 +692,50 @@ const setNestedProperty = (obj, path, value) => {
         };
 
         // Composant Page d'Accueil
-        const HomePage = ({ setCurrentPage, isAdminAuthenticated }) => {
+        // --- DÉBUT NOUVELLE PAGE ENVOI CARTO ---
+const FileUploadPage = ({ isAdminAuthenticated }) => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 to-emerald-950 text-white pt-40 pb-12 font-inter">
+        <div className="container mx-auto px-6 max-w-2xl">
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-8 text-blue-400 animate-fade-in-down animate-vibrate">Envoie ta Cartographie</h1>
+            <p className="text-xl text-center text-gray-300 mb-10 animate-fade-in-up">Transfère ton fichier moteur original (.bin, .ori) pour une analyse ou modification.</p>
+            <div className="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 animate-fade-in-up">
+                {/* ⚠️ REMPLACE L'URL CI-DESSOUS PAR TON ID FORMSPREE */}
+                <form action="https://formspree.io/f/TON_ID_ICI" method="POST" encType="multipart/form-data" className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-gray-300 text-sm font-bold mb-2">Nom / Prénom</label>
+                            <input type="text" name="name" required placeholder="Jean Dupont" className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none text-white" />
+                        </div>
+                        <div>
+                            <label className="block text-gray-300 text-sm font-bold mb-2">Téléphone</label>
+                            <input type="tel" name="phone" required placeholder="06..." className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none text-white" />
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-gray-300 text-sm font-bold mb-2">Email</label>
+                        <input type="email" name="email" required placeholder="nom@exemple.com" className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none text-white" />
+                    </div>
+                    <div>
+                        <label className="block text-gray-300 text-sm font-bold mb-2">Véhicule</label>
+                        <input type="text" name="vehicle" required placeholder="Ex: Golf 7 2.0 TDI 150 2018" className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none text-white" />
+                    </div>
+                    <div>
+                        <label className="block text-gray-300 text-sm font-bold mb-2">Fichier cartographie</label>
+                        <div className="relative group">
+                            <input type="file" name="upload" required className="w-full p-4 bg-gray-900 rounded-lg border-2 border-dashed border-gray-500 hover:border-blue-500 cursor-pointer transition-colors" />
+                            <p className="text-xs text-gray-400 mt-2">Formats acceptés: .bin, .ori, .zip, .rar</p>
+                        </div>
+                    </div>
+                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+                        <span>🚀</span> Envoyer ma cartographie
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+);
+// --- FIN NOUVELLE PAGE ---
+		const HomePage = ({ setCurrentPage, isAdminAuthenticated }) => {
             return (
                 <div className="min-h-screen bg-gradient-to-br from-black-950 to-emerald-950 text-white pt-40 pb-12 font-inter relative"> {/* Ajout de 'relative' ici */}
                     {/* Effets visuels de fond (blobs animés) */}
