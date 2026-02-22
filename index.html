@@ -772,25 +772,7 @@ const setNestedProperty = (obj, path, value) => {
             // Utilisation de dangerouslySetInnerHTML pour le rendu HTML
             return <Tag className={className} dangerouslySetInnerHTML={{ __html: typeof textValue === 'string' ? textValue : '' }} />;
         };
-
-        // Composant de la bannière défilante
-        const ScrollingBanner = () => {
-            const bannerText = "BRMOTORSPORT • VOTRE SATISFACTION EST NOTRE PRIORITÉ • "; // Texte à répéter
-            const repeatedText = Array(10).fill(bannerText).join(''); // Répéter le texte plusieurs fois pour l'effet de défilement continu
-
-            return (
-                <div className="w-full bg-red-700 text-white text-lg font-bold py-2 overflow-hidden whitespace-nowrap fixed top-0 left-0 z-50 shadow-md">
-                    <div className="scrolling-banner-container">
-                        <span className="scrolling-banner-text">
-                            {repeatedText}
-                        </span>
-                        <span className="scrolling-banner-text" aria-hidden="true">
-                            {repeatedText} {/* Une copie pour assurer la continuité du défilement */}
-                        </span>
-                    </div>
-                </div>
-            );
-        };
+		
 
         // Composant de la barre de navigation
         const Navbar = ({ setCurrentPage, isAdminAuthenticated, handleLogout, isVisible }) => {
@@ -3411,7 +3393,6 @@ const FileUploadPage = ({ isAdminAuthenticated }) => (
                 <ContentContext.Provider value={{ content, updateContent }}>
                     {/* Ajout de overflow-x-hidden sur le div racine de l'application React */}
                     <div className="min-h-screen bg-black font-inter overflow-x-hidden">
-                        <ScrollingBanner /> {/* Nouvelle bannière défilante */}
                         {/* Passe isAdminAuthenticated et handleLogout à Navbar, ainsi que la nouvelle prop isVisible */}
                         <Navbar setCurrentPage={setCurrentPage} isAdminAuthenticated={isAdminAuthenticated} handleLogout={handleLogout} isVisible={isNavbarVisible} />
                         <main className={`flex-grow ${mainContentPaddingTop}`}> {/* Padding dynamique */}
